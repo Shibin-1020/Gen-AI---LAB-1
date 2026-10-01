@@ -17,10 +17,12 @@ import csv
 import math
 import re
 import shutil
+import sys
 import time
 
 import matplotlib
-matplotlib.use("Agg")
+if "ipykernel" not in sys.modules:      # headless for CLI runs; keep inline plots working in notebooks
+    matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
