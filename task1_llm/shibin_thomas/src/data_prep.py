@@ -225,7 +225,7 @@ def prepare_data(cfg: dict, force: bool = False, log=print) -> Path:
     write_json(meta_path, meta)
 
     # Human-readable example of the fixed-length (input, target) pairs.
-    with open(out_dir / "example_sequences.txt", "w") as f:
+    with open(out_dir / "example_sequences.txt", "w", encoding="utf-8") as f:
         f.write(f"block_size T={T}; target = input shifted by one character\n\n")
         for k in range(3):
             i = k * T

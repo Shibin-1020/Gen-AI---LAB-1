@@ -38,9 +38,9 @@ def repo_path(p: str | Path) -> Path:
 def rel(p: str | Path) -> str:
     """Path relative to the repo root, for logs (never log personal absolute paths)."""
     try:
-        return str(Path(p).resolve().relative_to(REPO_ROOT))
+        return Path(p).resolve().relative_to(REPO_ROOT).as_posix()
     except ValueError:
-        return str(p)
+        return Path(p).as_posix()
 
 
 def run_dirs(run_id: str) -> dict[str, Path]:
@@ -78,7 +78,7 @@ def _set_dotted(cfg: dict, dotted: str, value: Any) -> None:
 
 def load_config(path: str | Path, overrides: list[str] | None = None) -> dict:
     """Load a YAML config; `overrides` are 'a.b=value' strings (value parsed as YAML)."""
-    with open(repo_path(path)) as f:
+    with open(repo_path(path), encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
     for ov in overrides or []:
         key, _, val = ov.partition("=")
@@ -216,12 +216,12 @@ def environment_info() -> dict[str, Any]:
 
 def write_json(path: Path, obj: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, indent=2, default=str)
 
 
 def read_json(path: Path) -> Any:
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 

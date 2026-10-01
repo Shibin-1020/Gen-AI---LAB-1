@@ -87,7 +87,7 @@ def quick_sample(model, char_to_idx, idx_to_char, device, prompt="Once upon a ti
 
 def _append_csv(path: Path, fields: list[str], row: dict) -> None:
     new = not path.exists()
-    with open(path, "a", newline="") as f:
+    with open(path, "a", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fields)
         if new:
             w.writeheader()

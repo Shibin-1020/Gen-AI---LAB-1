@@ -17,7 +17,26 @@ shibin_thomas/
 └── results.md          architecture + hyperparameter justification + metrics table
 ```
 
-## Step by step
+## Windows lab PC (PowerShell): quick version
+```powershell
+winget install --id Git.Git -e          # only if `git` is missing; then close and reopen PowerShell
+git clone -b claude/zen-mccarthy-mpamlz https://github.com/Shibin-1020/Gen-AI---LAB-1.git
+cd Gen-AI---LAB-1
+python -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install torch --index-url https://download.pytorch.org/whl/cu128   # RTX 50xx (Blackwell) needs a CUDA 12.8+ build
+pip install -r requirements.txt
+python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+python task1_llm/shibin_thomas/tests/test_model.py
+python task1_llm/shibin_thomas/src/run_pipeline.py --config task1_llm/shibin_thomas/configs/smoke.yaml
+python task1_llm/shibin_thomas/src/run_pipeline.py --config task1_llm/shibin_thomas/configs/gpt_char_v1.yaml
+```
+There is no `tmux` on Windows. Leave that PowerShell window open while training, and set the PC
+not to sleep. If the run stops, rerun the last command with `--resume latest`.
+
+## Step by step (Linux)
 
 **1. Set up the environment (once per machine)**
 ```bash

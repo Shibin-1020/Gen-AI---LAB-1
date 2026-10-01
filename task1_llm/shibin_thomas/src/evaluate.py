@@ -156,7 +156,7 @@ def _fmt(v):
 
 
 def write_samples_md(samples, path, run_id):
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         f.write(f"# Generated samples - {run_id}\n\nPrompt in **bold**, model continuation after it. "
                 "`[EOS]` = the model ended the story itself.\n\n")
         for s in samples:
@@ -175,11 +175,11 @@ def update_results_md(metrics, run_id):
              f"(source: `outputs/{run_id}/metrics_report.csv`)._", "",
              "| Metric | Value | Notes |", "|---|---|---|"]
     lines += [f"| {name} | {_fmt(metrics[k])} | {note} |" for k, name, note in REPORT_ROWS if k in metrics]
-    text = path.read_text()
+    text = path.read_text(encoding="utf-8")
     new = re.sub(r"(<!-- METRICS:START -->\n).*?(\n<!-- METRICS:END -->)",
                  lambda m: m.group(1) + "\n".join(lines) + m.group(2), text, flags=re.S)
     new = re.sub(r"outputs/[^/()\s]+/loss_curves\.png", f"outputs/{run_id}/loss_curves.png", new)
-    path.write_text(new)
+    path.write_text(new, encoding="utf-8")
 
 
 def evaluate(cfg: dict, run_id: str, promote: bool | None = None) -> dict:
@@ -210,7 +210,7 @@ def evaluate(cfg: dict, run_id: str, promote: bool | None = None) -> dict:
     gg = {f"greedy_{k}": v for k, v in generation_metrics(greedy).items()} if greedy else {}
 
     summary = read_json(dirs["outputs"] / "train_summary.json")
-    epochs = list(csv.DictReader(open(dirs["raw_logs"] / "epochs.csv")))
+    epochs = list(csv.DictReader(open(dirs["raw_logs"] / "epochs.csv", encoding="utf-8")))
     hw = summary["hardware"]
     metrics = {
         **loss_metrics(tr_loss, val_loss),
@@ -233,7 +233,7 @@ def evaluate(cfg: dict, run_id: str, promote: bool | None = None) -> dict:
     write_json(out / "metrics.json", metrics)
     write_json(out / "samples.json", samples)
     write_samples_md(samples, out / "samples.md", run_id)
-    with open(out / "metrics_report.csv", "w", newline="") as f:
+    with open(out / "metrics_report.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["metric", "value", "notes"])
         for k, name, note in REPORT_ROWS:

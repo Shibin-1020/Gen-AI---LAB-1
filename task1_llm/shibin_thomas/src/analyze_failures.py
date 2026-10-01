@@ -187,7 +187,7 @@ def main() -> None:
             rows, key=lambda x: -(len(x[1]["long_sentences"]) + len(x[1]["doubled_words"])
                                   + int(x[1]["unbalanced_quotes"]))),
     }
-    with open(out / "failure_candidates.md", "w") as f:
+    with open(out / "failure_candidates.md", "w", encoding="utf-8") as f:
         f.write(f"# Failure candidates - {run_id}\n\nAutomatically ranked from `samples.json`. "
                 "Read them, pick three genuine failures, and write them up in `failure_analysis.md`.\n\n")
         for title, ranked in cats.items():
@@ -199,11 +199,11 @@ def main() -> None:
     fa = MEMBER_DIR / "failure_analysis.md"
     if cfg.get("smoke", False):
         return
-    if fa.exists() and AUTO_MARKER not in fa.read_text():
+    if fa.exists() and AUTO_MARKER not in fa.read_text(encoding="utf-8"):
         print(f"{rel(fa)} has been edited by hand - not overwritten")
         return
     fa.write_text(draft_failure_analysis(rows, run_id, cfg["model"]["block_size"],
-                                         cfg["generation"]["max_new_tokens"]))
+                                         cfg["generation"]["max_new_tokens"]), encoding="utf-8")
     print(f"wrote draft {rel(fa)} - review it and put the observations in your own words")
 
 

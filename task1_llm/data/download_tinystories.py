@@ -47,7 +47,7 @@ def download(split: str = "train", max_stories: int | None = None, out: Path | N
     out.parent.mkdir(parents=True, exist_ok=True)
     tmp = out.with_suffix(".jsonl.partial")
 
-    print(f"Streaming {DATASET_NAME} [{split}] -> {out.relative_to(REPO_ROOT)}")
+    print(f"Streaming {DATASET_NAME} [{split}] -> {out.resolve().relative_to(REPO_ROOT).as_posix()}")
     ds = load_dataset(DATASET_NAME, split=split, streaming=True)
     t0, n = time.time(), 0
     with open(tmp, "w", encoding="utf-8") as f:
@@ -69,7 +69,7 @@ def download(split: str = "train", max_stories: int | None = None, out: Path | N
         "downloaded_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "format": 'JSON Lines, one {"text": story} object per line, original HF order',
     }
-    with open(out.with_suffix(".meta.json"), "w") as f:
+    with open(out.with_suffix(".meta.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2)
     print(f"Done: {n:,} stories in {time.time() - t0:.0f}s, sha256={meta['sha256'][:12]}...")
     return out
