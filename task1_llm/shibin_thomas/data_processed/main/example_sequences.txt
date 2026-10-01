@@ -1,0 +1,20 @@
+block_size T=256; target = input shifted by one character
+
+--- sequence 0 ---
+x ids[:20] = [45, 75, 64, 66, 3, 82, 77, 76, 75, 3, 62, 3, 81, 70, 74, 66, 13, 3, 81, 69]
+y ids[:20] = [75, 64, 66, 3, 82, 77, 76, 75, 3, 62, 3, 81, 70, 74, 66, 13, 3, 81, 69, 66]
+x text: "Once upon a time, there was a boy named Timmy. Timmy loved to play with his cubes. He had red cubes, blue cubes, and green cubes. Timmy liked to put his cubes in a big pile and then knock them over. It made him very happy.\n\nOne day, Timmy's friend came ove"
+y text: "nce upon a time, there was a boy named Timmy. Timmy loved to play with his cubes. He had red cubes, blue cubes, and green cubes. Timmy liked to put his cubes in a big pile and then knock them over. It made him very happy.\n\nOne day, Timmy's friend came over"
+
+--- sequence 1 ---
+x ids[:20] = [79, 3, 81, 76, 3, 77, 73, 62, 86, 15, 3, 38, 70, 80, 3, 67, 79, 70, 66, 75]
+y ids[:20] = [3, 81, 76, 3, 77, 73, 62, 86, 15, 3, 38, 70, 80, 3, 67, 79, 70, 66, 75, 65]
+x text: "r to play. His friend had never seen Timmy's cubes before. Timmy showed his friend all of his cubes and they decided to build a tower. They put the red cube on the bottom, then the blue cube, and finally the green cube on top.\n\nWhen they finished building "
+y text: " to play. His friend had never seen Timmy's cubes before. Timmy showed his friend all of his cubes and they decided to build a tower. They put the red cube on the bottom, then the blue cube, and finally the green cube on top.\n\nWhen they finished building t"
+
+--- sequence 2 ---
+x ids[:20] = [81, 69, 66, 3, 81, 76, 84, 66, 79, 13, 3, 81, 69, 66, 86, 3, 84, 66, 79, 66]
+y ids[:20] = [69, 66, 3, 81, 76, 84, 66, 79, 13, 3, 81, 69, 66, 86, 3, 84, 66, 79, 66, 3]
+x text: "the tower, they were both very happy. Timmy's friend had so much fun playing with the cubes that he asked if he could come back and play again tomorrow. Timmy was very happy and said yes. From that day on, Timmy and his friend played with the cubes every d"
+y text: "he tower, they were both very happy. Timmy's friend had so much fun playing with the cubes that he asked if he could come back and play again tomorrow. Timmy was very happy and said yes. From that day on, Timmy and his friend played with the cubes every da"
+

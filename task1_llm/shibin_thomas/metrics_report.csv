@@ -1,0 +1,39 @@
+metric,value,notes
+Training cross-entropy loss,0.5594495136774372,"nats/char, eval mode, best ckpt"
+"Training loss (running avg, last epoch)",0.59184,"nats/char, with dropout"
+Validation cross-entropy loss,0.5710512466288915,"nats/char, best ckpt"
+Perplexity (validation),1.770126913626184,"exp(val CE), per char"
+Bits-per-character (validation),0.8238528016049622,val CE / ln 2
+Perplexity (train),1.7497090442384224,exp(train CE)
+Bits-per-character (train),0.807115039010181,train CE / ln 2
+Generalization gap,0.01160173295145428,val CE - train CE (nats)
+Top-1 next-character accuracy (validation),0.8172604107117336,fraction
+Top-1 next-character accuracy (train),0.8201836325799198,fraction
+Distinct-1,0.2277188849627012,"word level, sampled continuations"
+Distinct-2,0.7048073102900279,"word level, sampled continuations"
+Distinct-3,0.9264173703256936,"word level, sampled continuations"
+Repeated 4-gram rate,0.006622998811273735,"mean per sample, sampled continuations"
+Distinct-1 (greedy),0.20079522862823063,"word level, greedy continuations"
+Distinct-2 (greedy),0.5391566265060241,"word level, greedy continuations"
+Distinct-3 (greedy),0.7190669371196755,"word level, greedy continuations"
+Repeated 4-gram rate (greedy),0.13725530985198314,mean per sample
+"Gradient norm (mean, pre-clip)",0.3039251460512183,L2
+"Gradient norm (p99, pre-clip)",1.1454206999999998,L2
+"Gradient norm (max, pre-clip)",14.710179328918457,L2
+Fraction of steps clipped,0.013410866799927312,grad norm > clip
+Loss spikes,0,count; loss > 1.5 x EMA after warm-up
+NaN / Inf steps,0,count
+Parameter count,7509120,"trainable, tied weights counted once"
+Parameter count (non-embedding),7398400,
+Training tokens/sec,569916.7542634798,"chars/sec, optimizer steps only"
+Generation tokens/sec,254.98902078650943,"chars/sec, batch 1, no KV cache"
+Peak GPU memory (allocated),3346.54248046875,"MB, training"
+Peak GPU memory (reserved),4166.0,"MB, training"
+Peak CPU RSS,2366.6171875,"MB, training process"
+Total training time,1735.7490894794464,"seconds, wall clock incl. per-epoch eval"
+Total training time,28.929151491324106,minutes
+Epochs trained,10,
+Best epoch (lowest val loss),10,
+Hardware,NVIDIA GeForce RTX 5090,device used for training
+Run id,gpt_char_v1_20261001-153007,evidence: reproducibility/raw_logs/... and outputs/<run_id>/
+Best checkpoint,task1_llm/shibin_thomas/checkpoints/gpt_char_v1_20261001-153007/best_model.pt,epoch 10

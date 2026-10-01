@@ -1,0 +1,9 @@
+{
+  "dataset": "roneneldan/TinyStories",
+  "split": "train",
+  "max_stories": 3000,
+  "num_rows": 3000,
+  "sha256": "1a70944d1a37c048ce04c7498588d2cdc3aa215f4b8d3dbff2c2e974cf4e3dc6",
+  "downloaded_utc": "2026-10-01T22:27:11+00:00",
+  "format": "JSON Lines, one {\"text\": story} object per line, original HF order"
+}

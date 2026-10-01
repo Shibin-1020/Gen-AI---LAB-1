@@ -1,0 +1,37 @@
+{
+  "data_config": {
+    "raw_path": "task1_llm/data/raw/tinystories_train.jsonl",
+    "n_train_stories": 100000,
+    "n_val_stories": 10000,
+    "min_story_chars": 50,
+    "split_seed": 266
+  },
+  "raw_file": "task1_llm/data/raw/tinystories_train.jsonl",
+  "raw_sha256": "f7534645035468c9968dee396e3e11960c0be676f21e0d0d19facaf0f15fe002",
+  "raw_status_counts": {
+    "ok": 1989367,
+    "non_ascii": 130115,
+    "too_short": 237
+  },
+  "vocab_size": 90,
+  "dtype": "uint8",
+  "train": {
+    "stories": 100000,
+    "tokens": 90162497,
+    "unk_tokens": 0,
+    "story_chars_mean": 900.62497,
+    "story_chars_median": 783.0,
+    "story_chars_p95": 1787.0,
+    "story_chars_max": 4349
+  },
+  "val": {
+    "stories": 10000,
+    "tokens": 8956317,
+    "unk_tokens": 0,
+    "story_chars_mean": 894.6317,
+    "story_chars_median": 781.0
+  },
+  "sequences_per_epoch_estimate": 352197,
+  "optimizer_steps_per_epoch_estimate": 5503,
+  "config_hash": "5976e3399322"
+}
