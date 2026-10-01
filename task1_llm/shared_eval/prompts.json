@@ -1,0 +1,15 @@
+{
+  "description": "Fixed prompts every member uses for Task 1 generation metrics (Distinct-n, repeated 4-gram rate, failure analysis). Do not edit after training starts.",
+  "prompts": [
+    "Once upon a time",
+    "One day, a little girl named Lily",
+    "Tom and his dog went to the park.",
+    "There was a big red ball",
+    "The sun was shining and",
+    "Mom said, \"",
+    "Ben was sad because",
+    "In a small house near the forest,",
+    "The cat saw a bird and",
+    "After school, Sam wanted to"
+  ]
+}

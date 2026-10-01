@@ -1,0 +1,57 @@
+# Smoke test: same code path as the main run, tiny data/model so it finishes in minutes on a CPU.
+# Downloads the first 3,000 TinyStories if task1_llm/data/raw/tinystories_train_first3000.jsonl is missing.
+# Results are NOT used in the report (smoke: true -> nothing is promoted to results.md).
+run_name: smoke_gpt_char
+smoke: true
+seed: 1337
+device: auto
+
+data:
+  raw_path: task1_llm/data/raw/tinystories_train_first3000.jsonl
+  download_if_missing: true
+  download_max_stories: 3000
+  processed_dir: task1_llm/shibin_thomas/data_processed/smoke
+  n_train_stories: 2000
+  n_val_stories: 200
+  min_story_chars: 50
+  split_seed: 266
+
+model:
+  block_size: 64
+  n_layer: 2
+  n_head: 4
+  d_model: 64
+  ffn_mult: 4
+  dropout: 0.1
+  bias: true
+  tie_weights: true
+
+training:
+  epochs: 2
+  batch_size: 32
+  grad_accum_steps: 1
+  lr: 1.0e-3
+  min_lr: 1.0e-4
+  schedule: cosine
+  warmup_steps: null
+  warmup_frac: 0.05
+  weight_decay: 0.1
+  betas: [0.9, 0.95]
+  grad_clip: 1.0
+  precision: auto
+  compile: false
+  log_interval: 50
+  eval_batch_size: 128
+  eval_train_max_seqs: 500
+  spike_factor: 1.5
+
+eval:
+  final_train_max_seqs: 2000
+
+generation:
+  prompts_file: task1_llm/shared_eval/prompts.json
+  max_new_tokens: 120
+  temperature: 0.8
+  top_k: null
+  num_samples_per_prompt: 1
+  include_greedy: true

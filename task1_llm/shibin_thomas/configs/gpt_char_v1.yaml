@@ -1,0 +1,57 @@
+# Task 1 - Shibin Thomas - character-level GPT on TinyStories (main run).
+# All paths are relative to the repository root. Override any value from the CLI with
+#   --set training.batch_size=32 model.dropout=0.05
+run_name: gpt_char_v1
+smoke: false
+seed: 1337
+device: auto                # auto -> cuda > mps > cpu
+
+data:
+  raw_path: task1_llm/data/raw/tinystories_train.jsonl   # shared raw file (task1_llm/data/download_tinystories.py)
+  download_if_missing: true
+  download_max_stories: null                              # null = full HF train split (~2.1M stories)
+  processed_dir: task1_llm/shibin_thomas/data_processed/main
+  n_train_stories: 100000
+  n_val_stories: 10000
+  min_story_chars: 50
+  split_seed: 266            # my own split seed (each member uses a different one)
+
+model:
+  block_size: 256            # context length in characters (~2-3 sentences of TinyStories)
+  n_layer: 6
+  n_head: 8                  # head_dim = 320 / 8 = 40
+  d_model: 320
+  ffn_mult: 4                # FFN hidden = 1280
+  dropout: 0.1
+  bias: true
+  tie_weights: true          # LM head shares the token-embedding matrix
+
+training:
+  epochs: 10                 # brief: minimum 10 epochs
+  batch_size: 64             # sequences per micro-batch -> 16,384 chars per step
+  grad_accum_steps: 1
+  lr: 6.0e-4                 # peak LR after warm-up
+  min_lr: 6.0e-5             # cosine floor = 10% of peak
+  schedule: cosine           # cosine | linear | constant (after warm-up)
+  warmup_steps: null         # null -> warmup_frac * total_steps
+  warmup_frac: 0.02
+  weight_decay: 0.1
+  betas: [0.9, 0.95]
+  grad_clip: 1.0
+  precision: auto            # auto -> bf16 (Ampere+) / fp16 (older GPUs) / fp32 (CPU)
+  compile: false
+  log_interval: 100
+  eval_batch_size: 128
+  eval_train_max_seqs: 20000 # per-epoch eval-mode train loss on a fixed 20K-sequence subset
+  spike_factor: 1.5
+
+eval:
+  final_train_max_seqs: null # final train CE on the FULL training split
+
+generation:
+  prompts_file: task1_llm/shared_eval/prompts.json
+  max_new_tokens: 500
+  temperature: 0.8
+  top_k: null
+  num_samples_per_prompt: 3
+  include_greedy: true

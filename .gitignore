@@ -1,0 +1,32 @@
+# Python / notebooks
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+.env
+*.log.tmp
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Raw datasets (too large for GitHub) - re-download with the scripts; the small *.meta.json sidecars ARE committed
+task1_llm/data/raw/*.jsonl
+task1_llm/data/raw/*.partial
+
+# Processed token streams - rebuilt exactly from split_indices.npz + raw file (vocab/meta/split files ARE committed)
+**/data_processed/**/*.bin
+
+# Resumable training state (weights + optimizer, large). best_model.pt IS committed.
+**/checkpoints/**/last_full.pt
+
+# Smoke-test artifacts (pipeline check only, never part of the report)
+**/data_processed/smoke/
+**/checkpoints/smoke_*/
+**/outputs/smoke_*/
+reproducibility/raw_logs/**/smoke_*/
+reproducibility/manifests/**/smoke_*.json
