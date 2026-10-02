@@ -1,0 +1,19 @@
+{
+  "baseline": "baseline_meanpool",
+  "tests": {
+    "exp1_textcnn": {
+      "b_baseline_only_correct": 613,
+      "c_model_only_correct": 1233,
+      "chi2": 207.56283856988082,
+      "p_value": 4.673043369922003e-47,
+      "p_value_exact": 6.089403051010771e-48
+    },
+    "exp2_bigru_attn": {
+      "b_baseline_only_correct": 557,
+      "c_model_only_correct": 1521,
+      "chi2": 446.27959576515883,
+      "p_value": 4.653566027220694e-99,
+      "p_value_exact": 7.268813503150943e-103
+    }
+  }
+}

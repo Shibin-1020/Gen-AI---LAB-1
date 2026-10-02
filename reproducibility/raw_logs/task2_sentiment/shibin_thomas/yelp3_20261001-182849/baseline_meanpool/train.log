@@ -1,0 +1,60 @@
+2026-10-01 18:28:52 | INFO | START model baseline_meanpool run yelp3_20261001-182849 config=task2_sentiment/shibin_thomas/configs/baseline_meanpool.yaml overrides=[]
+2026-10-01 18:28:52 | INFO | model={'type': 'meanpool_mlp', 'embed_dim': 128, 'hidden_dim': 64, 'dropout': 0.3} params=3,848,321 vocab=30,000
+2026-10-01 18:28:52 | INFO | training={'epochs': 8, 'batch_size': 512, 'lr': 0.002, 'min_lr_ratio': 0.05, 'warmup_frac': 0.03, 'weight_decay': 0.0001, 'grad_clip': 1.0, 'patience': 2, 'eval_batch_size': 2048, 'log_interval': 200}
+2026-10-01 18:28:52 | INFO | device=cuda hardware={'device': 'cuda', 'cpu_model': 'Intel64 Family 6 Model 198 Stepping 2, GenuineIntel', 'cpu_count': 24, 'os': 'Windows 11', 'gpu_name': 'NVIDIA GeForce RTX 5090', 'gpu_count': 1, 'gpu_total_memory_gb': 31.84, 'cuda_version': '12.8', 'cudnn_version': 91900}
+2026-10-01 18:28:52 | INFO | train=509,883 val=50,000 batch=512 steps/epoch=996 max_steps=7,968 warmup=239
+2026-10-01 18:28:52 | INFO | epoch 1 step 0/7968 lr 8.37e-06 loss 0.6973 grad_norm 0.083
+2026-10-01 18:28:53 | INFO | epoch 1 step 200/7968 lr 1.68e-03 loss 0.3108 grad_norm 0.091
+2026-10-01 18:28:53 | INFO | epoch 1 step 400/7968 lr 2.00e-03 loss 0.2505 grad_norm 0.068
+2026-10-01 18:28:54 | INFO | epoch 1 step 600/7968 lr 1.99e-03 loss 0.2403 grad_norm 0.065
+2026-10-01 18:28:54 | INFO | epoch 1 step 800/7968 lr 1.98e-03 loss 0.2209 grad_norm 0.054
+2026-10-01 18:28:55 | INFO | EPOCH 1 | train_loss 0.3061 | val_loss 0.2014 | val_acc 0.9230 | val_f1_macro 0.9230 | val_auc 0.9751 | 3s
+2026-10-01 18:28:55 | INFO | new best val macro-F1 0.9230 -> task2_sentiment/shibin_thomas/checkpoints/yelp3_20261001-182849/baseline_meanpool/best_model.pt
+2026-10-01 18:28:55 | INFO | epoch 2 step 1000/7968 lr 1.95e-03 loss 0.1967 grad_norm 0.054
+2026-10-01 18:28:55 | INFO | epoch 2 step 1200/7968 lr 1.93e-03 loss 0.2439 grad_norm 0.059
+2026-10-01 18:28:56 | INFO | epoch 2 step 1400/7968 lr 1.90e-03 loss 0.1799 grad_norm 0.062
+2026-10-01 18:28:57 | INFO | epoch 2 step 1600/7968 lr 1.86e-03 loss 0.2598 grad_norm 0.076
+2026-10-01 18:28:57 | INFO | epoch 2 step 1800/7968 lr 1.82e-03 loss 0.2156 grad_norm 0.062
+2026-10-01 18:28:58 | INFO | EPOCH 2 | train_loss 0.2047 | val_loss 0.1931 | val_acc 0.9269 | val_f1_macro 0.9269 | val_auc 0.9770 | 3s
+2026-10-01 18:28:58 | INFO | new best val macro-F1 0.9269 -> task2_sentiment/shibin_thomas/checkpoints/yelp3_20261001-182849/baseline_meanpool/best_model.pt
+2026-10-01 18:28:58 | INFO | epoch 3 step 2000/7968 lr 1.77e-03 loss 0.2119 grad_norm 0.064
+2026-10-01 18:28:58 | INFO | epoch 3 step 2200/7968 lr 1.71e-03 loss 0.1660 grad_norm 0.068
+2026-10-01 18:28:59 | INFO | epoch 3 step 2400/7968 lr 1.66e-03 loss 0.1492 grad_norm 0.050
+2026-10-01 18:28:59 | INFO | epoch 3 step 2600/7968 lr 1.60e-03 loss 0.1674 grad_norm 0.041
+2026-10-01 18:29:00 | INFO | epoch 3 step 2800/7968 lr 1.53e-03 loss 0.2001 grad_norm 0.057
+2026-10-01 18:29:00 | INFO | EPOCH 3 | train_loss 0.1921 | val_loss 0.1907 | val_acc 0.9278 | val_f1_macro 0.9278 | val_auc 0.9777 | 3s
+2026-10-01 18:29:00 | INFO | new best val macro-F1 0.9278 -> task2_sentiment/shibin_thomas/checkpoints/yelp3_20261001-182849/baseline_meanpool/best_model.pt
+2026-10-01 18:29:00 | INFO | epoch 4 step 3000/7968 lr 1.46e-03 loss 0.1956 grad_norm 0.086
+2026-10-01 18:29:01 | INFO | epoch 4 step 3200/7968 lr 1.39e-03 loss 0.1647 grad_norm 0.042
+2026-10-01 18:29:01 | INFO | epoch 4 step 3400/7968 lr 1.32e-03 loss 0.1622 grad_norm 0.056
+2026-10-01 18:29:02 | INFO | epoch 4 step 3600/7968 lr 1.24e-03 loss 0.2075 grad_norm 0.063
+2026-10-01 18:29:02 | INFO | epoch 4 step 3800/7968 lr 1.17e-03 loss 0.1659 grad_norm 0.045
+2026-10-01 18:29:03 | INFO | EPOCH 4 | train_loss 0.1851 | val_loss 0.1891 | val_acc 0.9288 | val_f1_macro 0.9288 | val_auc 0.9781 | 3s
+2026-10-01 18:29:03 | INFO | new best val macro-F1 0.9288 -> task2_sentiment/shibin_thomas/checkpoints/yelp3_20261001-182849/baseline_meanpool/best_model.pt
+2026-10-01 18:29:03 | INFO | epoch 5 step 4000/7968 lr 1.09e-03 loss 0.2125 grad_norm 0.046
+2026-10-01 18:29:03 | INFO | epoch 5 step 4200/7968 lr 1.01e-03 loss 0.1836 grad_norm 0.060
+2026-10-01 18:29:04 | INFO | epoch 5 step 4400/7968 lr 9.36e-04 loss 0.2255 grad_norm 0.059
+2026-10-01 18:29:04 | INFO | epoch 5 step 4600/7968 lr 8.60e-04 loss 0.1638 grad_norm 0.054
+2026-10-01 18:29:05 | INFO | epoch 5 step 4800/7968 lr 7.85e-04 loss 0.1661 grad_norm 0.045
+2026-10-01 18:29:05 | INFO | EPOCH 5 | train_loss 0.1800 | val_loss 0.1888 | val_acc 0.9288 | val_f1_macro 0.9288 | val_auc 0.9782 | 3s
+2026-10-01 18:29:05 | INFO | epoch 6 step 5000/7968 lr 7.11e-04 loss 0.1352 grad_norm 0.058
+2026-10-01 18:29:06 | INFO | epoch 6 step 5200/7968 lr 6.40e-04 loss 0.1820 grad_norm 0.054
+2026-10-01 18:29:06 | INFO | epoch 6 step 5400/7968 lr 5.72e-04 loss 0.1400 grad_norm 0.056
+2026-10-01 18:29:07 | INFO | epoch 6 step 5600/7968 lr 5.07e-04 loss 0.1683 grad_norm 0.058
+2026-10-01 18:29:07 | INFO | epoch 6 step 5800/7968 lr 4.46e-04 loss 0.1715 grad_norm 0.052
+2026-10-01 18:29:08 | INFO | EPOCH 6 | train_loss 0.1770 | val_loss 0.1891 | val_acc 0.9291 | val_f1_macro 0.9291 | val_auc 0.9782 | 3s
+2026-10-01 18:29:08 | INFO | new best val macro-F1 0.9291 -> task2_sentiment/shibin_thomas/checkpoints/yelp3_20261001-182849/baseline_meanpool/best_model.pt
+2026-10-01 18:29:08 | INFO | epoch 7 step 6000/7968 lr 3.88e-04 loss 0.1494 grad_norm 0.047
+2026-10-01 18:29:09 | INFO | epoch 7 step 6200/7968 lr 3.35e-04 loss 0.1516 grad_norm 0.065
+2026-10-01 18:29:09 | INFO | epoch 7 step 6400/7968 lr 2.87e-04 loss 0.1948 grad_norm 0.075
+2026-10-01 18:29:10 | INFO | epoch 7 step 6600/7968 lr 2.43e-04 loss 0.1656 grad_norm 0.047
+2026-10-01 18:29:10 | INFO | epoch 7 step 6800/7968 lr 2.05e-04 loss 0.1817 grad_norm 0.057
+2026-10-01 18:29:11 | INFO | EPOCH 7 | train_loss 0.1748 | val_loss 0.1890 | val_acc 0.9290 | val_f1_macro 0.9290 | val_auc 0.9782 | 3s
+2026-10-01 18:29:11 | INFO | epoch 8 step 7000/7968 lr 1.73e-04 loss 0.1402 grad_norm 0.061
+2026-10-01 18:29:11 | INFO | epoch 8 step 7200/7968 lr 1.46e-04 loss 0.1379 grad_norm 0.062
+2026-10-01 18:29:12 | INFO | epoch 8 step 7400/7968 lr 1.25e-04 loss 0.1321 grad_norm 0.059
+2026-10-01 18:29:12 | INFO | epoch 8 step 7600/7968 lr 1.11e-04 loss 0.2383 grad_norm 0.069
+2026-10-01 18:29:13 | INFO | epoch 8 step 7800/7968 lr 1.02e-04 loss 0.1545 grad_norm 0.046
+2026-10-01 18:29:13 | INFO | EPOCH 8 | train_loss 0.1741 | val_loss 0.1889 | val_acc 0.9292 | val_f1_macro 0.9292 | val_auc 0.9783 | 3s
+2026-10-01 18:29:13 | INFO | new best val macro-F1 0.9292 -> task2_sentiment/shibin_thomas/checkpoints/yelp3_20261001-182849/baseline_meanpool/best_model.pt
+2026-10-01 18:29:13 | INFO | DONE baseline_meanpool | best val macro-F1 0.9292 @ epoch 8 | 21s | 279,909 ex/s | peak {'peak_cpu_rss_mb': 2722.515625, 'peak_gpu_allocated_mb': 1148.81640625, 'peak_gpu_reserved_mb': 1296.0}

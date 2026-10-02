@@ -1,0 +1,7 @@
+2026-10-01 18:49:24 | INFO | baseline_meanpool: acc=0.9304 [0.9276, 0.9330] f1_macro=0.9304 mcc=0.8608 auc=0.9800 pr_auc=0.9802 brier=0.0520 ece=0.0045 cm=[17718 1282; 1363 17637]
+2026-10-01 18:49:25 | INFO | exp1_textcnn: acc=0.9467 [0.9446, 0.9488] f1_macro=0.9467 mcc=0.8934 auc=0.9883 pr_auc=0.9885 brier=0.0399 ece=0.0049 cm=[17951 1049; 976 18024]
+2026-10-01 18:49:27 | INFO | exp2_bigru_attn: acc=0.9558 [0.9537, 0.9577] f1_macro=0.9558 mcc=0.9116 auc=0.9917 pr_auc=0.9920 brier=0.0337 ece=0.0110 cm=[18029 971; 710 18290]
+2026-10-01 18:49:27 | INFO | McNemar baseline_meanpool vs exp1_textcnn: {'b_baseline_only_correct': 613, 'c_model_only_correct': 1233, 'chi2': 207.56283856988082, 'p_value': 4.673043369922003e-47, 'p_value_exact': 6.089403051010771e-48}
+2026-10-01 18:49:27 | INFO | McNemar baseline_meanpool vs exp2_bigru_attn: {'b_baseline_only_correct': 557, 'c_model_only_correct': 1521, 'chi2': 446.27959576515883, 'p_value': 4.653566027220694e-99, 'p_value_exact': 7.268813503150943e-103}
+2026-10-01 18:49:28 | INFO | promoted metrics_report.csv + comparison.md to the member folder; refreshed results.md
+2026-10-01 18:49:28 | INFO | EVAL DONE -> task2_sentiment/shibin_thomas/outputs/yelp3_20261001-182849

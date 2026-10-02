@@ -1,0 +1,13 @@
+{
+  "dataset": "fancyzhx/yelp_polarity",
+  "split": "train",
+  "max_rows": 4000,
+  "num_rows": 4000,
+  "label_counts": {
+    "0": 2203,
+    "1": 1797
+  },
+  "sha256": "c36009c2caafabe77d0efee18bbb9fab1a09387a4f67810c9ee2ae8ef205b29d",
+  "downloaded_utc": "2026-10-02T01:23:20+00:00",
+  "format": "JSON Lines, one {\"text\": str, \"label\": 0|1} per line; 0 = negative, 1 = positive"
+}

@@ -1,0 +1,113 @@
+{
+  "metrics": {
+    "n": 38000,
+    "accuracy": 0.9557631578947369,
+    "tn": 18029,
+    "fp": 971,
+    "fn": 710,
+    "tp": 18290,
+    "precision_macro": 0.9558491770132613,
+    "recall_macro": 0.9557631578947368,
+    "f1_macro": 0.9557610709140663,
+    "precision_micro": 0.9557631578947369,
+    "recall_micro": 0.9557631578947369,
+    "f1_micro": 0.9557631578947369,
+    "precision_weighted": 0.9558491770132612,
+    "recall_weighted": 0.9557631578947369,
+    "f1_weighted": 0.9557610709140664,
+    "precision_neg": 0.9621111051817066,
+    "recall_neg": 0.9488947368421052,
+    "f1_neg": 0.9554572193221866,
+    "support_neg": 19000,
+    "precision_pos": 0.9495872488448159,
+    "recall_pos": 0.9626315789473684,
+    "f1_pos": 0.956064922505946,
+    "support_pos": 19000,
+    "roc_auc": 0.9917468088642659,
+    "pr_auc": 0.9919538905283632,
+    "mcc": 0.9116123308496454,
+    "brier": 0.03373427161495292,
+    "ece": 0.010950747827271515,
+    "error_rate": 0.04423684210526313,
+    "accuracy_ci_low": 0.9537368421052631,
+    "accuracy_ci_high": 0.9577111842105263,
+    "f1_macro_ci_low": 0.9537366019959095,
+    "f1_macro_ci_high": 0.957708069174636,
+    "mcc_ci_low": 0.9075906420764147,
+    "mcc_ci_high": 0.9155003887796702,
+    "n_boot": 1000,
+    "params": 4367873,
+    "training_time_sec": 1150.6021546002012,
+    "training_time_min": 19.17670257667002,
+    "epochs_run": 5,
+    "best_epoch": 4,
+    "best_val_f1_macro": 0.9521581371526812,
+    "train_examples_per_sec": 2270.6895747157205,
+    "inference_examples_per_sec": 29489.393480864663,
+    "role": "experimental",
+    "hardware": "NVIDIA GeForce RTX 5090",
+    "cpu": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+    "device": "cuda",
+    "peak_cpu_rss_mb": 2722.515625,
+    "peak_gpu_allocated_mb": 1392.189453125,
+    "peak_gpu_reserved_mb": 2510.0
+  },
+  "slices": [
+    {
+      "slice": "all",
+      "n": 38000,
+      "f1_macro": 0.9557610709140663,
+      "error_rate": 0.04423684210526316,
+      "pos_rate": 0.5
+    },
+    {
+      "slice": "short (<=50 words)",
+      "n": 9287,
+      "f1_macro": 0.9477619130479907,
+      "error_rate": 0.05006999030903413,
+      "pos_rate": 0.5985786583396145
+    },
+    {
+      "slice": "medium (51-150 words)",
+      "n": 16910,
+      "f1_macro": 0.9591051478482489,
+      "error_rate": 0.04086339444115908,
+      "pos_rate": 0.5104671791839148
+    },
+    {
+      "slice": "long (>150 words)",
+      "n": 11803,
+      "f1_macro": 0.9540656942983937,
+      "error_rate": 0.044480216894009994,
+      "pos_rate": 0.4074387867491316
+    },
+    {
+      "slice": "has negation",
+      "n": 28544,
+      "f1_macro": 0.9539463143307786,
+      "error_rate": 0.04477298206278027,
+      "pos_rate": 0.4134669282511211
+    },
+    {
+      "slice": "has contrast (but/however/...)",
+      "n": 22713,
+      "f1_macro": 0.9509459317221198,
+      "error_rate": 0.048650552546999515,
+      "pos_rate": 0.45075507418658917
+    },
+    {
+      "slice": "no negation & no contrast",
+      "n": 6688,
+      "f1_macro": 0.9376061786012667,
+      "error_rate": 0.041566985645933016,
+      "pos_rate": 0.7837918660287081
+    },
+    {
+      "slice": "exclamation-heavy (>=3 '!')",
+      "n": 6944,
+      "f1_macro": 0.9707372546799936,
+      "error_rate": 0.028369815668202764,
+      "pos_rate": 0.5859735023041475
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+model,metric,value,notes
+baseline_meanpool,n,38000,
+baseline_meanpool,accuracy,0.9303947368421053,
+baseline_meanpool,tn,17718,
+baseline_meanpool,fp,1282,
+baseline_meanpool,fn,1363,
+baseline_meanpool,tp,17637,
+baseline_meanpool,precision_macro,0.9304025591999748,
+baseline_meanpool,recall_macro,0.9303947368421053,
+baseline_meanpool,f1_macro,0.9303944205801893,
+baseline_meanpool,precision_micro,0.9303947368421053,
+baseline_meanpool,recall_micro,0.9303947368421053,
+baseline_meanpool,f1_micro,0.9303947368421053,equals accuracy for single-label binary classification
+baseline_meanpool,precision_weighted,0.9304025591999747,
+baseline_meanpool,recall_weighted,0.9303947368421053,
+baseline_meanpool,f1_weighted,0.9303944205801894,
+baseline_meanpool,precision_neg,0.9285676851318065,
+baseline_meanpool,recall_neg,0.9325263157894736,
+baseline_meanpool,f1_neg,0.9305427903679,
+baseline_meanpool,support_neg,19000,
+baseline_meanpool,precision_pos,0.9322374332681431,
+baseline_meanpool,recall_pos,0.9282631578947368,
+baseline_meanpool,f1_pos,0.9302460507924787,
+baseline_meanpool,support_pos,19000,
+baseline_meanpool,roc_auc,0.9799577132963989,
+baseline_meanpool,pr_auc,0.9802082028016185,
+baseline_meanpool,mcc,0.8607972960065379,
+baseline_meanpool,brier,0.05200237157024045,"mean (p - y)^2, lower is better"
+baseline_meanpool,ece,0.0045375014716267995,15 equal-width confidence bins
+baseline_meanpool,error_rate,0.06960526315789473,
+baseline_meanpool,accuracy_ci_low,0.9276309210526317,
+baseline_meanpool,accuracy_ci_high,0.9329736842105263,
+baseline_meanpool,f1_macro_ci_low,0.9276261098585848,
+baseline_meanpool,f1_macro_ci_high,0.9329687383303447,
+baseline_meanpool,mcc_ci_low,0.8552548883629072,
+baseline_meanpool,mcc_ci_high,0.8659376470145147,
+baseline_meanpool,n_boot,1000,
+baseline_meanpool,params,3848321,
+baseline_meanpool,training_time_sec,21.26956189982593,
+baseline_meanpool,training_time_min,0.3544926983304322,
+baseline_meanpool,epochs_run,8,
+baseline_meanpool,best_epoch,8,
+baseline_meanpool,best_val_f1_macro,0.9291799918132071,
+baseline_meanpool,train_examples_per_sec,279909.0038103976,
+baseline_meanpool,inference_examples_per_sec,2126409.4474846283,"test set, batch inference"
+baseline_meanpool,role,baseline,
+baseline_meanpool,hardware,NVIDIA GeForce RTX 5090,
+baseline_meanpool,cpu,"Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+baseline_meanpool,device,cuda,
+baseline_meanpool,peak_cpu_rss_mb,2722.515625,whole pipeline process (cumulative peak)
+baseline_meanpool,peak_gpu_allocated_mb,1148.81640625,
+baseline_meanpool,peak_gpu_reserved_mb,1296.0,
+baseline_meanpool,slice[all].f1_macro,0.9303944205801893,n=38000
+baseline_meanpool,slice[all].error_rate,0.06960526315789474,n=38000
+baseline_meanpool,slice[short (<=50 words)].f1_macro,0.9276654165040182,n=9287
+baseline_meanpool,slice[short (<=50 words)].error_rate,0.06955959944007753,n=9287
+baseline_meanpool,slice[medium (51-150 words)].f1_macro,0.9306055266855499,n=16910
+baseline_meanpool,slice[medium (51-150 words)].error_rate,0.0693672383205204,n=16910
+baseline_meanpool,slice[long (>150 words)].f1_macro,0.9274151389610903,n=11803
+baseline_meanpool,slice[long (>150 words)].error_rate,0.06998220791324239,n=11803
+baseline_meanpool,slice[has negation].f1_macro,0.9228140445187696,n=28544
+baseline_meanpool,slice[has negation].error_rate,0.07472673766816143,n=28544
+baseline_meanpool,slice[has contrast (but/however/...)].f1_macro,0.920285747900281,n=22713
+baseline_meanpool,slice[has contrast (but/however/...)].error_rate,0.07889754765993044,n=22713
+baseline_meanpool,slice[no negation & no contrast].f1_macro,0.9263165822945061,n=6688
+baseline_meanpool,slice[no negation & no contrast].error_rate,0.049342105263157895,n=6688
+baseline_meanpool,slice[exclamation-heavy (>=3 '!')].f1_macro,0.9490019469766111,n=6944
+baseline_meanpool,slice[exclamation-heavy (>=3 '!')].error_rate,0.04968317972350231,n=6944
+exp1_textcnn,n,38000,
+exp1_textcnn,accuracy,0.9467105263157894,
+exp1_textcnn,tn,17951,
+exp1_textcnn,fp,1049,
+exp1_textcnn,fn,976,
+exp1_textcnn,tp,18024,
+exp1_textcnn,precision_macro,0.9467171206524542,
+exp1_textcnn,recall_macro,0.9467105263157894,
+exp1_textcnn,f1_macro,0.9467103296532873,
+exp1_textcnn,precision_micro,0.9467105263157894,
+exp1_textcnn,recall_micro,0.9467105263157894,
+exp1_textcnn,f1_micro,0.9467105263157894,equals accuracy for single-label binary classification
+exp1_textcnn,precision_weighted,0.9467171206524543,
+exp1_textcnn,recall_weighted,0.9467105263157894,
+exp1_textcnn,f1_weighted,0.9467103296532874,
+exp1_textcnn,precision_neg,0.9484334548528557,
+exp1_textcnn,recall_neg,0.9447894736842105,
+exp1_textcnn,f1_neg,0.9466079573918317,
+exp1_textcnn,support_neg,19000,
+exp1_textcnn,precision_pos,0.9450007864520527,
+exp1_textcnn,recall_pos,0.9486315789473684,
+exp1_textcnn,f1_pos,0.9468127019147428,
+exp1_textcnn,support_pos,19000,
+exp1_textcnn,roc_auc,0.9882508102493074,
+exp1_textcnn,pr_auc,0.9885037540015038,
+exp1_textcnn,mcc,0.8934276469439075,
+exp1_textcnn,brier,0.03987022589784953,"mean (p - y)^2, lower is better"
+exp1_textcnn,ece,0.004946577758670146,15 equal-width confidence bins
+exp1_textcnn,error_rate,0.05328947368421055,
+exp1_textcnn,accuracy_ci_low,0.9445526315789474,
+exp1_textcnn,accuracy_ci_high,0.9487631578947369,
+exp1_textcnn,f1_macro_ci_low,0.9445503964979071,
+exp1_textcnn,f1_macro_ci_high,0.9487612766457342,
+exp1_textcnn,mcc_ci_low,0.8891073185158336,
+exp1_textcnn,mcc_ci_high,0.897526656492714,
+exp1_textcnn,n_boot,1000,
+exp1_textcnn,params,4037377,
+exp1_textcnn,training_time_sec,59.19166120002046,
+exp1_textcnn,training_time_min,0.9865276866670077,
+exp1_textcnn,epochs_run,5,
+exp1_textcnn,best_epoch,5,
+exp1_textcnn,best_val_f1_macro,0.9433598082389667,
+exp1_textcnn,train_examples_per_sec,54073.95404580207,
+exp1_textcnn,inference_examples_per_sec,193857.571673248,"test set, batch inference"
+exp1_textcnn,role,experimental,
+exp1_textcnn,hardware,NVIDIA GeForce RTX 5090,
+exp1_textcnn,cpu,"Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+exp1_textcnn,device,cuda,
+exp1_textcnn,peak_cpu_rss_mb,2722.515625,whole pipeline process (cumulative peak)
+exp1_textcnn,peak_gpu_allocated_mb,1276.80615234375,
+exp1_textcnn,peak_gpu_reserved_mb,1558.0,
+exp1_textcnn,slice[all].f1_macro,0.9467103296532873,n=38000
+exp1_textcnn,slice[all].error_rate,0.053289473684210525,n=38000
+exp1_textcnn,slice[short (<=50 words)].f1_macro,0.944921067735649,n=9287
+exp1_textcnn,slice[short (<=50 words)].error_rate,0.05286960267039948,n=9287
+exp1_textcnn,slice[medium (51-150 words)].f1_macro,0.9478090101657131,n=16910
+exp1_textcnn,slice[medium (51-150 words)].error_rate,0.052158486102897694,n=16910
+exp1_textcnn,slice[long (>150 words)].f1_macro,0.9427546572398023,n=11803
+exp1_textcnn,slice[long (>150 words)].error_rate,0.05524019317122766,n=11803
+exp1_textcnn,slice[has negation].f1_macro,0.9433229420478468,n=28544
+exp1_textcnn,slice[has negation].error_rate,0.054967769058295965,n=28544
+exp1_textcnn,slice[has contrast (but/however/...)].f1_macro,0.9400441944342757,n=22713
+exp1_textcnn,slice[has contrast (but/however/...)].error_rate,0.05939329899176683,n=22713
+exp1_textcnn,slice[no negation & no contrast].f1_macro,0.9322233416523009,n=6688
+exp1_textcnn,slice[no negation & no contrast].error_rate,0.04530502392344497,n=6688
+exp1_textcnn,slice[exclamation-heavy (>=3 '!')].f1_macro,0.9631104932952986,n=6944
+exp1_textcnn,slice[exclamation-heavy (>=3 '!')].error_rate,0.03585829493087558,n=6944
+exp1_textcnn,mcnemar_vs_baseline_meanpool.b_baseline_only_correct,613,paired test on the same test reviews
+exp1_textcnn,mcnemar_vs_baseline_meanpool.c_model_only_correct,1233,paired test on the same test reviews
+exp1_textcnn,mcnemar_vs_baseline_meanpool.chi2,207.56283856988082,paired test on the same test reviews
+exp1_textcnn,mcnemar_vs_baseline_meanpool.p_value,4.673043369922003e-47,paired test on the same test reviews
+exp1_textcnn,mcnemar_vs_baseline_meanpool.p_value_exact,6.089403051010771e-48,paired test on the same test reviews
+exp2_bigru_attn,n,38000,
+exp2_bigru_attn,accuracy,0.9557631578947369,
+exp2_bigru_attn,tn,18029,
+exp2_bigru_attn,fp,971,
+exp2_bigru_attn,fn,710,
+exp2_bigru_attn,tp,18290,
+exp2_bigru_attn,precision_macro,0.9558491770132613,
+exp2_bigru_attn,recall_macro,0.9557631578947368,
+exp2_bigru_attn,f1_macro,0.9557610709140663,
+exp2_bigru_attn,precision_micro,0.9557631578947369,
+exp2_bigru_attn,recall_micro,0.9557631578947369,
+exp2_bigru_attn,f1_micro,0.9557631578947369,equals accuracy for single-label binary classification
+exp2_bigru_attn,precision_weighted,0.9558491770132612,
+exp2_bigru_attn,recall_weighted,0.9557631578947369,
+exp2_bigru_attn,f1_weighted,0.9557610709140664,
+exp2_bigru_attn,precision_neg,0.9621111051817066,
+exp2_bigru_attn,recall_neg,0.9488947368421052,
+exp2_bigru_attn,f1_neg,0.9554572193221866,
+exp2_bigru_attn,support_neg,19000,
+exp2_bigru_attn,precision_pos,0.9495872488448159,
+exp2_bigru_attn,recall_pos,0.9626315789473684,
+exp2_bigru_attn,f1_pos,0.956064922505946,
+exp2_bigru_attn,support_pos,19000,
+exp2_bigru_attn,roc_auc,0.9917468088642659,
+exp2_bigru_attn,pr_auc,0.9919538905283632,
+exp2_bigru_attn,mcc,0.9116123308496454,
+exp2_bigru_attn,brier,0.03373427161495292,"mean (p - y)^2, lower is better"
+exp2_bigru_attn,ece,0.010950747827271515,15 equal-width confidence bins
+exp2_bigru_attn,error_rate,0.04423684210526313,
+exp2_bigru_attn,accuracy_ci_low,0.9537368421052631,
+exp2_bigru_attn,accuracy_ci_high,0.9577111842105263,
+exp2_bigru_attn,f1_macro_ci_low,0.9537366019959095,
+exp2_bigru_attn,f1_macro_ci_high,0.957708069174636,
+exp2_bigru_attn,mcc_ci_low,0.9075906420764147,
+exp2_bigru_attn,mcc_ci_high,0.9155003887796702,
+exp2_bigru_attn,n_boot,1000,
+exp2_bigru_attn,params,4367873,
+exp2_bigru_attn,training_time_sec,1150.6021546002012,
+exp2_bigru_attn,training_time_min,19.17670257667002,
+exp2_bigru_attn,epochs_run,5,
+exp2_bigru_attn,best_epoch,4,
+exp2_bigru_attn,best_val_f1_macro,0.9521581371526812,
+exp2_bigru_attn,train_examples_per_sec,2270.6895747157205,
+exp2_bigru_attn,inference_examples_per_sec,29489.393480864663,"test set, batch inference"
+exp2_bigru_attn,role,experimental,
+exp2_bigru_attn,hardware,NVIDIA GeForce RTX 5090,
+exp2_bigru_attn,cpu,"Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+exp2_bigru_attn,device,cuda,
+exp2_bigru_attn,peak_cpu_rss_mb,2722.515625,whole pipeline process (cumulative peak)
+exp2_bigru_attn,peak_gpu_allocated_mb,1392.189453125,
+exp2_bigru_attn,peak_gpu_reserved_mb,2510.0,
+exp2_bigru_attn,slice[all].f1_macro,0.9557610709140663,n=38000
+exp2_bigru_attn,slice[all].error_rate,0.04423684210526316,n=38000
+exp2_bigru_attn,slice[short (<=50 words)].f1_macro,0.9477619130479907,n=9287
+exp2_bigru_attn,slice[short (<=50 words)].error_rate,0.05006999030903413,n=9287
+exp2_bigru_attn,slice[medium (51-150 words)].f1_macro,0.9591051478482489,n=16910
+exp2_bigru_attn,slice[medium (51-150 words)].error_rate,0.04086339444115908,n=16910
+exp2_bigru_attn,slice[long (>150 words)].f1_macro,0.9540656942983937,n=11803
+exp2_bigru_attn,slice[long (>150 words)].error_rate,0.044480216894009994,n=11803
+exp2_bigru_attn,slice[has negation].f1_macro,0.9539463143307786,n=28544
+exp2_bigru_attn,slice[has negation].error_rate,0.04477298206278027,n=28544
+exp2_bigru_attn,slice[has contrast (but/however/...)].f1_macro,0.9509459317221198,n=22713
+exp2_bigru_attn,slice[has contrast (but/however/...)].error_rate,0.048650552546999515,n=22713
+exp2_bigru_attn,slice[no negation & no contrast].f1_macro,0.9376061786012667,n=6688
+exp2_bigru_attn,slice[no negation & no contrast].error_rate,0.041566985645933016,n=6688
+exp2_bigru_attn,slice[exclamation-heavy (>=3 '!')].f1_macro,0.9707372546799936,n=6944
+exp2_bigru_attn,slice[exclamation-heavy (>=3 '!')].error_rate,0.028369815668202764,n=6944
+exp2_bigru_attn,mcnemar_vs_baseline_meanpool.b_baseline_only_correct,557,paired test on the same test reviews
+exp2_bigru_attn,mcnemar_vs_baseline_meanpool.c_model_only_correct,1521,paired test on the same test reviews
+exp2_bigru_attn,mcnemar_vs_baseline_meanpool.chi2,446.27959576515883,paired test on the same test reviews
+exp2_bigru_attn,mcnemar_vs_baseline_meanpool.p_value,4.653566027220694e-99,paired test on the same test reviews
+exp2_bigru_attn,mcnemar_vs_baseline_meanpool.p_value_exact,7.268813503150943e-103,paired test on the same test reviews
+all,test_examples,38000,official Yelp polarity test split
+all,run_id,yelp3_20261001-182849,evidence: reproducibility/raw_logs/... and outputs/<run_id>/

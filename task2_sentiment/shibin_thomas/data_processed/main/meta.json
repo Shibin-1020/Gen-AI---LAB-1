@@ -1,0 +1,350 @@
+{
+  "data_config": {
+    "raw_train": "task2_sentiment/data/raw/yelp_polarity_train.jsonl",
+    "raw_test": "task2_sentiment/data/raw/yelp_polarity_test.jsonl",
+    "val_size": 50000,
+    "split_seed": 266,
+    "max_train_rows": null,
+    "lowercase": true,
+    "expand_contractions": true,
+    "remove_punctuation": true,
+    "remove_stopwords": true,
+    "keep_negations": true,
+    "stemming": "snowball",
+    "min_freq": 3,
+    "max_vocab": 30000,
+    "max_len": 256,
+    "truncation": "head_tail",
+    "head_tokens": 128,
+    "dedupe_train": true,
+    "remove_train_test_overlap": true
+  },
+  "raw_train": "task2_sentiment/data/raw/yelp_polarity_train.jsonl",
+  "raw_test": "task2_sentiment/data/raw/yelp_polarity_test.jsonl",
+  "raw_train_sha256": "5110656c98c514eb8e914b5a6cde307167905678a75d4b4c5ebf7fdb9fd7aba6",
+  "raw_test_sha256": "a01bca72843ec8ed2eff273d1fc30016f6ba5dac799f4da576f39d5576ebb5bc",
+  "malformed_report": {
+    "train": {
+      "rows": 560000,
+      "kept": 560000,
+      "duplicates_removed": 102,
+      "train_test_overlap_removed": 15
+    },
+    "test": {
+      "rows": 38000,
+      "kept": 38000
+    }
+  },
+  "eda": {
+    "train_full": {
+      "n": 559883,
+      "class_counts": {
+        "negative": 279917,
+        "positive": 279966
+      },
+      "positive_rate": 0.5000437591425352,
+      "balance_ratio_minority_over_majority": 0.9998249787474192,
+      "length_words": {
+        "mean": 134.07386007433695,
+        "std": 123.66449764019936,
+        "min": 1.0,
+        "p5": 18.0,
+        "median": 98.0,
+        "p95": 375.0,
+        "p99": 613.0,
+        "max": 1052.0
+      },
+      "length_chars": {
+        "mean": 718.2216302334595,
+        "std": 661.0910717004717,
+        "min": 1.0,
+        "p5": 102.0,
+        "median": 523.0,
+        "p95": 2006.0,
+        "p99": 3293.0,
+        "max": 5229.0
+      },
+      "length_words_negative": {
+        "mean": 152.61185994419773,
+        "median": 112.0,
+        "p95": 422.0
+      },
+      "length_words_positive": {
+        "mean": 115.53910474843374,
+        "median": 85.0,
+        "p95": 319.0
+      }
+    },
+    "test": {
+      "n": 38000,
+      "class_counts": {
+        "negative": 19000,
+        "positive": 19000
+      },
+      "positive_rate": 0.5,
+      "balance_ratio_minority_over_majority": 1.0,
+      "length_words": {
+        "mean": 133.61347368421053,
+        "std": 122.29094672149195,
+        "min": 1.0,
+        "p5": 18.0,
+        "median": 98.0,
+        "p95": 371.0,
+        "p99": 607.0,
+        "max": 1007.0
+      },
+      "length_chars": {
+        "mean": 715.5339736842105,
+        "std": 653.6130410052301,
+        "min": 4.0,
+        "p5": 101.0,
+        "median": 523.0,
+        "p95": 1995.0,
+        "p99": 3254.020000000004,
+        "max": 5020.0
+      },
+      "length_words_negative": {
+        "mean": 152.43226315789474,
+        "median": 113.0,
+        "p95": 424.0
+      },
+      "length_words_positive": {
+        "mean": 114.79468421052631,
+        "median": 84.0,
+        "p95": 318.0
+      }
+    },
+    "train": {
+      "n": 509883,
+      "class_counts": {
+        "negative": 254919,
+        "positive": 254964
+      },
+      "positive_rate": 0.5000441277704886,
+      "balance_ratio_minority_over_majority": 0.999823504494752,
+      "length_words": {
+        "mean": 134.17034888395966,
+        "std": 123.81232474028059,
+        "min": 1.0,
+        "p5": 18.0,
+        "median": 98.0,
+        "p95": 375.0,
+        "p99": 615.0,
+        "max": 1052.0
+      },
+      "length_chars": {
+        "mean": 718.7459162199956,
+        "std": 661.8588450986192,
+        "min": 1.0,
+        "p5": 102.0,
+        "median": 523.0,
+        "p95": 2008.0,
+        "p99": 3298.0,
+        "max": 5229.0
+      },
+      "length_words_negative": {
+        "mean": 152.76683181716544,
+        "median": 113.0,
+        "p95": 423.0
+      },
+      "length_words_positive": {
+        "mean": 115.57714814640498,
+        "median": 85.0,
+        "p95": 319.0
+      }
+    },
+    "val": {
+      "n": 50000,
+      "class_counts": {
+        "negative": 24998,
+        "positive": 25002
+      },
+      "positive_rate": 0.50004,
+      "balance_ratio_minority_over_majority": 0.9998400127989759,
+      "length_words": {
+        "mean": 133.0899,
+        "std": 122.14244101863201,
+        "min": 1.0,
+        "p5": 18.0,
+        "median": 98.0,
+        "p95": 371.0,
+        "p99": 602.0,
+        "max": 1002.0
+      },
+      "length_chars": {
+        "mean": 712.87514,
+        "std": 653.1860310432094,
+        "min": 1.0,
+        "p5": 102.0,
+        "median": 522.0,
+        "p95": 1993.0,
+        "p99": 3224.020000000004,
+        "max": 5005.0
+      },
+      "length_words_negative": {
+        "mean": 151.03152252180175,
+        "median": 111.0,
+        "p95": 415.0
+      },
+      "length_words_positive": {
+        "mean": 115.15114790816735,
+        "median": 84.0,
+        "p95": 317.0
+      }
+    },
+    "most_negative_tokens": [
+      "unprofession",
+      "rudest",
+      "unaccept",
+      "appal",
+      "incompet",
+      "disrespect",
+      "dishonest",
+      "worst",
+      "ined",
+      "unhelp",
+      "fraud",
+      "liar",
+      "tasteless",
+      "disput",
+      "accus",
+      "downhil",
+      "refund",
+      "disgust",
+      "filthi",
+      "insult",
+      "horribl",
+      "unappet",
+      "confront",
+      "rude",
+      "slowest"
+    ],
+    "most_positive_tokens": [
+      "unassum",
+      "scrumptious",
+      "mmmmm",
+      "divin",
+      "gem",
+      "yum",
+      "delish",
+      "drawback",
+      "exquisit",
+      "delect",
+      "downsid",
+      "breathtak",
+      "immacul",
+      "impecc",
+      "phenomen",
+      "mmmm",
+      "heaven",
+      "succul",
+      "nom",
+      "superb",
+      "yummi",
+      "delici",
+      "mmm",
+      "devour",
+      "perfect"
+    ]
+  },
+  "splits": {
+    "train": {
+      "n": 509883,
+      "oov_token_rate": 0.006684200345153952,
+      "truncated_fraction": 0.017696216583020025,
+      "empty_after_preprocessing": 37,
+      "tokens_mean": 66.53971401282254,
+      "tokens_median": 49.0,
+      "tokens_p95": 184.0
+    },
+    "val": {
+      "n": 50000,
+      "oov_token_rate": 0.007128254021746312,
+      "truncated_fraction": 0.0165,
+      "empty_after_preprocessing": 2,
+      "tokens_mean": 65.99372,
+      "tokens_median": 49.0,
+      "tokens_p95": 182.0
+    },
+    "test": {
+      "n": 38000,
+      "oov_token_rate": 0.007055039086419556,
+      "truncated_fraction": 0.017210526315789475,
+      "empty_after_preprocessing": 1,
+      "tokens_mean": 66.18263157894737,
+      "tokens_median": 48.0,
+      "tokens_p95": 182.0
+    }
+  },
+  "vocab_size": 30000,
+  "stopwords_removed": 286,
+  "kept_from_stopword_list": [
+    "again",
+    "against",
+    "although",
+    "but",
+    "cannot",
+    "down",
+    "except",
+    "few",
+    "however",
+    "least",
+    "less",
+    "more",
+    "most",
+    "much",
+    "neither",
+    "never",
+    "no",
+    "nobody",
+    "none",
+    "nor",
+    "not",
+    "nothing",
+    "off",
+    "only",
+    "over",
+    "though",
+    "too",
+    "up",
+    "very",
+    "well",
+    "without",
+    "yet"
+  ],
+  "eda_plots": [
+    "class_distribution.png",
+    "length_distribution.png",
+    "token_length_vs_maxlen.png"
+  ],
+  "preprocessing_examples": [
+    {
+      "raw": "Holy F balls, Friend and I walked in and walked right back out! This place was so packed on a Friday night that we couldn't even barely move, It smelled like sweaty balls and everyone was pushing into one another. I'm pretty sure this place violates fire codes! This place BLOWS hard like Lewinsky. RANDOM FACT: The first modern nightclub began being built in 1886",
+      "normalised": "Holy F balls, Friend and I walked in and walked right back out! This place was so packed on a Friday night that we couldn't even barely move, It smelled like sweaty balls and everyone was pushing into one another. I'm pretty sure this place violates fire codes! This place BLOWS hard like Lewinsky. RANDOM FACT: The first modern nightclub began being built in 1886",
+      "lowercase": "holy f balls, friend and i walked in and walked right back out! this place was so packed on a friday night that we couldn't even barely move, it smelled like sweaty balls and everyone was pushing into one another. i'm pretty sure this place violates fire codes! this place blows hard like lewinsky. random fact: the first modern nightclub began being built in 1886",
+      "contractions": "holy f balls, friend and i walked in and walked right back out! this place was so packed on a friday night that we could not even barely move, it smelled like sweaty balls and everyone was pushing into one another. i am pretty sure this place violates fire codes! this place blows hard like lewinsky. random fact: the first modern nightclub began being built in 1886",
+      "no_punctuation": "holy f balls friend and i walked in and walked right back out this place was so packed on a friday night that we could not even barely move it smelled like sweaty balls and everyone was pushing into one another i am pretty sure this place violates fire codes this place blows hard like lewinsky random fact the first modern nightclub began being built in 1886",
+      "no_stopwords": "holy f balls friend walked walked right place packed friday night not barely smelled like sweaty balls pushing pretty sure place violates codes place blows hard like lewinsky random fact modern nightclub began built 1886",
+      "stemmed_tokens": "holi f ball friend walk walk right place pack friday night not bare smell like sweati ball push pretti sure place violat code place blow hard like lewinski random fact modern nightclub began built 1886"
+    },
+    {
+      "raw": "The food was good. But our waitress was so rushed and stomping around. We are finishing up and my stomach is in knots from nerves watching this waitress rush around. Sloppy service almost spilling anything with liquid in it.",
+      "normalised": "The food was good. But our waitress was so rushed and stomping around. We are finishing up and my stomach is in knots from nerves watching this waitress rush around. Sloppy service almost spilling anything with liquid in it.",
+      "lowercase": "the food was good. but our waitress was so rushed and stomping around. we are finishing up and my stomach is in knots from nerves watching this waitress rush around. sloppy service almost spilling anything with liquid in it.",
+      "contractions": "the food was good. but our waitress was so rushed and stomping around. we are finishing up and my stomach is in knots from nerves watching this waitress rush around. sloppy service almost spilling anything with liquid in it.",
+      "no_punctuation": "the food was good but our waitress was so rushed and stomping around we are finishing up and my stomach is in knots from nerves watching this waitress rush around sloppy service almost spilling anything with liquid in it",
+      "no_stopwords": "food good but waitress rushed stomping finishing up stomach knots nerves watching waitress rush sloppy service spilling liquid",
+      "stemmed_tokens": "food good but waitress rush stomp finish up stomach knot nerv watch waitress rush sloppi servic spill liquid"
+    },
+    {
+      "raw": "First off, the service here was great. You order at the counter and they deliver the food. Even though this is not a table service restaurant the staff was great about occasionally checking on you. The food was good too, we had a few things: - Hummus was very good - Pita was warm, tasty and there was plenty - Grape Leaves were a little soggy, the leaves did not have that slight snap that you look for, I would not get them again - Falafel was good as well Overall I would go here again, we diddnt try any of the kebobs but they smalled great.",
+      "normalised": "First off, the service here was great. You order at the counter and they deliver the food. Even though this is not a table service restaurant the staff was great about occasionally checking on you. The food was good too, we had a few things: - Hummus was very good - Pita was warm, tasty and there was plenty - Grape Leaves were a little soggy, the leaves did not have that slight snap that you look for, I would not get them again - Falafel was good as well Overall I would go here again, we diddnt try any of the kebobs but they smalled great.",
+      "lowercase": "first off, the service here was great. you order at the counter and they deliver the food. even though this is not a table service restaurant the staff was great about occasionally checking on you. the food was good too, we had a few things: - hummus was very good - pita was warm, tasty and there was plenty - grape leaves were a little soggy, the leaves did not have that slight snap that you look for, i would not get them again - falafel was good as well overall i would go here again, we diddnt try any of the kebobs but they smalled great.",
+      "contractions": "first off, the service here was great. you order at the counter and they deliver the food. even though this is not a table service restaurant the staff was great about occasionally checking on you. the food was good too, we had a few things: - hummus was very good - pita was warm, tasty and there was plenty - grape leaves were a little soggy, the leaves did not have that slight snap that you look for, i would not get them again - falafel was good as well overall i would go here again, we diddnt try any of the kebobs but they smalled great.",
+      "no_punctuation": "first off the service here was great you order at the counter and they deliver the food even though this is not a table service restaurant the staff was great about occasionally checking on you the food was good too we had a few things hummus was very good pita was warm tasty and there was plenty grape leaves were a little soggy the leaves did not have that slight snap that you look for i would not get them again falafel was good as well overall i would go here again we diddnt try any of the kebobs but they smalled great",
+      "no_stopwords": "off service great order counter deliver food though not table service restaurant staff great occasionally checking food good too few things hummus very good pita warm tasty plenty grape leaves little soggy leaves did not slight snap look not again falafel good well overall again diddnt try kebobs but smalled great",
+      "stemmed_tokens": "off servic great order counter deliv food though not tabl servic restaur staff great occasion check food good too few thing hummus veri good pita warm tasti plenti grape leav littl soggi leav did not slight snap look not again falafel good well overal again diddnt tri kebob but small great"
+    }
+  ],
+  "elapsed_sec": 109.22383618354797
+}
