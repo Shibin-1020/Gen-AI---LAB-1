@@ -169,20 +169,135 @@ Plots: ![training curves](outputs/yelp3_20261001-182849/training_curves.png)
 
 ## 5. Comparative analysis and observations (2.3)
 
-_Written after the full run, from the numbers above:_
-* comparison of the two experimental models against the baseline and each other: accuracy / macro-F1 with
-  CIs, McNemar significance, calibration (Brier / ECE), robustness slices, cost (parameters, time,
-  examples/sec, memory);
-* strengths, weaknesses and limitations of each model;
-* possible improvements and future work.
+### 5.1 Headline comparison (official test set, n = 38,000)
+
+| | Baseline (mean-pool) | Exp 1 (TextCNN) | Exp 2 (BiGRU + attn) |
+|---|---|---|---|
+| Accuracy [95% CI] | 93.04% [92.76, 93.30] | 94.67% [94.46, 94.88] | **95.58% [95.37, 95.77]** |
+| Macro-F1 / MCC | 0.9304 / 0.861 | 0.9467 / 0.893 | **0.9558 / 0.912** |
+| ROC-AUC / PR-AUC | 0.980 / 0.980 | 0.988 / 0.989 | **0.992 / 0.992** |
+| Errors (FP + FN) | 2,645 (1,282 + 1,363) | 2,025 (1,049 + 976) | **1,681 (971 + 710)** |
+| Brier / ECE | 0.052 / **0.0045** | 0.040 / 0.0049 | **0.034** / 0.0110 |
+| Training time / train ex/s | **21 s** / 279,909 | 59 s / 54,074 | 19.2 min / 2,271 |
+| Inference ex/s | **2,126,409** | 193,858 | 29,489 |
+| Parameters (embedding share) | 3.85 M (99.8%) | 4.04 M (95.1%) | 4.37 M (87.9%) |
+| Peak GPU memory | 1.15 GB | 1.28 GB | 1.39 GB |
+
+Hardware for all three: NVIDIA GeForce RTX 5090 (32 GB, CUDA 12.8), CPU reported as "Intel64 Family 6 Model 198
+(GenuineIntel)" with 24 logical cores, Windows 11 (exact strings in each model's `train_summary.json`).
+
+**Ranking and significance.** BiGRU > TextCNN > baseline on every discrimination metric, and the 95% bootstrap
+CIs do not overlap. The paired McNemar tests on the same 38,000 reviews confirm every difference:
+
+| Comparison | First model right only | Second model right only | p-value |
+|---|---|---|---|
+| baseline vs TextCNN | 613 | 1,233 | 4.7e-47 |
+| baseline vs BiGRU | 557 | 1,521 | 4.7e-99 |
+| TextCNN vs BiGRU (extra) | 493 | 837 | 5.2e-21 |
+
+The TextCNN-vs-BiGRU test was computed additionally from `predictions_test.npz`. Relative to the baseline, the
+TextCNN removes **23%** of the errors and the BiGRU **36%**. The ranking is identical on the validation set
+(val macro-F1 0.9292 / 0.9434 / 0.9522), so it is not an artefact of testing: model selection was done on
+validation only.
+
+**Where the gains come from (robustness slices, error rate).**
+
+| Slice | Baseline | TextCNN | BiGRU | BiGRU reduction vs baseline |
+|---|---|---|---|---|
+| has negation (n = 28,544) | 7.47% | 5.50% | 4.48% | −40% |
+| has contrast (n = 22,713) | 7.89% | 5.94% | 4.87% | −38% |
+| no negation & no contrast (n = 6,688) | 4.93% | 4.53% | 4.16% | −16% |
+| short ≤ 50 words (n = 9,287) | 6.96% | 5.29% | 5.01% | −28% |
+| medium 51–150 words (n = 16,910) | 6.94% | 5.22% | 4.09% | −41% |
+| long > 150 words (n = 11,803) | 7.00% | 5.52% | 4.45% | −36% |
+| exclamation-heavy (n = 6,944) | 4.97% | 3.59% | 2.84% | −43% |
+
+* The order-aware models help most exactly where a bag of words must fail: reviews with **negation**
+  (−40%) or a **contrast word** (−38%). On reviews with neither, all three models are close (4.9% → 4.2%),
+  because there the sentiment words alone already decide the label.
+* The **TextCNN captures most of the short-review gain** (6.96% → 5.29%). Local phrases are enough there,
+  and the BiGRU adds little (5.01%).
+* The **BiGRU pulls ahead on medium and long reviews** (5.22% → 4.09%, 5.52% → 4.45%), where combining
+  evidence across sentences matters.
+* **Short reviews are the BiGRU's hardest slice.** With little text, one ambiguous phrase or a noisy label
+  decides the outcome (see `failure_analysis.md`).
+
+**Calibration.** All three models are well calibrated (ECE ≤ 1.1%; see `reliability.png`).
+* The BiGRU has the best Brier score (0.034), because it is both more accurate and more confident.
+* It also has the highest ECE (1.1% vs 0.45%), a sign of mild over-confidence: 544 of its 1,681 errors are
+  made with more than 90% confidence.
+* The baseline is the best calibrated: averaging embeddings produces moderate, honest probabilities.
+
+**Error balance.**
+* The baseline errs slightly more on positive reviews (FN 1,363 > FP 1,282).
+* The BiGRU errs more on negative reviews (FP 971 > FN 710): mixed reviews with a lot of praise but a
+  negative star rating fool it (`failure_analysis.md`, #1–#5).
+
+**Cost.**
+* Almost all parameters sit in the shared 30K × 128 embedding (3.84 M), so the three models differ by only
+  0.19 M (CNN encoder) or 0.52 M (GRU encoder) parameters. **The gains come from how the text is read, not
+  from model size.**
+* The price is speed: the BiGRU trains 123× slower per example than the baseline and 24× slower than the
+  TextCNN (sequential recurrence cannot be parallelised over time), and runs inference 72× slower than the
+  baseline.
+* Even so, the full run took only 19 minutes, and inference at ~29K reviews/s is ample for production.
+
+**Training behaviour (`training_curves.png`, `epochs.csv`).** All runs were stable: no NaN/Inf steps and
+maximum pre-clip gradient norm 3.52 (TextCNN, early in training; BiGRU 1.45, baseline 0.16).
+* **Baseline:** plateaus from epoch 4 (val F1 0.9288 → 0.9292). It is capacity-limited, not data-limited.
+* **TextCNN:** still improves slightly at epoch 5 (0.9425 → 0.9434), so one or two more epochs might add a
+  little.
+* **BiGRU:** best at epoch 4 (0.9522). In epoch 5 the training loss keeps falling (0.117 → 0.111) while
+  validation loss rises from its epoch-3 minimum (0.1286 → 0.1311): the start of over-fitting. Early
+  stopping kept the epoch-4 weights.
+
+### 5.2 Strengths, weaknesses and limitations
+
+| Model | Strengths | Weaknesses |
+|---|---|---|
+| Baseline (mean-pool) | very fast (21 s training, 2.1 M reviews/s inference); best calibrated; simple and robust; already 93% | ignores word order: worst on negation / contrast slices; a long positive passage outweighs a short negative verdict |
+| TextCNN | 23% fewer errors than the baseline at under 1 minute of training; strong on short reviews and local phrases ("not worth", "highly recommend") | receptive field is only 5 tokens: cannot relate a verdict to an earlier clause; still improving at epoch 5 |
+| BiGRU + attention | best on every discrimination metric and every slice; handles negation, contrast and long reviews best; interpretable attention weights | 24–123× slower to train; slightly over-confident (highest ECE); starts over-fitting after 4 epochs |
+
+**Limitations of the study**
+* **Label noise caps performance.** Labels come from star ratings, not from the text. In my manual review,
+  5 of 20 errors are texts that contradict their label, and 932 test reviews are misclassified by all three
+  models.
+* **No pretrained knowledge** (required by the brief). Idioms ("to die for"), sarcasm ("keepin it real
+  dumpy") and world knowledge ("fine enough", "too lazy to walk elsewhere") are hard to learn from labels
+  alone.
+* **Preprocessing trade-offs.** Stemming and stopword removal shrink the vocabulary but also delete some
+  signals: "give it 3 stars" loses "give", and punctuation such as "!!!" and emoticons is removed. Keeping
+  negation and contrast words was essential.
+* **Single seed per model.** The CIs capture test-set sampling uncertainty, but not run-to-run training
+  variance.
+* **Fixed threshold of 0.5** and binary labels only. Genuinely neutral 2-star and 4-star reviews are forced
+  into a class.
+* **Domain.** English Yelp reviews, mostly restaurants. Off-domain reviews (e.g. a concert, error #14) are
+  harder.
+
+### 5.3 Improvements and future work
+1. **Contrast- and negation-aware preprocessing.** Mark tokens after the last "but/however" and after
+   negations (`NOT_good`). Test on the has-contrast and has-negation slices with McNemar (see the fix in
+   `failure_analysis.md`).
+2. **Longer context for the BiGRU** (`max_len` 512, or more tail tokens), measured on the long-review slice.
+3. **A from-scratch self-attention encoder** (a small Transformer like the one built in Task 1) for
+   parallel training at BiGRU-level accuracy.
+4. **Ensembling.** The models make partly different errors (TextCNN right on 493 reviews where the BiGRU is
+   wrong), so averaging their probabilities should help. Choose the weights on validation.
+5. **Calibration and selective prediction.** Temperature scaling for the BiGRU, and abstaining when P is
+   near 0.5.
+6. **Several seeds per model**, to report mean ± std alongside the bootstrap CIs.
+7. **Sub-word tokens** (e.g. BPE trained from scratch on this corpus), to handle misspellings and rare words.
+8. **A label-noise audit:** hand-relabel a sample of confident errors to estimate the real ceiling.
 
 ## 6. Comparison with teammates (team)
 
 | Member | Model | Architecture summary | Embedding | Key hyperparameters | Test accuracy | Macro-F1 | MCC |
 |---|---|---|---|---|---|---|---|
-| Shibin Thomas | baseline_meanpool | masked mean of embeddings → MLP 64 | 128-d, scratch | lr 2e-3, batch 512 | | | |
-| Shibin Thomas | exp1_textcnn | Conv 3/4/5 × 128, max-pool | 128-d, scratch | lr 1e-3, dropout 0.5 | | | |
-| Shibin Thomas | exp2_bigru_attn | 2-layer BiGRU 128 + attention | 128-d, scratch | lr 1e-3, dropout 0.3 | | | |
+| Shibin Thomas | baseline_meanpool | masked mean of embeddings → MLP 64 | 128-d, scratch | lr 2e-3, batch 512, 8 epochs | 0.9304 | 0.9304 | 0.8608 |
+| Shibin Thomas | exp1_textcnn | Conv 3/4/5 × 128, max-pool | 128-d, scratch | lr 1e-3, dropout 0.5, 5 epochs | 0.9467 | 0.9467 | 0.8934 |
+| Shibin Thomas | exp2_bigru_attn | 2-layer BiGRU 128 + attention | 128-d, scratch | lr 1e-3, dropout 0.3, best epoch 4 | 0.9558 | 0.9558 | 0.9116 |
 | _teammate_ | | | | | | | |
 
 ## 7. Hardware (2.2.5)
