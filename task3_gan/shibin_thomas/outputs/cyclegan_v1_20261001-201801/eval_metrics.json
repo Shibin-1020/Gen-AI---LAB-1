@@ -1,0 +1,83 @@
+{
+  "submission": {
+    "ID": 1,
+    "FID": 117.70690197570555,
+    "MiFID": 0.421725869178772
+  },
+  "directions": {
+    "B2A (photo->monet)": {
+      "n_real": 300,
+      "n_generated": 300,
+      "fid": 118.07106550611758,
+      "mifid_script": 0.41046351194381714,
+      "kid": 0.019667641309585236,
+      "kid_std": 0.0025080759657166844,
+      "precision": 0.26666666666666666,
+      "recall": 0.64,
+      "density": 0.22066666666666662,
+      "coverage": 0.5233333333333333,
+      "cycle_l1": 0.062240779399871826,
+      "lpips_input_vs_translation": 0.4508484899997711,
+      "lpips_input_vs_reconstruction": 0.38371264934539795,
+      "content_cosine_similarity": 0.7500956058502197
+    },
+    "A2B (monet->photo)": {
+      "n_real": 300,
+      "n_generated": 300,
+      "fid": 117.34273844529352,
+      "mifid_script": 0.4329882264137268,
+      "kid": 0.03620955478447516,
+      "kid_std": 0.004014302108946229,
+      "precision": 0.6066666666666667,
+      "recall": 0.32,
+      "density": 0.836,
+      "coverage": 0.7566666666666667,
+      "cycle_l1": 0.053122300654649734,
+      "lpips_input_vs_translation": 0.36643514037132263,
+      "lpips_input_vs_reconstruction": 0.4678201377391815,
+      "content_cosine_similarity": 0.7942912578582764
+    }
+  },
+  "training": {
+    "final_epoch_mean_loss_G": 4.45808,
+    "final_epoch_mean_gan_A2B": 0.52832,
+    "final_epoch_mean_gan_B2A": 0.67483,
+    "final_epoch_mean_cyc_A": 0.09631,
+    "final_epoch_mean_cyc_B": 0.12039,
+    "final_epoch_mean_idt_A": 0.10801,
+    "final_epoch_mean_idt_B": 0.10959,
+    "final_epoch_mean_loss_D_A": 0.08946,
+    "final_epoch_mean_loss_D_B": 0.1394,
+    "grad_norm_G_mean": 48.28999426,
+    "grad_norm_G_p99": 180.99555899999964,
+    "grad_norm_G_max": 726.9405,
+    "grad_norm_D_mean": 17.093551085,
+    "grad_norm_D_p99": 39.71930299999998,
+    "grad_norm_D_max": 342.079,
+    "nonfinite_steps": 0,
+    "params_total": 28285832,
+    "params_generators": 22756358,
+    "params_discriminators": 5529474,
+    "training_time_sec": 5471.419547300087,
+    "train_images_per_sec": 36.014305259055334,
+    "train_pairs_per_sec": 18.007152629527667,
+    "total_steps": 20000,
+    "epochs": 40,
+    "training_time_min": 91.19032578833479,
+    "peak_cpu_rss_mb": 3568.62890625,
+    "peak_gpu_allocated_mb": 19921.7041015625,
+    "peak_gpu_reserved_mb": 20980.0,
+    "hardware": "NVIDIA GeForce RTX 5090",
+    "gpu_at_start": "NVIDIA GeForce RTX 5090, 15463 MiB, 32607 MiB, 30 % | 34 processes on the GPU (1 python, 17 not visible to this user); programs: AlienFXSubAgent.exe, CrossDeviceResume.exe, Killer.exe, Notepad.exe, PhoneExperienceHost.exe, SearchHost.exe, ShellExperienceHost.exe, ShellHost.exe, StartMenuExperienceHost.exe, WindowsTerminal.exe, chrome.exe, explorer.exe, msedge.exe, msedgewebview2.exe, python.exe"
+  },
+  "human_audit": null,
+  "kaggle": {
+    "team_name": null,
+    "public_score": null,
+    "private_score": null,
+    "public_rank": null,
+    "private_rank": null,
+    "submitted_utc": null,
+    "notes": "Fill in by hand after uploading submission.csv to the class competition, then re-run evaluate_local.py"
+  }
+}
