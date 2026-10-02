@@ -38,13 +38,19 @@ LOSS_KEYS = ["loss_G", "gan_A2B", "gan_B2A", "cyc_A", "cyc_B", "idt_A", "idt_B",
 
 
 def gpu_snapshot() -> str:
-    """nvidia-smi summary at start-up, so a GPU shared with other jobs is documented in the raw log."""
+    """nvidia-smi summary at start-up, so a GPU shared with other jobs is documented in the raw log.
+    Only GPU memory / load and program NAMES are kept -- no paths, PIDs or user names."""
     try:
-        out = subprocess.run(["nvidia-smi", "--query-gpu=name,memory.used,memory.total,utilization.gpu",
+        gpu = subprocess.run(["nvidia-smi", "--query-gpu=name,memory.used,memory.total,utilization.gpu",
                               "--format=csv,noheader"], capture_output=True, text=True, timeout=20).stdout.strip()
-        procs = subprocess.run(["nvidia-smi", "--query-compute-apps=pid,process_name,used_memory",
-                                "--format=csv,noheader"], capture_output=True, text=True, timeout=20).stdout.strip()
-        return f"{out} | compute processes: {procs.splitlines() if procs else 'none'}"
+        procs = subprocess.run(["nvidia-smi", "--query-compute-apps=process_name", "--format=csv,noheader"],
+                               capture_output=True, text=True, timeout=20).stdout.split("\n")
+        names = [p.strip().replace("\\", "/").rsplit("/", 1)[-1] for p in procs if p.strip()]
+        visible = sorted({n for n in names if not n.startswith("[")})
+        hidden = sum(1 for n in names if n.startswith("["))
+        python_jobs = sum(1 for n in names if n.lower().startswith("python"))
+        return (f"{gpu} | {len(names)} processes on the GPU ({python_jobs} python, {hidden} not visible to this user); "
+                f"programs: {', '.join(visible)}")
     except Exception as e:  # nvidia-smi missing (CPU machine)
         return f"unavailable ({type(e).__name__})"
 
