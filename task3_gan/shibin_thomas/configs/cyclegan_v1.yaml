@@ -1,0 +1,50 @@
+# Task 3 - Shibin Thomas - CycleGAN Monet <-> Photo (main run). Paths relative to the repo root.
+run_name: cyclegan_v1
+smoke: false
+seed: 266
+device: auto
+
+data:
+  monet_dir: task3_gan/data/monet_jpg      # domain A (300 paintings)
+  photo_dir: task3_gan/data/photo_jpg      # domain B (7,038 photos)
+  max_images_a: null
+  max_images_b: null
+  load_size: 286                           # resize, then random 256 crop (+ flip) = CycleGAN jitter
+  crop_size: 256
+  flip: true
+
+model:
+  ngf: 64                                  # generator base width
+  n_res_blocks: 9                          # resnet_9blocks (256x256 setting of Zhu et al.)
+  upsample: resize_conv                    # resize_conv (no checkerboard) | deconv (original)
+  dropout: 0.0
+  ndf: 64                                  # PatchGAN base width
+  d_layers: 3                              # 3 -> 70x70 receptive field
+
+training:
+  epochs_constant: 20                      # constant LR epochs ...
+  epochs_decay: 20                         # ... then linear decay to 0
+  samples_per_epoch: 2000                  # unpaired (Monet, photo) pairs per epoch -> 80K pairs in total
+  batch_size: 4
+  lr: 2.0e-4
+  betas: [0.5, 0.999]
+  lambda_cycle: 10.0
+  lambda_identity: 5.0                     # 0.5 x lambda_cycle, as in the paper's painting experiments
+  pool_size: 50
+  num_workers: 4
+  log_interval: 100
+  n_fixed: 4
+  cycle_eval_n: 64
+  fid_every: 5                             # periodic FID in both directions (convergence analysis)
+  fid_n: 300
+
+export:
+  out_dir: task3_gan/shibin_thomas/outputs # -> outputs/pred_A2B, outputs/pred_B2A
+  a2b_count: null                          # all 300 Monets
+  b2a_count: 300                           # first 300 sorted photos (= what the evaluation script scores)
+
+eval:
+  n_eval: 300                              # instructor script: N_EVAL = 300
+  pretrained: true                         # pretrained Inception / LPIPS for MEASURING only
+  kid_subsets: 100
+  kid_subset_size: 100

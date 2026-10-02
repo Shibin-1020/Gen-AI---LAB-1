@@ -37,3 +37,11 @@ task2_sentiment/data/raw/*.csv
 task2_sentiment/data/raw/*.partial
 **/data_processed/**/*.npy
 **/outputs/eda/smoke/
+
+# Task 3: class dataset (public repo -> not redistributed), zips, macOS metadata
+task3_gan/data/monet_jpg/
+task3_gan/data/photo_jpg/
+task3_gan/data/dataset/
+task3_gan/data/__MACOSX/
+task3_gan/data/*.zip
+.DS_Store

@@ -1,0 +1,50 @@
+# Smoke test: identical code path, tiny model / data, a few seconds per epoch. Never used in the report.
+run_name: smoke_cyclegan
+smoke: true
+seed: 266
+device: auto
+
+data:
+  monet_dir: task3_gan/data/monet_jpg
+  photo_dir: task3_gan/data/photo_jpg
+  max_images_a: 24
+  max_images_b: 48
+  load_size: 72
+  crop_size: 64
+  flip: true
+
+model:
+  ngf: 8
+  n_res_blocks: 2
+  upsample: resize_conv
+  dropout: 0.0
+  ndf: 8
+  d_layers: 3
+
+training:
+  epochs_constant: 1
+  epochs_decay: 1
+  samples_per_epoch: 32
+  batch_size: 4
+  lr: 2.0e-4
+  betas: [0.5, 0.999]
+  lambda_cycle: 10.0
+  lambda_identity: 5.0
+  pool_size: 50
+  num_workers: 0
+  log_interval: 4
+  n_fixed: 4
+  cycle_eval_n: 8
+  fid_every: 1
+  fid_n: 24
+
+export:
+  out_dir: task3_gan/shibin_thomas/outputs/smoke_preds
+  a2b_count: 24
+  b2a_count: 24
+
+eval:
+  n_eval: 24
+  pretrained: true
+  kid_subsets: 10
+  kid_subset_size: 12

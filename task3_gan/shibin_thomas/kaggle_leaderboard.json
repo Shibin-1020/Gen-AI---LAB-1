@@ -1,0 +1,9 @@
+{
+  "team_name": null,
+  "public_score": null,
+  "private_score": null,
+  "public_rank": null,
+  "private_rank": null,
+  "submitted_utc": null,
+  "notes": "Fill in by hand after uploading submission.csv to the class competition, then re-run evaluate_local.py"
+}
