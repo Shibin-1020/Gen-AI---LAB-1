@@ -59,11 +59,21 @@ class InceptionFeatures:
 
 
 # --------------------------------------------------------------------------- instructor protocol
+def _sqrtm(m: np.ndarray) -> np.ndarray:
+    """Matrix square root on every SciPy version: before 1.18 sqrtm(..., disp=False) returns (sqrt, error);
+    SciPy >= 1.18 removed the `disp` argument and returns only the matrix. The numbers are identical."""
+    try:
+        out = scipy.linalg.sqrtm(m, disp=False)
+    except TypeError:
+        out = scipy.linalg.sqrtm(m)
+    return out[0] if isinstance(out, tuple) else out
+
+
 def frechet_distance(mu1, sigma1, mu2, sigma2, eps=1e-6) -> float:
-    covmean, _ = scipy.linalg.sqrtm(sigma1.dot(sigma2), disp=False)
+    covmean = _sqrtm(sigma1.dot(sigma2))
     if not np.isfinite(covmean).all():
         offset = np.eye(sigma1.shape[0]) * eps
-        covmean = scipy.linalg.sqrtm((sigma1 + offset).dot(sigma2 + offset))
+        covmean = _sqrtm((sigma1 + offset).dot(sigma2 + offset))
     if np.iscomplexobj(covmean):
         covmean = covmean.real
     diff = mu1 - mu2

@@ -31,7 +31,7 @@ python task3_gan/shibin_thomas/src/run_pipeline.py
 ```
 
 What each command does:
-1. **`test_task3.py`**: 10 unit tests. Expect `10 tests passed`.
+1. **`test_task3.py`**: 11 unit tests. Expect `11 tests passed`.
 2. **Smoke config**: a tiny model on 24 + 48 images for 2 short epochs, then every evaluation step. It
    downloads the Inception and AlexNet weights used for **measuring** once. Takes 1–3 minutes, and its files
    are git-ignored.

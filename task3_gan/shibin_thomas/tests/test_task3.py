@@ -92,6 +92,26 @@ def test_fid_kid_prdc_known_values():
     assert np.isclose(paired_cosine_similarity(x[:10], 3 * x[:10]), 1.0)
 
 
+def test_fid_works_with_scipy_1_18_sqrtm_api():
+    """SciPy >= 1.18 removed sqrtm's `disp` argument and returns a bare array; FID must give the same value."""
+    import scipy.linalg
+    import gan_metrics
+    rng = np.random.default_rng(2)
+    x, y = rng.normal(size=(500, 6)), rng.normal(size=(500, 6)) + 1.0
+    ref = fid_from_features(x, y)
+    orig = scipy.linalg.sqrtm
+
+    def sqrtm_v118(a, **kw):
+        if "disp" in kw:
+            raise TypeError("sqrtm() got an unexpected keyword argument 'disp'")
+        return orig(a, disp=False)[0] if "disp" in orig.__code__.co_varnames else orig(a)
+    gan_metrics.scipy.linalg.sqrtm = sqrtm_v118
+    try:
+        assert np.isclose(fid_from_features(x, y), ref)
+    finally:
+        gan_metrics.scipy.linalg.sqrtm = orig
+
+
 def test_matches_instructor_script_protocol():
     """Re-run the instructor's calculate_fid_mifid logic on the same features and compare."""
     from scipy.spatial.distance import cosine
