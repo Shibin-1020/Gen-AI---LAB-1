@@ -74,12 +74,12 @@ def predict(model, split: Split, batch_size: int) -> tuple[np.ndarray, float]:
     """P(positive) for every example of the split, and inference examples/sec."""
     model.eval()
     sync(split.X.device)
-    t0 = time.time()
+    t0 = time.perf_counter()
     probs = [torch.sigmoid(model(x, L).float()) for x, L, _ in split.batches(batch_size)]
     sync(split.X.device)
-    dt = time.time() - t0
+    dt = time.perf_counter() - t0
     model.train()
-    return torch.cat(probs).cpu().numpy(), split.n / dt
+    return torch.cat(probs).cpu().numpy(), split.n / max(dt, 1e-9)
 
 
 def quick_metrics(y: np.ndarray, p: np.ndarray) -> dict:
@@ -143,17 +143,17 @@ def train_model(cfg: dict, run_id: str, processed: Path) -> dict:
         torch.cuda.reset_peak_memory_stats()
     gen = torch.Generator().manual_seed(cfg["seed"])
     best_f1, best_epoch, bad, step = -1.0, 0, 0, 0
-    train_time, seen, wall0 = 0.0, 0, time.time()
+    train_time, seen, wall0 = 0.0, 0, time.perf_counter()
     nonfinite = 0
     for epoch in range(1, tcfg["epochs"] + 1):
         model.train()
-        ep_loss, ep_n, ep_t0 = 0.0, 0, time.time()
+        ep_loss, ep_n, ep_t0 = 0.0, 0, time.perf_counter()
         for x, L, y in train.batches(B, gen, shuffle=True):
             lr = lr_at(step)
             for g in opt.param_groups:
                 g["lr"] = lr
             sync(device)
-            t0 = time.time()
+            t0 = time.perf_counter()
             loss = F.binary_cross_entropy_with_logits(model(x, L).float(), y)
             opt.zero_grad(set_to_none=True)
             loss.backward()
@@ -165,7 +165,7 @@ def train_model(cfg: dict, run_id: str, processed: Path) -> dict:
                 nonfinite += 1
                 log.warning(f"non-finite loss/grad at step {step}; update skipped")
             sync(device)
-            train_time += time.time() - t0
+            train_time += time.perf_counter() - t0
             seen += y.numel()
             ep_loss += lv * y.numel()
             ep_n += y.numel()
@@ -177,7 +177,7 @@ def train_model(cfg: dict, run_id: str, processed: Path) -> dict:
 
         p_val, _ = predict(model, val, tcfg.get("eval_batch_size", 1024))
         vm = quick_metrics(val.y.cpu().numpy(), p_val)
-        ep_time = time.time() - ep_t0
+        ep_time = time.perf_counter() - ep_t0
         _append_csv(log_dir / "epochs.csv", {
             "epoch": epoch, "train_loss": f"{ep_loss / ep_n:.5f}", "val_loss": f"{vm['loss']:.5f}",
             "val_acc": f"{vm['acc']:.5f}", "val_f1_macro": f"{vm['f1_macro']:.5f}",
@@ -198,8 +198,8 @@ def train_model(cfg: dict, run_id: str, processed: Path) -> dict:
                 break
 
     summary = {"name": name, "run_id": run_id, "params": n_params, "epochs_run": epoch, "best_epoch": best_epoch,
-               "best_val_f1_macro": best_f1, "training_time_sec": time.time() - wall0,
-               "pure_step_time_sec": train_time, "train_examples_per_sec": seen / train_time,
+               "best_val_f1_macro": best_f1, "training_time_sec": time.perf_counter() - wall0,
+               "pure_step_time_sec": train_time, "train_examples_per_sec": seen / max(train_time, 1e-9),
                "nonfinite_steps": nonfinite, "device": str(device), "hardware": hw, **peak_memory_mb(device),
                "config": {k: v for k, v in cfg.items() if not k.startswith("_")}}
     write_json(out_dir / "train_summary.json", summary)
