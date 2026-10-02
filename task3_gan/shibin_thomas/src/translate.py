@@ -57,7 +57,9 @@ def export(cfg: dict, run_id: str) -> dict:
     if e.get("b2a_count"):
         paths_b = paths_b[: e["b2a_count"]]
     out_root = repo_path(e["out_dir"])
-    info = {"run_id": run_id, "generator_checkpoints": [rel(ck_dir / "G_AB.pt"), rel(ck_dir / "G_BA.pt")]}
+    ck_meta = torch.load(ck_dir / "G_AB.pt", map_location="cpu", weights_only=False)
+    info = {"run_id": run_id, "generator_checkpoints": [rel(ck_dir / "G_AB.pt"), rel(ck_dir / "G_BA.pt")],
+            "weights": ck_meta.get("weights", f"raw generators, final epoch {ck_meta.get('epoch')}")}
     for name, G, paths in (("pred_A2B", G_AB, paths_a), ("pred_B2A", G_BA, paths_b)):
         tgt = out_root / name
         if tgt.exists():

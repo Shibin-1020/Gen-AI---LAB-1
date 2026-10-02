@@ -7,7 +7,7 @@ implemented and trained **from scratch**. Domain naming follows the instructor's
 
 | | |
 |---|---|
-| Config | [`configs/cyclegan_v1.yaml`](configs/cyclegan_v1.yaml) |
+| Configs | [`configs/cyclegan_v1.yaml`](configs/cyclegan_v1.yaml) (baseline) · [`configs/cyclegan_v2.yaml`](configs/cyclegan_v2.yaml) (improved, §5b) |
 | Code / notebook | [`src/`](src/) · [`src/task3_cyclegan.ipynb`](src/task3_cyclegan.ipynb) · [`evaluate_local.py`](evaluate_local.py) |
 | Predictions | [`outputs/pred_A2B/`](outputs/pred_A2B/), [`outputs/pred_B2A/`](outputs/pred_B2A/) (run id in `outputs/predictions_info.json`) |
 | Kaggle file | [`submission.csv`](submission.csv) · leaderboard: [`kaggle_leaderboard.json`](kaggle_leaderboard.json) |
@@ -107,6 +107,34 @@ covers:_
 * the FID trajectory;
 * gradient norms and NaN steps;
 * the effect of the LR decay.
+
+## 5b. From v1 to v2: changes aimed at v1's measured weaknesses
+
+The baseline run (`cyclegan_v1_20261001-201801`) scored **FID 117.71 and MiFID 0.4217** under the instructor
+protocol. Kaggle score (FID + MiFID) / 2 = **59.06**. Its logs showed three problems:
+
+| v1 evidence | What it means |
+|---|---|
+| FID stopped improving from epoch 30 to 40 (B2A 119.0 → 123.5 → 121.6, A2B 121.8 → 121.3 → 118.1) | more epochs of the same recipe would not help |
+| D_A loss fell steadily to 0.089, far below the LSGAN balance point of 0.25, while D_B stayed at 0.14 | D_A, which has only 300 paintings, was memorising them, and memorised paintings give the generator weak, noisy gradients |
+| Photo→Monet precision 0.27 (only 27% of generated Monets lie inside the real-Monet feature manifold) | the Monet style was too weak or unrealistic; the identity loss (λ_id = 5) also pulls G_BA towards returning the photo unchanged |
+
+v2 keeps the architecture and changes only the training procedure:
+
+| Change | v1 → v2 | Why |
+|---|---|---|
+| DiffAugment (Zhao et al. 2020) | off → D_A: colour + translation + cutout; D_B: translation | the standard fix for discriminator overfitting with little data: every image D sees, real or fake, gets the same random differentiable augmentation, so D cannot memorise the 300 paintings and the augmentation does not leak into the generated images; D_B has 7,038 photos, so only light augmentation |
+| Generator EMA (Karras et al. 2018; Yazıcı et al. 2019) | off → decay 0.999 | GAN weights oscillate around the equilibrium; an exponential moving average of the generator weights is a smoother generator that consistently gets lower FID; the EMA copy is the one exported |
+| λ_identity | 5 → 2.5 | lets G_BA depart further from the input photo's colours, to address the low precision; still non-zero, so the colour composition is kept |
+| Epochs | 20 + 20 → 30 + 30 | with D_A no longer overfitting, longer training can keep improving |
+| Exported epoch | final epoch → best held-out epoch | from epoch 30 on, every 2 epochs, the EMA generators are scored with FID on **held-out data**: sorted photos 300–599 as Photo→Monet inputs and as Monet→Photo references, against all 300 Monets. The epoch with the lowest mean FID is exported. The 300 photos the evaluation scores (0–299) are never used for this choice. The selection curve is in `epoch_curves.png` and the `sel_*` columns of `epochs.csv` |
+
+What stays the same, as the integrity rules require:
+* the submitted images are the direct, unedited outputs of one trained generator per direction;
+* no image is hand-picked, and no pretrained model generates or touches the images;
+* the only choice made is *which epoch's weights* to use, by a rule fixed in the config before training.
+
+The comparison of the two runs is in §4 (METRICS) and in `outputs/<run_id>/full_metrics_report.csv` for each run.
 
 ## 6. Cycle-consistency verification (3.2.2)
 

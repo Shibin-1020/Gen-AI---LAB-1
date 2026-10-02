@@ -6,8 +6,8 @@ From-scratch CycleGAN, Monet (A) ↔ Photo (B). Run from the **repo root** with 
 task3_gan/
 ├── data/                    monet_jpg/ (300) · photo_jpg/ (7,038) · Part3_Evaluation_Script.ipynb  (images git-ignored)
 └── shibin_thomas/
-    ├── configs/             cyclegan_v1.yaml (main) · smoke.yaml
-    ├── src/                 data.py · models.py · train.py · translate.py · gan_metrics.py · human_audit.py
+    ├── configs/             cyclegan_v1.yaml (baseline) · cyclegan_v2.yaml (improved) · smoke.yaml
+    ├── src/                 data.py · models.py · diffaug.py · train.py · translate.py · gan_metrics.py · human_audit.py
     │                        run_pipeline.py · utils.py · task3_cyclegan.ipynb
     ├── tests/               test_task3.py
     ├── checkpoints/         <run_id>/G_AB.pt, G_BA.pt (+ last_full.pt for resuming, git-ignored)
@@ -31,7 +31,7 @@ python task3_gan/shibin_thomas/src/run_pipeline.py
 ```
 
 What each command does:
-1. **`test_task3.py`**: 11 unit tests. Expect `11 tests passed`.
+1. **`test_task3.py`**: 13 unit tests. Expect `13 tests passed`.
 2. **Smoke config**: a tiny model on 24 + 48 images for 2 short epochs, then every evaluation step. It
    downloads the Inception and AlexNet weights used for **measuring** once. Takes 1–3 minutes, and its files
    are git-ignored.
@@ -42,6 +42,27 @@ What each command does:
      log and manifest.
 
 **If the run stops partway:** rerun it with `--resume latest`. It continues from the last finished epoch.
+
+## Improved run (v2)
+`configs/cyclegan_v2.yaml` keeps the v1 architecture and adds:
+* DiffAugment on the discriminators;
+* an EMA of the generator weights;
+* λ_identity 2.5 instead of 5;
+* 60 epochs instead of 40;
+* best-epoch selection on held-out photos.
+
+`results.md` §5b explains each change. Commit and push v1 first: v2 rewrites `outputs/pred_A2B`, `pred_B2A` and
+`submission.csv`. Then run:
+```powershell
+python task3_gan/shibin_thomas/tests/test_task3.py
+python task3_gan/shibin_thomas/src/run_pipeline.py --config task3_gan/shibin_thomas/configs/smoke.yaml
+python task3_gan/shibin_thomas/src/run_pipeline.py --config task3_gan/shibin_thomas/configs/cyclegan_v2.yaml
+```
+* Interrupted: add `--resume latest` to the last command.
+* If v2 scores worse than v1, put v1's images back without retraining:
+  `python task3_gan/shibin_thomas/src/run_pipeline.py --skip-train cyclegan_v1_20261001-201801`
+* `evaluate_local.py` and the notebook automatically use the run whose images are in `outputs/pred_*`, so
+  they need no extra arguments after either run.
 
 ## After the full run
 1. **Notebook outputs.** This re-uses the run and does not retrain:

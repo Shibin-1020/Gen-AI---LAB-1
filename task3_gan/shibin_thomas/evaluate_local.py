@@ -96,6 +96,11 @@ def plot_training(raw_logs: Path, out: Path) -> None:
     if fe:
         axes[0].plot([f[0] for f in fe], [f[1] for f in fe], "o-", label="FID photo->Monet (B2A)")
         axes[0].plot([f[0] for f in fe], [f[2] for f in fe], "s-", label="FID Monet->photo (A2B)")
+    se = [(int(r["epoch"]), float(r["sel_score"])) for r in ep if r.get("sel_score")]
+    if se:
+        axes[0].plot([f[0] for f in se], [f[1] for f in se], "^--", label="held-out selection score (mean FID)")
+        b = min(se, key=lambda f: f[1])
+        axes[0].axvline(b[0], color="grey", ls=":", lw=1, label=f"selected epoch {b[0]}")
     axes[0].set(title="Periodic FID during training (300 images)", xlabel="epoch", ylabel="FID")
     axes[1].plot(e, [float(r["cycle_l1_A"]) for r in ep], "o-", label="cycle L1 A (Monet)")
     axes[1].plot(e, [float(r["cycle_l1_B"]) for r in ep], "s-", label="cycle L1 B (photo)")
@@ -124,6 +129,7 @@ def training_stats(raw_logs: Path, summary: dict) -> dict:
     out.update({k: v for k, v in summary.items() if k.startswith("peak_")})
     out["hardware"] = summary["hardware"].get("gpu_name") or summary["hardware"].get("cpu_model")
     out["gpu_at_start"] = summary.get("gpu_at_start", "")
+    out["exported_weights"] = summary.get("exported_weights", f"raw generators, final epoch {summary['epochs']}")
     return out
 
 
@@ -326,12 +332,21 @@ def _update_results(metrics, tstats, fid_avg, mifid_avg, audit, kaggle, run_id) 
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--config", default="task3_gan/shibin_thomas/configs/cyclegan_v1.yaml")
+    p.add_argument("--config", default=None,
+                   help="default: the config of the run whose images are in outputs/pred_* (the submitted run)")
     p.add_argument("--set", nargs="*", default=[])
     p.add_argument("--run-id", default="latest")
     a = p.parse_args()
-    cfg = load_config(a.config, a.set)
-    evaluate(cfg, latest_run_id(cfg["run_name"]) if a.run_id == "latest" else a.run_id)
+    config, run_id = a.config, a.run_id
+    if config is None:
+        info_p = MEMBER_DIR / "outputs" / "predictions_info.json"
+        sub_run = read_json(info_p)["run_id"] if info_p.exists() else None
+        config = "task3_gan/shibin_thomas/configs/cyclegan_v1.yaml"
+        if sub_run and repo_path(f"task3_gan/shibin_thomas/configs/{sub_run.rsplit('_', 1)[0]}.yaml").exists():
+            config = f"task3_gan/shibin_thomas/configs/{sub_run.rsplit('_', 1)[0]}.yaml"
+            run_id = sub_run if run_id == "latest" else run_id
+    cfg = load_config(config, a.set)
+    evaluate(cfg, latest_run_id(cfg["run_name"]) if run_id == "latest" else run_id)
 
 
 if __name__ == "__main__":

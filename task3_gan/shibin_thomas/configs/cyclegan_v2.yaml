@@ -1,0 +1,68 @@
+# Task 3 - Shibin Thomas - CycleGAN v2: same architecture as v1, with changes aimed at the weaknesses v1 showed.
+# v1 (cyclegan_v1.yaml): FID 117.7. FID stopped improving after epoch 30, Photo->Monet precision was 0.27,
+# and D_A's loss kept falling, a sign that it was memorising the 300 paintings.
+#   1. DiffAugment on the discriminators (D_A strong, D_B light) -> D_A cannot memorise the 300 Monets
+#   2. EMA of the generator weights -> smoother, less noisy generators; the EMA copy is exported
+#   3. lambda_identity 5 -> 2.5 -> G_BA may move further from the input photo (stronger Monet style)
+#   4. 60 epochs instead of 40 (DiffAugment removes the overfitting that made longer training pointless)
+#   5. held-out model selection: best epoch by FID on photos the evaluation does not score
+# Paths relative to the repo root.
+run_name: cyclegan_v2
+smoke: false
+seed: 266
+device: auto
+
+data:
+  monet_dir: task3_gan/data/monet_jpg      # domain A (300 paintings)
+  photo_dir: task3_gan/data/photo_jpg      # domain B (7,038 photos)
+  max_images_a: null
+  max_images_b: null
+  load_size: 286                           # resize, then random 256 crop (+ flip) = CycleGAN jitter
+  crop_size: 256
+  flip: true
+
+model:
+  ngf: 64                                  # generator base width
+  n_res_blocks: 9                          # resnet_9blocks (256x256 setting of Zhu et al.)
+  upsample: resize_conv                    # resize_conv (no checkerboard) | deconv (original)
+  dropout: 0.0
+  ndf: 64                                  # PatchGAN base width
+  d_layers: 3                              # 3 -> 70x70 receptive field
+
+training:
+  epochs_constant: 30                      # constant LR epochs ...
+  epochs_decay: 30                         # ... then linear decay to 0
+  samples_per_epoch: 2000                  # unpaired (Monet, photo) pairs per epoch -> 120K pairs in total
+  batch_size: 4
+  lr: 2.0e-4
+  betas: [0.5, 0.999]
+  lambda_cycle: 10.0
+  lambda_identity: 2.5                     # v1 used 5.0; halved so the Monet style can be stronger
+  diffaug_A: color,translation,cutout      # D_A: only 300 paintings -> full DiffAugment policy (Zhao et al. 2020)
+  diffaug_B: translation                   # D_B: 7,038 photos -> light augmentation only
+  ema_decay: 0.999                         # EMA of generator weights (about 1,000-step / 2-epoch window)
+  pool_size: 50
+  num_workers: 4
+  log_interval: 100
+  n_fixed: 4
+  cycle_eval_n: 64
+  fid_every: 5                             # periodic FID in both directions (convergence analysis)
+  fid_n: 300
+
+selection:                                 # pick the exported epoch on HELD-OUT data, never on the scored images
+  enabled: true
+  from_epoch: 30                           # start of the LR-decay phase
+  every: 2
+  n: 300
+  photo_offset: 300                        # sorted photos 300-599 (the evaluation scores photos 0-299)
+
+export:
+  out_dir: task3_gan/shibin_thomas/outputs # -> outputs/pred_A2B, outputs/pred_B2A
+  a2b_count: null                          # all 300 Monets
+  b2a_count: 300                           # first 300 sorted photos (= what the evaluation script scores)
+
+eval:
+  n_eval: 300                              # instructor script: N_EVAL = 300
+  pretrained: true                         # pretrained Inception / LPIPS for MEASURING only
+  kid_subsets: 100
+  kid_subset_size: 100

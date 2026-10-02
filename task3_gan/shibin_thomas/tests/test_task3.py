@@ -15,10 +15,11 @@ SRC = Path(__file__).resolve().parents[1] / "src"
 sys.path.insert(0, str(SRC))
 
 from data import UnpairedDataset, list_images, train_transform  # noqa: E402
+from diffaug import diff_augment  # noqa: E402
 from gan_metrics import (fid_from_features, instructor_fid_mifid, kid,  # noqa: E402
                          paired_cosine_similarity, precision_recall_density_coverage)
 from models import ImagePool, PatchDiscriminator, ResnetGenerator, build_models, count_params  # noqa: E402
-from train import lr_factor  # noqa: E402
+from train import ema_decay_at, ema_update, lr_factor  # noqa: E402
 
 
 def test_generator_shapes_and_range():
@@ -140,6 +141,41 @@ def test_data_listing_and_unpaired_sampling():
         before = ds.idx_a.copy()
         ds.set_epoch(1)
         assert not np.array_equal(before, ds.idx_a)
+
+
+def test_diffaugment_shapes_gradients_and_policies():
+    torch.manual_seed(0)
+    x = (torch.rand(4, 3, 32, 32) * 2 - 1).requires_grad_(True)
+    assert torch.equal(diff_augment(x, ""), x)                                # empty policy = no-op
+    y = diff_augment(x, "color,translation,cutout")
+    assert y.shape == x.shape
+    y.sum().backward()                                                     # differentiable: G gets gradients
+    assert x.grad is not None and x.grad.abs().sum() > 0
+    ones = torch.ones(8, 3, 32, 32)
+    cut = diff_augment(ones, "cutout")
+    frac = (cut == 0).float().mean().item()                                # a 16x16 square of 32x32 = 25%
+    assert 0.05 < frac <= 0.25 + 1e-6, frac
+    t = diff_augment(ones, "translation")                                  # shift: zeros only at the border
+    assert t.max() == 1 and t[:, :, 8:24, 8:24].min() == 1
+    try:
+        diff_augment(x, "rotate")
+        raise AssertionError("unknown op accepted")
+    except ValueError:
+        pass
+
+
+def test_generator_ema():
+    torch.manual_seed(0)
+    G, E = ResnetGenerator(4, 1), ResnetGenerator(4, 1)
+    E.load_state_dict(G.state_dict())
+    assert ema_decay_at(0, 0.999) == 0.1 and ema_decay_at(10 ** 6, 0.999) == 0.999
+    with torch.no_grad():
+        for p in G.parameters():
+            p.add_(1.0)
+    before = [p.clone() for p in E.parameters()]
+    ema_update(E, G, 0.9)                                                  # E <- 0.9 E + 0.1 G
+    for b, e, g in zip(before, E.parameters(), G.parameters()):
+        assert torch.allclose(e, 0.9 * b + 0.1 * g, atol=1e-6)
 
 
 if __name__ == "__main__":

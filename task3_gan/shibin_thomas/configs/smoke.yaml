@@ -29,7 +29,10 @@ training:
   lr: 2.0e-4
   betas: [0.5, 0.999]
   lambda_cycle: 10.0
-  lambda_identity: 5.0
+  lambda_identity: 2.5
+  diffaug_A: color,translation,cutout      # smoke exercises every v2 code path
+  diffaug_B: translation
+  ema_decay: 0.999
   pool_size: 50
   num_workers: 0
   log_interval: 4
@@ -37,6 +40,13 @@ training:
   cycle_eval_n: 8
   fid_every: 1
   fid_n: 24
+
+selection:
+  enabled: true
+  from_epoch: 1
+  every: 1
+  n: 24
+  photo_offset: 300                        # clipped to the 48 smoke photos
 
 export:
   out_dir: task3_gan/shibin_thomas/outputs/smoke_preds
