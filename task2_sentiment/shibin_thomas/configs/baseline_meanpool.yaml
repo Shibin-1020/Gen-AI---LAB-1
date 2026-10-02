@@ -1,0 +1,22 @@
+# Task 2 - BASELINE: bag of learned embeddings (masked mean pooling) + small MLP  (fastText-style)
+name: baseline_meanpool
+role: baseline
+data_config: task2_sentiment/shibin_thomas/configs/data.yaml
+seed: 1337
+device: auto
+model:
+  type: meanpool_mlp
+  embed_dim: 128        # same embedding size in all three models -> differences come from the architecture
+  hidden_dim: 64
+  dropout: 0.3
+training:
+  epochs: 8
+  batch_size: 512
+  lr: 2.0e-3
+  min_lr_ratio: 0.05    # cosine decay to 5% of the peak LR
+  warmup_frac: 0.03
+  weight_decay: 1.0e-4
+  grad_clip: 1.0
+  patience: 2           # early stopping on validation macro-F1
+  eval_batch_size: 2048
+  log_interval: 200

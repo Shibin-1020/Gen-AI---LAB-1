@@ -30,3 +30,10 @@ task1_llm/data/raw/*.partial
 **/outputs/smoke_*/
 reproducibility/raw_logs/**/smoke_*/
 reproducibility/manifests/**/smoke_*.json
+
+# Task 2: raw Yelp files and processed arrays (rebuilt from split_indices.npz + raw files)
+task2_sentiment/data/raw/*.jsonl
+task2_sentiment/data/raw/*.csv
+task2_sentiment/data/raw/*.partial
+**/data_processed/**/*.npy
+**/outputs/eda/smoke/

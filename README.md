@@ -6,7 +6,7 @@ Each member's work lives in a named folder inside each task folder.
 | Task | Folder | Status |
 |---|---|---|
 | 1 — GPT-style character LLM from scratch (TinyStories) | [`task1_llm/`](task1_llm/) | Shibin: done (10 epochs, val BPC 0.824, RTX 5090) |
-| 2 — Yelp Polarity sentiment classification | [`task2_sentiment/`](task2_sentiment/) | not started |
+| 2 — Yelp Polarity sentiment classification | [`task2_sentiment/`](task2_sentiment/) | Shibin: code complete; full GPU run pending |
 | 3 — CycleGAN Monet ↔ Photo (Kaggle) | [`task3_gan/`](task3_gan/) | not started |
 
 ```
@@ -48,6 +48,10 @@ Unit tests (no data needed): `python task1_llm/shibin_thomas/tests/test_model.py
 |---|---|
 | Shibin Thomas | `python task1_llm/shibin_thomas/src/run_pipeline.py --config task1_llm/shibin_thomas/configs/gpt_char_v1.yaml` |
 
+| Member | Task 2 command |
+|---|---|
+| Shibin Thomas | `python task2_sentiment/shibin_thomas/src/run_pipeline.py` (smoke: add `--smoke`) |
+
 Detailed GPU Lab instructions (including resume after a session ends):
 [`task1_llm/shibin_thomas/README.md`](task1_llm/shibin_thomas/README.md).
 
@@ -71,4 +75,4 @@ Detailed GPU Lab instructions (including resume after a session ends):
 ## Team
 | Member | Task 1 | Task 2 | Task 3 |
 |---|---|---|---|
-| Shibin Thomas | [`task1_llm/shibin_thomas`](task1_llm/shibin_thomas/) | — | — |
+| Shibin Thomas | [`task1_llm/shibin_thomas`](task1_llm/shibin_thomas/) | [`task2_sentiment/shibin_thomas`](task2_sentiment/shibin_thomas/) | — |

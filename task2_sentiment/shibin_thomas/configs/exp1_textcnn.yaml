@@ -1,0 +1,24 @@
+# Task 2 - EXPERIMENT 1 (architecture change): TextCNN, Kim (2014)
+# convolutions of width 3/4/5 over the learned embeddings + max-over-time pooling -> local n-gram phrases
+name: exp1_textcnn
+role: experimental
+data_config: task2_sentiment/shibin_thomas/configs/data.yaml
+seed: 1337
+device: auto
+model:
+  type: textcnn
+  embed_dim: 128
+  kernel_sizes: [3, 4, 5]
+  num_filters: 128      # per kernel size -> 384 pooled features
+  dropout: 0.5
+training:
+  epochs: 5
+  batch_size: 256
+  lr: 1.0e-3
+  min_lr_ratio: 0.05
+  warmup_frac: 0.03
+  weight_decay: 1.0e-4
+  grad_clip: 1.0
+  patience: 2
+  eval_batch_size: 1024
+  log_interval: 200

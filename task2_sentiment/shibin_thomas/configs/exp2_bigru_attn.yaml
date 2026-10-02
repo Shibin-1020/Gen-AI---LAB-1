@@ -1,0 +1,25 @@
+# Task 2 - EXPERIMENT 2 (architecture change): 2-layer bidirectional GRU + additive attention pooling
+# reads the whole (head+tail) review in order; attention learns which positions carry the sentiment
+name: exp2_bigru_attn
+role: experimental
+data_config: task2_sentiment/shibin_thomas/configs/data.yaml
+seed: 1337
+device: auto
+model:
+  type: bigru_attn
+  embed_dim: 128
+  hidden_dim: 128       # per direction -> 256-d states
+  num_layers: 2
+  attn_dim: 128
+  dropout: 0.3
+training:
+  epochs: 5
+  batch_size: 256
+  lr: 1.0e-3
+  min_lr_ratio: 0.05
+  warmup_frac: 0.03
+  weight_decay: 1.0e-4
+  grad_clip: 1.0
+  patience: 2
+  eval_batch_size: 1024
+  log_interval: 200

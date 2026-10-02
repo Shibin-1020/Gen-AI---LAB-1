@@ -1,0 +1,31 @@
+# Task 2 - Shibin Thomas - data + preprocessing (shared by my three models so they see identical inputs).
+# All paths relative to the repo root.
+raw_train: task2_sentiment/data/raw/yelp_polarity_train.jsonl
+raw_test: task2_sentiment/data/raw/yelp_polarity_test.jsonl
+download_if_missing: true
+download_max_rows: null
+processed_dir: task2_sentiment/shibin_thomas/data_processed/main
+
+# split: official test (38K) is the test set; my validation set is carved out of the official train split
+val_size: 50000
+split_seed: 266
+max_train_rows: null          # null = all 560K training reviews
+
+# cleaning
+dedupe_train: true
+remove_train_test_overlap: true
+
+# text preprocessing (brief 2.1.3)
+lowercase: true
+expand_contractions: true     # didn't -> did not (keeps the negation after punctuation removal)
+remove_punctuation: true      # keep only a-z, 0-9, whitespace
+remove_stopwords: true        # scikit-learn English list ...
+keep_negations: true          # ... minus not/no/never/but/however/very/... (they carry sentiment)
+stemming: snowball            # snowball | none
+
+# tokenisation / vocabulary / encoding (brief 2.1.4)
+min_freq: 3
+max_vocab: 30000
+max_len: 256                  # tokens per review after preprocessing
+truncation: head_tail         # long reviews: first head_tokens + last (max_len - head_tokens) tokens
+head_tokens: 128
