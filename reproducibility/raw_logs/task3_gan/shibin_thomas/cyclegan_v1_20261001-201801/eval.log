@@ -1,0 +1,5 @@
+2026-10-01 21:55:17 | INFO | EVAL run cyclegan_v1_20261001-201801 n_eval=300 pretrained_metric_nets=True device=cuda
+2026-10-01 21:55:45 | INFO | B2A (photo->monet): n_real=300, n_generated=300, fid=118.0711, mifid_script=0.4105, kid=0.0197, kid_std=0.0025, precision=0.2667, recall=0.6400, density=0.2207, coverage=0.5233, cycle_l1=0.0622, lpips_input_vs_translation=0.4508, lpips_input_vs_reconstruction=0.3837, content_cosine_similarity=0.7501
+2026-10-01 21:55:58 | INFO | A2B (monet->photo): n_real=300, n_generated=300, fid=117.3427, mifid_script=0.4330, kid=0.0362, kid_std=0.0040, precision=0.6067, recall=0.3200, density=0.8360, coverage=0.7567, cycle_l1=0.0531, lpips_input_vs_translation=0.3664, lpips_input_vs_reconstruction=0.4678, content_cosine_similarity=0.7943
+2026-10-01 21:55:58 | INFO | submission: FID=117.7069 MiFID=0.4217 -> task3_gan/shibin_thomas/submission.csv
+2026-10-01 21:56:00 | INFO | EVAL DONE -> task3_gan/shibin_thomas/outputs/cyclegan_v1_20261001-201801

@@ -1,0 +1,15 @@
+{
+  "run_id": "cyclegan_v1_20261001-201801",
+  "generator_checkpoints": [
+    "task3_gan/shibin_thomas/checkpoints/cyclegan_v1_20261001-201801/G_AB.pt",
+    "task3_gan/shibin_thomas/checkpoints/cyclegan_v1_20261001-201801/G_BA.pt"
+  ],
+  "pred_A2B": {
+    "count": 300,
+    "dir": "task3_gan/shibin_thomas/outputs/pred_A2B"
+  },
+  "pred_B2A": {
+    "count": 300,
+    "dir": "task3_gan/shibin_thomas/outputs/pred_B2A"
+  }
+}

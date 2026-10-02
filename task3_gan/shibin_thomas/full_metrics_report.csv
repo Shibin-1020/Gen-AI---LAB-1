@@ -1,0 +1,69 @@
+section,metric,value,notes
+Kaggle submission (avg of both directions),FID,117.70690197570555,submission.csv
+Kaggle submission (avg of both directions),MiFID,0.421725869178772,submission.csv
+B2A (photo->monet),n_real,300,
+B2A (photo->monet),n_generated,300,
+B2A (photo->monet),fid,118.07106550611758,"Inception pool3, instructor protocol (lower is better)"
+B2A (photo->monet),mifid_script,0.41046351194381714,instructor script's 'MiFID' = mean paired cosine distance
+B2A (photo->monet),kid,0.019667641309585236,"unbiased MMD^2, cubic kernel (lower is better)"
+B2A (photo->monet),kid_std,0.0025080759657166844,std over KID subsets
+B2A (photo->monet),precision,0.26666666666666666,k=3 (realism)
+B2A (photo->monet),recall,0.64,k=3 (diversity)
+B2A (photo->monet),density,0.22066666666666662,k=5
+B2A (photo->monet),coverage,0.5233333333333333,k=5
+B2A (photo->monet),cycle_l1,0.062240779399871826,"mean |x - G_back(G(x))|, pixels in [0,1]"
+B2A (photo->monet),lpips_input_vs_translation,0.4508484899997711,AlexNet LPIPS; higher = stronger change
+B2A (photo->monet),lpips_input_vs_reconstruction,0.38371264934539795,AlexNet LPIPS; lower = better cycle consistency
+B2A (photo->monet),content_cosine_similarity,0.7500956058502197,Inception features input vs translation; higher = content kept
+A2B (monet->photo),n_real,300,
+A2B (monet->photo),n_generated,300,
+A2B (monet->photo),fid,117.34273844529352,"Inception pool3, instructor protocol (lower is better)"
+A2B (monet->photo),mifid_script,0.4329882264137268,instructor script's 'MiFID' = mean paired cosine distance
+A2B (monet->photo),kid,0.03620955478447516,"unbiased MMD^2, cubic kernel (lower is better)"
+A2B (monet->photo),kid_std,0.004014302108946229,std over KID subsets
+A2B (monet->photo),precision,0.6066666666666667,k=3 (realism)
+A2B (monet->photo),recall,0.32,k=3 (diversity)
+A2B (monet->photo),density,0.836,k=5
+A2B (monet->photo),coverage,0.7566666666666667,k=5
+A2B (monet->photo),cycle_l1,0.053122300654649734,"mean |x - G_back(G(x))|, pixels in [0,1]"
+A2B (monet->photo),lpips_input_vs_translation,0.36643514037132263,AlexNet LPIPS; higher = stronger change
+A2B (monet->photo),lpips_input_vs_reconstruction,0.4678201377391815,AlexNet LPIPS; lower = better cycle consistency
+A2B (monet->photo),content_cosine_similarity,0.7942912578582764,Inception features input vs translation; higher = content kept
+training,final_epoch_mean_loss_G,4.45808,
+training,final_epoch_mean_gan_A2B,0.52832,
+training,final_epoch_mean_gan_B2A,0.67483,
+training,final_epoch_mean_cyc_A,0.09631,
+training,final_epoch_mean_cyc_B,0.12039,
+training,final_epoch_mean_idt_A,0.10801,
+training,final_epoch_mean_idt_B,0.10959,
+training,final_epoch_mean_loss_D_A,0.08946,
+training,final_epoch_mean_loss_D_B,0.1394,
+training,grad_norm_G_mean,48.28999426,
+training,grad_norm_G_p99,180.99555899999964,
+training,grad_norm_G_max,726.9405,
+training,grad_norm_D_mean,17.093551085,
+training,grad_norm_D_p99,39.71930299999998,
+training,grad_norm_D_max,342.079,
+training,nonfinite_steps,0,
+training,params_total,28285832,
+training,params_generators,22756358,
+training,params_discriminators,5529474,
+training,training_time_sec,5471.419547300087,
+training,train_images_per_sec,36.014305259055334,
+training,train_pairs_per_sec,18.007152629527667,
+training,total_steps,20000,
+training,epochs,40,
+training,training_time_min,91.19032578833479,
+training,peak_cpu_rss_mb,3568.62890625,
+training,peak_gpu_allocated_mb,19921.7041015625,
+training,peak_gpu_reserved_mb,20980.0,
+training,hardware,NVIDIA GeForce RTX 5090,
+training,gpu_at_start,"NVIDIA GeForce RTX 5090, 15463 MiB, 32607 MiB, 30 % | 34 processes on the GPU (1 python, 17 not visible to this user); programs: AlienFXSubAgent.exe, CrossDeviceResume.exe, Killer.exe, Notepad.exe, PhoneExperienceHost.exe, SearchHost.exe, ShellExperienceHost.exe, ShellHost.exe, StartMenuExperienceHost.exe, WindowsTerminal.exe, chrome.exe, explorer.exe, msedge.exe, msedgewebview2.exe, python.exe",
+human audit,status,pending,"run src/human_audit.py make, rate, then score"
+kaggle leaderboard,team_name,,from kaggle_leaderboard.json (filled in by hand)
+kaggle leaderboard,public_score,,from kaggle_leaderboard.json (filled in by hand)
+kaggle leaderboard,private_score,,from kaggle_leaderboard.json (filled in by hand)
+kaggle leaderboard,public_rank,,from kaggle_leaderboard.json (filled in by hand)
+kaggle leaderboard,private_rank,,from kaggle_leaderboard.json (filled in by hand)
+kaggle leaderboard,submitted_utc,,from kaggle_leaderboard.json (filled in by hand)
+run,run_id,cyclegan_v1_20261001-201801,evidence: reproducibility/raw_logs/... and outputs/<run_id>/

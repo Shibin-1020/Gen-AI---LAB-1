@@ -1,0 +1,36 @@
+{
+  "run_id": "cyclegan_v1_20261001-201801",
+  "epochs": 40,
+  "total_steps": 20000,
+  "params": {
+    "G_AB": 11378179,
+    "G_BA": 11378179,
+    "D_A": 2764737,
+    "D_B": 2764737
+  },
+  "params_total": 28285832,
+  "params_generators": 22756358,
+  "params_discriminators": 5529474,
+  "training_time_sec": 5471.419547300087,
+  "pure_step_time_sec": 4442.6790645855945,
+  "pairs_seen": 80000,
+  "train_pairs_per_sec": 18.007152629527667,
+  "train_images_per_sec": 36.014305259055334,
+  "nonfinite_steps": 0,
+  "device": "cuda",
+  "hardware": {
+    "device": "cuda",
+    "cpu_model": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+    "cpu_count": 24,
+    "os": "Windows 11",
+    "gpu_name": "NVIDIA GeForce RTX 5090",
+    "gpu_count": 1,
+    "gpu_total_memory_gb": 31.84,
+    "cuda_version": "12.8",
+    "cudnn_version": 91900
+  },
+  "gpu_at_start": "NVIDIA GeForce RTX 5090, 15463 MiB, 32607 MiB, 30 % | 34 processes on the GPU (1 python, 17 not visible to this user); programs: AlienFXSubAgent.exe, CrossDeviceResume.exe, Killer.exe, Notepad.exe, PhoneExperienceHost.exe, SearchHost.exe, ShellExperienceHost.exe, ShellHost.exe, StartMenuExperienceHost.exe, WindowsTerminal.exe, chrome.exe, explorer.exe, msedge.exe, msedgewebview2.exe, python.exe",
+  "peak_cpu_rss_mb": 3568.62890625,
+  "peak_gpu_allocated_mb": 19921.7041015625,
+  "peak_gpu_reserved_mb": 20980.0
+}
