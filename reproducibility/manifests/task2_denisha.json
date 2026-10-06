@@ -1,0 +1,18 @@
+{
+  "student": "Denisha Ketan Tank",
+  "task": "task2",
+  "command": "python3 -u src/train.py --config config.yaml --resume-latest",
+  "dataset_name_and_version": "Yelp Polarity via Hugging Face dataset preparation",
+  "dataset_path": "task2_sentiment/data/yelp_polarity.csv",
+  "python_version": "Colab Python 3 (exact patch version not included in supplied ZIP)",
+  "package_versions": "See repository requirements.txt; exact pip freeze was not included in supplied ZIP",
+  "hardware": {
+    "gpu": "Tesla T4",
+    "source": "Colab nvidia-smi session screenshot"
+  },
+  "checkpoint_to_result_mapping": {
+    "task2_sentiment/member_denisha/checkpoints/baseline.pt": "task2_sentiment/member_denisha/outputs/metrics.json::baseline",
+    "task2_sentiment/member_denisha/checkpoints/experimental_cnn.pt": "task2_sentiment/member_denisha/outputs/metrics.json::experimental_cnn",
+    "task2_sentiment/member_denisha/checkpoints/experimental_gru.pt": "task2_sentiment/member_denisha/outputs/metrics.json::experimental_gru"
+  }
+}

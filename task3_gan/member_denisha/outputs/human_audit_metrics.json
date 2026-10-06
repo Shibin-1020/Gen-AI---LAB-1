@@ -1,0 +1,15 @@
+{
+  "style": {
+    "cohen_kappa": -0.028571428571428692,
+    "percent_agreement": 0.8
+  },
+  "content": {
+    "cohen_kappa": 1.0,
+    "percent_agreement": 1.0
+  },
+  "artifact": {
+    "cohen_kappa": 1.0,
+    "percent_agreement": 1.0
+  },
+  "n_samples": 30
+}

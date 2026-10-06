@@ -1,0 +1,11 @@
+{
+  "n_rows": 560000,
+  "class_counts": {
+    "0": 280000,
+    "1": 280000
+  },
+  "length_mean": 133.0288732142857,
+  "length_median": 97.0,
+  "length_p95": 372.0,
+  "empty_or_missing_removed": 0
+}

@@ -5,9 +5,9 @@ Each member's work lives in a named folder inside each task folder.
 
 | Task | Folder | Status |
 |---|---|---|
-| 1 — GPT-style character LLM from scratch (TinyStories) | [`task1_llm/`](task1_llm/) | Shibin: done (10 epochs, val BPC 0.824, RTX 5090) |
-| 2 — Yelp Polarity sentiment classification | [`task2_sentiment/`](task2_sentiment/) | Shibin: done (3 models; best BiGRU+attention 95.58% test accuracy, RTX 5090) |
-| 3 — CycleGAN Monet ↔ Photo (Kaggle) | [`task3_gan/`](task3_gan/) | Shibin: v1 run done (FID 117.7); improved v2 config ready (`configs/cyclegan_v2.yaml`) |
+| 1 — GPT-style character LLM from scratch (TinyStories) | [`task1_llm/`](task1_llm/) | Shibin and Denisha complete; Denisha val BPC 0.9842 on Tesla T4 |
+| 2 — Yelp Polarity sentiment classification | [`task2_sentiment/`](task2_sentiment/) | Shibin and Denisha complete; Denisha best BiGRU accuracy 95.19% on Tesla T4 |
+| 3 — CycleGAN Monet ↔ Photo (Kaggle) | [`task3_gan/`](task3_gan/) | Both independent runs, official FID/MiFID, Kaggle result, and completed two-rater audit recorded |
 
 ```
 .
@@ -19,7 +19,7 @@ Each member's work lives in a named folder inside each task folder.
 ├── reproducibility/
 │   ├── raw_logs/<task>/<member>/<run_id>/     unedited training/eval logs (evidence trail)
 │   └── manifests/<task>/<member>/<run_id>.json   versions, hardware, git commit, config, checkpoint SHA-256
-└── report/   DATA266_Lab1_Report_Team_[Team Number].pdf
+└── report/   DATA266_Lab1_Report_Team_09.pdf
 ```
 
 Each member's folder in each task follows the same layout:
@@ -80,3 +80,4 @@ Detailed GPU Lab instructions (including resume after a session ends):
 | Member | Task 1 | Task 2 | Task 3 |
 |---|---|---|---|
 | Shibin Thomas | [`task1_llm/shibin_thomas`](task1_llm/shibin_thomas/) | [`task2_sentiment/shibin_thomas`](task2_sentiment/shibin_thomas/) | [`task3_gan/shibin_thomas`](task3_gan/shibin_thomas/) |
+| Denisha Ketan Tank | [`task1_llm/member_denisha`](task1_llm/member_denisha/) | [`task2_sentiment/member_denisha`](task2_sentiment/member_denisha/) | [`task3_gan/member_denisha`](task3_gan/member_denisha/) |
