@@ -20,7 +20,7 @@ shibin_thomas/
 ## Windows lab PC (PowerShell): quick version
 ```powershell
 winget install --id Git.Git -e          # only if `git` is missing; then close and reopen PowerShell
-git clone -b claude/zen-mccarthy-mpamlz https://github.com/Shibin-1020/Gen-AI---LAB-1.git
+git clone -b shibin-lab1 https://github.com/Shibin-1020/Gen-AI---LAB-1.git
 cd Gen-AI---LAB-1
 python -m venv .venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass

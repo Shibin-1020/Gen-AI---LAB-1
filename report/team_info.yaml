@@ -8,21 +8,21 @@
 team_number: "09"
 team_name: PairProgramming_Team_09          # Kaggle team name
 repo_url: https://github.com/Shibin-1020/Gen-AI---LAB-1
-repo_branch: claude/zen-mccarthy-mpamlz      # set to main once the work is merged
+repo_branch: shibin-lab1
+report_date: October 2026
 
 members:
   - name: Shibin Thomas
     folder: shibin_thomas
     built: >-
-      Task 1 character-level GPT (gpt_char_v1), Task 2 baseline mean-pool, TextCNN and BiGRU+attention
-      classifiers, Task 3 CycleGAN (v1 submitted, v2 recipe), the shared TinyStories download and the
-      shared metric modules (task1_llm/shared_eval, task2_sentiment/shared_eval), and the repository
-      layout, reproducibility manifests and smoke tests.
+      the character-level GPT for Task 1, the mean-pooling baseline, TextCNN and BiGRU-with-attention
+      classifiers for Task 2, and the CycleGAN for Task 3, including the Kaggle submission. Shibin also set
+      up the shared TinyStories download, the shared metric modules for Tasks 1 and 2, the repository
+      layout, the run manifests and the smoke tests.
   - name: Teammate (name to be added)
     folder: teammate_folder
     built: >-
-      Own Task 1 language model, own three Task 2 classifiers and own Task 3 CycleGAN (to be described
-      by the teammate).
+      their own Task 1 language model, three Task 2 classifiers and Task 3 CycleGAN (details to be added).
 
 # ---------------------------------------------------------------------------------------------
 # Teammate results. One entry per model; "arch" and "hparams" are short one-line summaries.
