@@ -142,9 +142,12 @@ def source(*paths, tree=False, teammate=()):
     return Paragraph("Source: " + ", ".join(refs), SMALL)
 
 
-def figure(path: str, caption: str, width=WIDTH, max_h=4.0 * inch, teammate=False):
-    src = io.BytesIO(tm_bytes(path)) if teammate else ROOT / path
-    im = PILImage.open(src).convert("RGB")
+def figure(path: str, caption: str, width=WIDTH, max_h=4.0 * inch, teammate=False, image=None, ref=True):
+    if image is not None:
+        im = image.convert("RGB")
+    else:
+        src = io.BytesIO(tm_bytes(path)) if teammate else ROOT / path
+        im = PILImage.open(src).convert("RGB")
     w, h = im.size
     scale = min(width / w, max_h / h)
     target_px = int(width / inch * 200)
@@ -155,7 +158,8 @@ def figure(path: str, caption: str, width=WIDTH, max_h=4.0 * inch, teammate=Fals
     buf.seek(0)
     _fig[0] += 1
     return KeepTogether([Image(buf, width=w * scale, height=h * scale),
-                         Paragraph(f"<b>Figure {_fig[0]}.</b> {md(caption)} ({path_ref(path, teammate=teammate)})", CAP)])
+                         Paragraph(f"<b>Figure {_fig[0]}.</b> {md(caption)}" +
+                                   (f" ({path_ref(path, teammate=teammate)})" if ref else ""), CAP)])
 
 
 def evidence(items, tm_items=()):
@@ -293,6 +297,49 @@ def build() -> Path:
         "in `reproducibility/raw_logs/` and a manifest for each run (configuration, git commit, library versions, "
         "hardware and checkpoint hashes) in `reproducibility/manifests/`. Each figure and table below names the file "
         "it was taken from, so every number can be traced back to its log or checkpoint."))
+
+    story.append(Paragraph("1.2 Contribution Overview", H2))
+    audit_sh = ("Built the blinded audit pack (30 panels, hidden direction key) and the rating form; rated his own "
+                "model as rater 1 and Denisha's 30 images as rater 2.")
+    audit_dn = ("Rated her own 30 photo-to-Monet images as rater 1" +
+                ("; rated Shibin's 30 panels as rater 2." if aud_r2 else "; her rating of Shibin's panels (rater 2) is pending."))
+    contrib = [
+        ["Area", "Shibin Thomas", "Denisha Ketan Tank"],
+        ["Task 1: character-level GPT",
+         "Cleaned TinyStories and drew his own 100K/10K split; hand-wrote attention, LayerNorm and the Transformer "
+         "blocks with unit tests; trained gpt_char_v1 (6 layers, 7.5M parameters, context 256) for 10 epochs on an "
+         "RTX 5090; computed every required metric, generated 40 samples and wrote the failure analysis.",
+         "Drew her own 100K/10K split; implemented and trained a 4-layer character GPT (3.25M parameters, context "
+         "128) for 10 epochs on a Tesla T4 with checkpointing and a smoke test; produced metrics, samples, loss "
+         "curves and the failure analysis."],
+        ["Task 2: Yelp sentiment",
+         "Built the preprocessing pipeline (deduplication, train-test overlap removal, negation-preserving "
+         "stopwords, stemming); trained the mean-pooling baseline, TextCNN and BiGRU with attention; evaluated on "
+         "the official test split with bootstrap intervals, slices, calibration and McNemar tests; reviewed 20 "
+         "errors by hand.",
+         "Built her own preprocessing and train/validation/test split; trained a mean-pooling baseline, TextCNN and "
+         "bidirectional GRU; produced the full metric set with confidence intervals, slices and McNemar tests; "
+         "reviewed 20 errors by hand."],
+        ["Task 3: CycleGAN",
+         "Implemented and trained CycleGAN v1 from scratch (ResNet-9 with resize-convolution, 70x70 PatchGAN); "
+         "re-implemented and unit-tested the instructor's FID/MiFID protocol; added KID, precision/recall, density/"
+         "coverage and LPIPS; wrote the visual failure analysis; prepared the improved v2 recipe.",
+         "Implemented and trained an independent CycleGAN (60 epochs, identity weight 2.5, fp16) on an RTX 4090; "
+         "ran the official evaluation notebook (FID 100.79); exported translations, reconstructions and the "
+         "Kaggle image archive."],
+        ["Kaggle", f"Submitted his model's file (score -{kaggle_score:.2f}).",
+         f"Submitted the team's best entry (score {kaggle.get('public_score')}, rank {kaggle.get('public_rank')})."],
+        ["Human audit", audit_sh, audit_dn],
+        ["Shared infrastructure",
+         "Set up the repository layout, the shared TinyStories download, the shared metric modules for Tasks 1 "
+         "and 2, run manifests, smoke tests and the report build script.",
+         "Maintained her member_denisha folders with configurations, notebooks, checkpoints, raw logs, manifests, "
+         "results and failure analyses on branch " + str(TM_BRANCH) + "."],
+        ["Report", "Assembled the combined report and wrote his sections; joint analysis written together.",
+         "Contributed her results and analysis sections and reviewed the report; joint analysis written together."],
+    ]
+    story.append(tcap("Who built what, by area."))
+    story.append(table(contrib, [1.25 * inch, (WIDTH - 1.25 * inch) / 2, (WIDTH - 1.25 * inch) / 2], first_col_bold=True))
 
     # ===================================================================================== 2 TASK 1
     story += [PageBreak(), Paragraph("2 Task 1: GPT-Style Character-Level Language Model", H1)]
@@ -825,6 +872,25 @@ def build() -> Path:
     story.append(figure(f"{T3}/outputs/{RUN3}/final_samples_A2B.png",
                         "Monet to photo. Top row: input paintings; middle: generated photos; bottom: reconstructions",
                         max_h=2.5 * inch))
+
+    import zipfile as _zip
+    zf = _zip.ZipFile(io.BytesIO(tm_bytes(f"{D3}/outputs/images.zip")))
+    first8 = sorted(p.name for p in (ROOT / T3 / "outputs/pred_B2A").glob("*.jpg"))[:8]
+    grid = PILImage.new("RGB", (8 * 256, 2 * 256), "white")
+    for i, name in enumerate(first8):
+        grid.paste(PILImage.open(ROOT / T3 / "outputs/pred_B2A" / name).convert("RGB").resize((256, 256)), (i * 256, 0))
+        grid.paste(PILImage.open(io.BytesIO(zf.read(f"{i:06d}.jpg"))).convert("RGB").resize((256, 256)), (i * 256, 256))
+    story.append(figure("", "Photo to Monet for the same eight input photos (the first eight sorted photos). Top row: "
+                        "Shibin's model; bottom row: Denisha's model", image=grid, max_h=2.0 * inch, ref=False))
+    story.append(Paragraph("Source: " + path_ref(f"{T3}/outputs/pred_B2A", tree=True) + ", " +
+                           path_ref(f"{D3}/outputs/images.zip", teammate=True) + f" (branch {TM_BRANCH})", SMALL))
+    story.append(P(
+        "Seen side by side, the two models make different trade-offs. Denisha's outputs are smoother, with "
+        "little of the fine stipple pattern, and keep colours closer to the input photo: darker skies, greener "
+        "fields and the contrast of the silhouettes survive. Shibin's outputs move further towards a pale pastel "
+        "palette and carry a visible high-frequency stipple texture (Section 4.5), which reads as painterly up "
+        "close but is not how Monet's brushwork looks. Smoother texture and colour statistics closer to real "
+        "images are consistent with Denisha's lower FID."))
 
     story.append(Paragraph("4.3 Discussion", H2))
     story.append(P(
