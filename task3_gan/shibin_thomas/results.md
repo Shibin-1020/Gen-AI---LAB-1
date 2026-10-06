@@ -303,7 +303,8 @@ The comparison of the two runs is in §4 (METRICS) and in `outputs/<run_id>/full
   S01–S30.
 * The two team raters score style, content and artifacts from 1 to 5 in `rater1.csv` / `rater2.csv`.
 * `src/human_audit.py score` then adds the means and Cohen's κ to `metrics_report.csv` and §4.
-  * Status: pending until both raters have finished.
+  * Status: rater 1 (Shibin) done. Mean scores: style 4.07, content 4.57, artifacts 4.70; photo→Monet
+    4.13 / 4.67 / 4.53, Monet→photo 4.00 / 4.47 / 4.87. Rater 2 (Denisha) pending.
 
 **Discussion.**
 * **Strengths.**

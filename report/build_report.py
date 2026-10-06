@@ -222,6 +222,32 @@ mifid_avg = float(t3[("Kaggle submission (avg of both directions)", "MiFID")])
 kaggle_score = (fid_avg + mifid_avg) / 2
 
 
+def load_rater(path):
+    rows = read_csv(path)
+    ok = [r for r in rows if all(str(r.get(c, "")).strip() for c in ("style", "content", "artifacts"))]
+    return ok if len(ok) == len(rows) and rows else None
+
+
+AUD = f"{T3}/outputs/human_audit"
+aud_key = {r["sample_id"]: r["direction"] for r in read_csv(f"{AUD}/audit_key.csv")}
+aud_r1, aud_r2 = load_rater(f"{AUD}/rater1.csv"), load_rater(f"{AUD}/rater2.csv")
+den_aud = jload("report/human_audit/denisha_model_human_audit_agreement.json") \
+    if (ROOT / "report/human_audit/denisha_model_human_audit_agreement.json").exists() else None
+
+
+def aud_means(rows, direction=None):
+    sub = [r for r in rows if direction is None or aud_key[r["sample_id"]] == direction]
+    return [sum(int(r[c]) for r in sub) / len(sub) for c in ("style", "content", "artifacts")]
+
+
+def shibin_audit_cell():
+    if not aud_r1:
+        return PEND
+    m = aud_means(aud_r1)
+    txt = f"rater 1: style {m[0]:.2f}, content {m[1]:.2f}, artifacts {m[2]:.2f}"
+    return txt + ("" if aud_r2 else "; rater 2 pending")
+
+
 # ======================================================================================================
 def build() -> Path:
     out = REPORT / f"DATA266_Lab1_Report_Team_{INFO['team_number']}.pdf"
@@ -739,7 +765,7 @@ def build() -> Path:
         ("Training time / throughput / peak GPU memory", f"{float(trn('training_time_min')):.1f} min / "
                                                          f"{float(trn('train_images_per_sec')):.1f} images/s / {float(trn('peak_gpu_allocated_mb')):,.0f} MB"),
         ("Total parameters", f"{int(float(trn('params_total'))):,}"),
-        ("Human audit (2 raters, 30 samples)", PEND),
+        ("Human audit (2 raters, 30 samples)", shibin_audit_cell()),
         ("Hardware", trn("hardware")),
     ]
     for label, val in both:
@@ -826,14 +852,58 @@ def build() -> Path:
         "*Limitations.* FID on 300 images has high variance, each member trained a single seed on different GPUs, "
         f"and some secondary metrics were computed with different tools (see the notes under Table {TAB['t3']}). The script's MiFID is "
         "a mean cosine distance between unrelated real and generated images and hardly changes between models, so "
-        "the Kaggle score is driven almost entirely by FID. The two-rater human audit is still being completed."))
+        "the Kaggle score is driven almost entirely by FID. The human audit (Section 4.4) uses only 30 samples per model."))
     story.append(P(
         "*Next steps.* Based on these findings we prepared a second configuration (`configs/cyclegan_v2.yaml`) "
         "with differentiable augmentation for the discriminators [18], an exponential moving average of the "
         "generator weights, a lower identity weight of 2.5, 60 epochs, and selection of the exported epoch on "
         "held-out photos. A multi-scale discriminator and a low-frequency content loss are further options."))
 
-    story.append(Paragraph("4.4 Failure Analysis (Shibin Thomas)", H2))
+    story.append(Paragraph("4.4 Human Audit", H2))
+    story.append(P(
+        "Each model was audited on 30 fixed samples. Each rater scored style (does the output look like the "
+        "target domain), content preservation and visual artifacts from 1 to 5, without seeing the other "
+        "rater's scores. Shibin's audit uses blinded panels (input next to output) drawn with a fixed seed from "
+        "the scored images, 15 per direction, with a hidden key for the direction. Denisha's audit uses her "
+        "first 30 photo-to-Monet outputs."))
+    arows = [["Model and rater", "Style", "Content", "Artifacts"]]
+    if aud_r1:
+        for lab, d in (("all 30", None), ("photo to Monet (15)", "photo->monet"), ("Monet to photo (15)", "monet->photo")):
+            m = aud_means(aud_r1, d)
+            arows.append([f"Shibin's model, rater 1 (Shibin), {lab}"] + [f"{x:.2f}" for x in m])
+    if aud_r2:
+        m = aud_means(aud_r2)
+        arows.append(["Shibin's model, rater 2 (Denisha), all 30"] + [f"{x:.2f}" for x in m])
+    else:
+        arows.append(["Shibin's model, rater 2 (Denisha)", PEND, PEND, PEND])
+    if den_aud:
+        cr = den_aud["criteria"]
+        keys = ("style", "content", "artifact")
+        arows.append(["Denisha's model, rater 1 (Denisha)"] + [f"{cr[k]['mean_rater_1']:.2f}" for k in keys])
+        arows.append(["Denisha's model, rater 2 (Shibin)"] + [f"{cr[k]['mean_rater_2']:.2f}" for k in keys])
+        arows.append(["Denisha's model, exact / within-1 agreement"] +
+                     [f"{cr[k]['exact_agreement']:.0%} / {cr[k]['within_1_agreement']:.0%}" for k in keys])
+        arows.append(["Denisha's model, Cohen's kappa (unweighted)"] +
+                     [f"{cr[k]['cohen_kappa']:.2f}" if cr[k]["cohen_kappa"] is not None else "undefined" for k in keys])
+    story.append(tcap("Human audit: mean scores (1 to 5) and inter-rater agreement."))
+    story.append(table(arows, [3.2 * inch] + [(WIDTH - 3.2 * inch) / 3] * 3))
+    story.append(source(f"{AUD}/rater1.csv", f"{AUD}/rater2.csv", f"{AUD}/audit_key.csv",
+                        "report/human_audit/denisha_model_human_audit.csv",
+                        "report/human_audit/denisha_model_human_audit_agreement.json"))
+    story.append(P(
+        "Both models were rated highly for content preservation and moderately high for style. For Shibin's "
+        "model, rater 1 scored artifacts highest and style lowest, and the photo-to-Monet direction slightly "
+        "higher for style and content than Monet-to-photo, which matches the automatic metrics (more content "
+        "kept, weaker painterly realism). On Denisha's model the two raters agree within one point on 93% to "
+        "100% of the samples, but the exact agreement is only 40% for content and Cohen's kappa is close to zero "
+        "for all three criteria. This is a known limitation of kappa rather than real disagreement: rater 1 gave "
+        "every image the same content score of 5 and used only two values for style and artifacts, so there is "
+        "almost no variance for agreement to exceed chance. Rater 2 was stricter on content (mean 4.33 against "
+        "5.00) and more lenient on artifacts (4.30 against 4.03). With 30 samples and scores concentrated at 4 "
+        "and 5, a wider use of the scale or more samples would be needed for a meaningful kappa."
+        + ("" if aud_r2 else " The second rating of Shibin's model is still to be added.")))
+
+    story.append(Paragraph("4.5 Failure Analysis (Shibin Thomas)", H2))
     story.append(P(
         "We ranked all translations by cycle error, by content similarity and by the distance to the nearest real "
         "image of the target domain, and inspected the worst four images for each criterion. In each figure below "
@@ -864,7 +934,7 @@ def build() -> Path:
         "brush strokes and signatures in most Monet-to-photo outputs. The full analysis of all five failure types "
         "is in `failure_analysis.md`."))
 
-    story.append(Paragraph("4.5 Evidence", H2))
+    story.append(Paragraph("4.6 Evidence", H2))
     story.append(evidence([
         ("Configuration", f"{T3}/configs/cyclegan_v1.yaml", False),
         ("Training and evaluation logs", f"reproducibility/raw_logs/task3_gan/shibin_thomas/{RUN3}", True),
@@ -893,7 +963,9 @@ def build() -> Path:
     merged = (ROOT / "task1_llm" / "member_denisha").exists()
     folders = ("Done for both members" if merged else
                f"Shibin: branch {INFO['repo_branch']}; Denisha: member_denisha folders on branch {TM_BRANCH}")
-    audit = INFO.get("human_audit_status", "Pending: ratings from both raters")
+    audit = ("Done for both models" if (aud_r1 and aud_r2 and den_aud) else
+             "Denisha's model: done (2 raters). Shibin's model: rater 1 done, rater 2 pending" if (aud_r1 and den_aud)
+             else "Pending")
     ck_rows = [["Item", "Status"],
                ["Every member's folder exists under all three tasks with code, configuration, logs and results.md", folders],
                ["No two members share the same architecture and hyperparameters",
