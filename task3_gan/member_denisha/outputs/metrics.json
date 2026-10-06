@@ -1,0 +1,21 @@
+{
+  "cycle_reconstruction_l1_A": 0.07777597408741713,
+  "cycle_reconstruction_l1_B": 0.09144029113153616,
+  "content_preservation_cosine_A2B": 0.4646791984637578,
+  "content_preservation_cosine_B2A": 0.3046045767143369,
+  "exported_A2B": 300,
+  "exported_B2A": 300,
+  "generator_gradient_norm_mean": NaN,
+  "generator_gradient_norm_max": NaN,
+  "gradient_nan_count": 0,
+  "parameter_count_generators": 22756358,
+  "parameter_count_discriminators": 5529474,
+  "training_time_seconds": 4102.867017507553,
+  "images_per_second": 58.495680941128185,
+  "peak_memory_mb": 4815.53076171875,
+  "device": "cuda",
+  "fid_kid_precision_recall": "run evaluate_metrics.py for both directions",
+  "lpips": "run evaluate_lpips.py for both reconstruction folders",
+  "kaggle_submission": "C:\\Users\\rishitha\\Downloads\\GenAI\\task3_gan\\member_denisha\\outputs\\images.zip",
+  "human_audit": "complete human_audit.csv"
+}

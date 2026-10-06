@@ -1,0 +1,11 @@
+{
+  "protocol": "Part3_Evaluation_Script.ipynb",
+  "limit_per_set": 300,
+  "device": "cuda",
+  "FID_B2A": 98.42047910813037,
+  "MiFID_B2A": 0.40696951746940613,
+  "FID_A2B": 103.27818437172814,
+  "MiFID_A2B": 0.4189762473106384,
+  "FID": 100.84933173992926,
+  "MiFID": 0.4129728823900223
+}

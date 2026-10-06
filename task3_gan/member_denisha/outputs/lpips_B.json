@@ -1,0 +1,8 @@
+{
+  "n_pairs": 300,
+  "lpips_mean": 0.21652673840522765,
+  "real": "../data/photo_jpg",
+  "recon": "outputs/recon_B",
+  "device": "cuda",
+  "pairing": "sorted index order"
+}

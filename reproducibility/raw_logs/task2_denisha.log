@@ -1,0 +1,448 @@
+/usr/local/lib/python3.13/dist-packages/torch/utils/data/dataloader.py:424: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+{"model": "baseline", "resumed_from": "/content/drive/MyDrive/DATA266_Lab1_checkpoints/task2/baseline_latest.pt", "start_epoch": 11}
+/usr/local/lib/python3.13/dist-packages/torch/utils/data/dataloader.py:432: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+{"model": "baseline", "epoch": 11, "train_loss": 0.12427595989580081, "val_loss": 0.1943852755001613, "learning_rate": 0.000125}
+{"model": "baseline", "epoch": 12, "train_loss": 0.12405366244428048, "val_loss": 0.19534154312951224, "learning_rate": 6.25e-05}
+/usr/local/lib/python3.13/dist-packages/torch/utils/data/dataloader.py:424: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+{"model": "experimental_cnn", "resumed_from": "/content/drive/MyDrive/DATA266_Lab1_checkpoints/task2/experimental_cnn_latest.pt", "start_epoch": 12}
+/usr/local/lib/python3.13/dist-packages/torch/utils/data/dataloader.py:432: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+{"model": "experimental_cnn", "epoch": 12, "train_loss": 0.045622400450165655, "val_loss": 0.1656546130350658, "learning_rate": 0.000125}
+/usr/local/lib/python3.13/dist-packages/torch/utils/data/dataloader.py:424: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+{"model": "experimental_gru", "resumed_from": "/content/drive/MyDrive/DATA266_Lab1_checkpoints/task2/experimental_gru_latest.pt", "start_epoch": 10}
+/usr/local/lib/python3.13/dist-packages/torch/utils/data/dataloader.py:432: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+{"model": "experimental_gru", "epoch": 10, "train_loss": 0.009834449342186066, "val_loss": 0.24570276464734758, "learning_rate": 0.000125}
+{"model": "experimental_gru", "epoch": 11, "train_loss": 0.008322024398080314, "val_loss": 0.2618963126625333, "learning_rate": 6.25e-05}
+{"model": "experimental_gru", "epoch": 12, "train_loss": 0.006852747259001474, "val_loss": 0.2649467273269381, "learning_rate": 6.25e-05}
+{"model": "experimental_gru", "early_stopping": true, "epoch": 12}
+{
+  "baseline": {
+    "accuracy": 0.9320982142857143,
+    "precision_macro": 0.9320994578117369,
+    "recall_macro": 0.9320982142857144,
+    "f1_macro": 0.9320981654325529,
+    "precision_micro": 0.9320982142857143,
+    "recall_micro": 0.9320982142857143,
+    "f1_micro": 0.9320982142857143,
+    "precision_weighted": 0.9320994578117369,
+    "recall_weighted": 0.9320982142857143,
+    "f1_weighted": 0.9320981654325529,
+    "roc_auc": 0.9803625521364795,
+    "pr_auc": 0.9797491020713215,
+    "mcc": 0.8641976720965565,
+    "brier_score": 0.05098404732795899,
+    "expected_calibration_error": 0.00638604477332306,
+    "confusion_matrix": [
+      [
+        52150,
+        3850
+      ],
+      [
+        3755,
+        52245
+      ]
+    ],
+    "accuracy_ci95": [
+      0.9306604910714286,
+      0.9336520089285715
+    ],
+    "macro_f1_ci95": [
+      0.9306604845964191,
+      0.9336508442867748
+    ],
+    "mcc_ci95": [
+      0.86132301711228,
+      0.867303172534421
+    ],
+    "slice_metrics": {
+      "short": {
+        "n": 26869,
+        "macro_f1": 0.9275332363575879,
+        "error_rate": 0.06959693326882281
+      },
+      "medium": {
+        "n": 50261,
+        "macro_f1": 0.9330780292428407,
+        "error_rate": 0.06687093372595054
+      },
+      "long": {
+        "n": 34870,
+        "macro_f1": 0.9293570136145488,
+        "error_rate": 0.06808144536851161
+      }
+    },
+    "parameter_count": 3856641,
+    "training_time_seconds": 26.46552610397339,
+    "examples_per_second": 182818.961580121,
+    "peak_memory_mb": 235.16259765625,
+    "gradient_nan_count": 0,
+    "device": "cuda",
+    "best_validation_loss": 0.18041412694113595,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.2735841958429003,
+        "val_loss": 0.19625213810375758,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.18065852818414946,
+        "val_loss": 0.18348891964980535,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.1643418864474684,
+        "val_loss": 0.1817847180366516,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.15538175052343892,
+        "val_loss": 0.18041412694113595,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.14875180867079854,
+        "val_loss": 0.18283732405730657,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.14378400154525253,
+        "val_loss": 0.18627989615712848,
+        "learning_rate": 0.0005
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.13565739305680477,
+        "val_loss": 0.18700912696974617,
+        "learning_rate": 0.0005
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.13247472088462509,
+        "val_loss": 0.18961943575314114,
+        "learning_rate": 0.00025
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.12834287371467515,
+        "val_loss": 0.1919699558189937,
+        "learning_rate": 0.00025
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.1271719303038822,
+        "val_loss": 0.19306445155824933,
+        "learning_rate": 0.000125
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.12427595989580081,
+        "val_loss": 0.1943852755001613,
+        "learning_rate": 0.000125
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.12405366244428048,
+        "val_loss": 0.19534154312951224,
+        "learning_rate": 6.25e-05
+      }
+    ],
+    "mcnemar_vs_baseline": null
+  },
+  "experimental_cnn": {
+    "accuracy": 0.9468303571428571,
+    "precision_macro": 0.9468307573812492,
+    "recall_macro": 0.9468303571428571,
+    "f1_macro": 0.9468303452364828,
+    "precision_micro": 0.9468303571428571,
+    "recall_micro": 0.9468303571428571,
+    "f1_micro": 0.9468303571428571,
+    "precision_weighted": 0.9468307573812492,
+    "recall_weighted": 0.9468303571428571,
+    "f1_weighted": 0.9468303452364827,
+    "roc_auc": 0.9882696409438776,
+    "pr_auc": 0.9876925313584183,
+    "mcc": 0.8936611145240168,
+    "brier_score": 0.03958646264746587,
+    "expected_calibration_error": 0.008049883011894838,
+    "confusion_matrix": [
+      [
+        53049,
+        2951
+      ],
+      [
+        3004,
+        52996
+      ]
+    ],
+    "accuracy_ci95": [
+      0.9455714285714286,
+      0.9482053571428571
+    ],
+    "macro_f1_ci95": [
+      0.9455714262943119,
+      0.9482039125107753
+    ],
+    "mcc_ci95": [
+      0.8911576348492493,
+      0.8964078725389409
+    ],
+    "slice_metrics": {
+      "short": {
+        "n": 26869,
+        "macro_f1": 0.9381149615616788,
+        "error_rate": 0.05939930775242845
+      },
+      "medium": {
+        "n": 50261,
+        "macro_f1": 0.9488917777251281,
+        "error_rate": 0.05107339686834723
+      },
+      "long": {
+        "n": 34870,
+        "macro_f1": 0.9466084461253788,
+        "error_rate": 0.051390880412962435
+      }
+    },
+    "parameter_count": 4037377,
+    "training_time_seconds": 180.34082198143005,
+    "examples_per_second": 26829.200104778367,
+    "peak_memory_mb": 431.42919921875,
+    "gradient_nan_count": 0,
+    "device": "cuda",
+    "best_validation_loss": 0.13755694133894783,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.2698957137952601,
+        "val_loss": 0.17379980717386517,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.17492982314020245,
+        "val_loss": 0.14988795791353499,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.14870573132095602,
+        "val_loss": 0.1424422324555261,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.13157595838727382,
+        "val_loss": 0.13907067562852587,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.11809056012082826,
+        "val_loss": 0.13755694133894783,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.10518727901150582,
+        "val_loss": 0.13961008787155152,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.09349127177167968,
+        "val_loss": 0.14191385507583618,
+        "learning_rate": 0.0005
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.07534320824566831,
+        "val_loss": 0.14814371177128383,
+        "learning_rate": 0.0005
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.06561024883185244,
+        "val_loss": 0.1532581592457635,
+        "learning_rate": 0.00025
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.05576730667268337,
+        "val_loss": 0.15810703754425048,
+        "learning_rate": 0.00025
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.05078539488893853,
+        "val_loss": 0.16270080847399576,
+        "learning_rate": 0.000125
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.045622400450165655,
+        "val_loss": 0.1656546130350658,
+        "learning_rate": 0.000125
+      }
+    ],
+    "mcnemar_vs_baseline": {
+      "b": 1849,
+      "c": 3499,
+      "chi2": 508.4519446522064,
+      "p_value": 1.377298823463025e-112
+    }
+  },
+  "experimental_gru": {
+    "accuracy": 0.9518571428571428,
+    "precision_macro": 0.9518623444612995,
+    "recall_macro": 0.9518571428571428,
+    "f1_macro": 0.9518570043078648,
+    "precision_micro": 0.9518571428571428,
+    "recall_micro": 0.9518571428571428,
+    "f1_micro": 0.9518571428571428,
+    "precision_weighted": 0.9518623444612995,
+    "recall_weighted": 0.9518571428571428,
+    "f1_weighted": 0.9518570043078648,
+    "roc_auc": 0.9901112602040816,
+    "pr_auc": 0.9897897390159643,
+    "mcc": 0.9037194873034726,
+    "brier_score": 0.03646131007220135,
+    "expected_calibration_error": 0.008096065011008501,
+    "confusion_matrix": [
+      [
+        53209,
+        2791
+      ],
+      [
+        2601,
+        53399
+      ]
+    ],
+    "accuracy_ci95": [
+      0.9507319196428571,
+      0.9530897321428572
+    ],
+    "macro_f1_ci95": [
+      0.9507314962918765,
+      0.9530897279244839
+    ],
+    "mcc_ci95": [
+      0.9014675305328749,
+      0.9061934750475205
+    ],
+    "slice_metrics": {
+      "short": {
+        "n": 26869,
+        "macro_f1": 0.9446131922104424,
+        "error_rate": 0.053221184264393914
+      },
+      "medium": {
+        "n": 50261,
+        "macro_f1": 0.9533108535212942,
+        "error_rate": 0.046656453313702474
+      },
+      "long": {
+        "n": 34870,
+        "macro_f1": 0.9519833456213478,
+        "error_rate": 0.04637223974763407
+      }
+    },
+    "parameter_count": 4334849,
+    "training_time_seconds": 159.02129697799683,
+    "examples_per_second": 30426.11330650555,
+    "peak_memory_mb": 1716.77392578125,
+    "gradient_nan_count": 0,
+    "device": "cuda",
+    "best_validation_loss": 0.12612595515591757,
+    "history": [
+      {
+        "epoch": 1,
+        "train_loss": 0.23199230725616973,
+        "val_loss": 0.15130435109138488,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 2,
+        "train_loss": 0.13449851637186133,
+        "val_loss": 0.1332084721326828,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 3,
+        "train_loss": 0.10748661410176966,
+        "val_loss": 0.12612595515591757,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 4,
+        "train_loss": 0.08613328692895658,
+        "val_loss": 0.13360495030879974,
+        "learning_rate": 0.001
+      },
+      {
+        "epoch": 5,
+        "train_loss": 0.06648001487267577,
+        "val_loss": 0.13925158091953824,
+        "learning_rate": 0.0005
+      },
+      {
+        "epoch": 6,
+        "train_loss": 0.039911884945689646,
+        "val_loss": 0.16058273783751897,
+        "learning_rate": 0.0005
+      },
+      {
+        "epoch": 7,
+        "train_loss": 0.02858057372368929,
+        "val_loss": 0.18169243139880045,
+        "learning_rate": 0.00025
+      },
+      {
+        "epoch": 8,
+        "train_loss": 0.017363785459071416,
+        "val_loss": 0.2113572313955852,
+        "learning_rate": 0.00025
+      },
+      {
+        "epoch": 9,
+        "train_loss": 0.013542529025356177,
+        "val_loss": 0.23109787123543876,
+        "learning_rate": 0.000125
+      },
+      {
+        "epoch": 10,
+        "train_loss": 0.009834449342186066,
+        "val_loss": 0.24570276464734758,
+        "learning_rate": 0.000125
+      },
+      {
+        "epoch": 11,
+        "train_loss": 0.008322024398080314,
+        "val_loss": 0.2618963126625333,
+        "learning_rate": 6.25e-05
+      },
+      {
+        "epoch": 12,
+        "train_loss": 0.006852747259001474,
+        "val_loss": 0.2649467273269381,
+        "learning_rate": 6.25e-05
+      }
+    ],
+    "mcnemar_vs_baseline": {
+      "b": 1856,
+      "c": 4069,
+      "chi2": 825.8133333333334,
+      "p_value": 1.3179165912064917e-181
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "real_path": "../data/photo_jpg",
+  "fake_path": "outputs/pred_A2B",
+  "n_real": 7038,
+  "n_fake": 300,
+  "fid": 84.37599687960974,
+  "kid": 0.017406940460205078,
+  "generative_precision": 0.15333333333333332,
+  "generative_recall": 0.0,
+  "device": "cuda",
+  "lpips": "LPIPS requires paired or explicitly matched images; run paired evaluator separately"
+}

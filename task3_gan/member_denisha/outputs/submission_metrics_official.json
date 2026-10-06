@@ -1,0 +1,11 @@
+{
+  "protocol": "Part3_Evaluation_Script.ipynb",
+  "limit_per_set": 300,
+  "device": "cpu",
+  "FID_B2A": 98.360,
+  "MiFID_B2A": 0.4069,
+  "FID_A2B": 103.228,
+  "MiFID_A2B": 0.4189,
+  "FID": 100.79381010399467,
+  "MiFID": 0.41292320024347506
+}

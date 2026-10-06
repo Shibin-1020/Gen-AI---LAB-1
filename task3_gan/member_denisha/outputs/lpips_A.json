@@ -1,0 +1,8 @@
+{
+  "n_pairs": 300,
+  "lpips_mean": 0.2840504684050878,
+  "real": "../data/monet_jpg",
+  "recon": "outputs/recon_A",
+  "device": "cuda",
+  "pairing": "sorted index order"
+}

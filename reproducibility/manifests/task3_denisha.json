@@ -1,0 +1,23 @@
+{
+  "student": "Denisha Ketan Tank",
+  "task": "task3",
+  "command": "python task3_gan/member_denisha/run_task3.py --config task3_gan/member_denisha/config_competition.yaml --checkpoint-dir task3_gan/member_denisha/checkpoints_competition --require-gpu",
+  "git_revision": "70bd081",
+  "dataset_name_and_version": "Course-provided Monet/photo dataset from dataset.zip",
+  "dataset_path": "task3_gan/data/monet_jpg and task3_gan/data/photo_jpg",
+  "python_version": "Not captured in archived raw log",
+  "package_versions": {
+    "torch": "Not captured in archived raw log",
+    "torchvision": "Not captured in archived raw log",
+    "numpy": "Not captured in archived raw log",
+    "scipy": "Not captured in archived raw log",
+    "Pillow": "Not captured in archived raw log"
+  },
+  "hardware": "NVIDIA GeForce RTX 4090; AMP float16; peak memory 4815.53 MB",
+  "checkpoint_to_result_mapping": {
+    "checkpoint": "checkpoints_competition/cyclegan_latest.pt",
+    "translations": "outputs/pred_A2B and outputs/pred_B2A",
+    "official_submission": "outputs/submission.csv"
+  },
+  "notes": "Official Part3_Evaluation_Script.ipynb was rerun on 300 images per direction. Python/package versions were not recorded in the archived log and should be captured if the instructor requires exact environment reproduction."
+}

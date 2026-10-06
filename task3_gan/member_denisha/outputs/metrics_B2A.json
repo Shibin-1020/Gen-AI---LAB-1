@@ -1,0 +1,12 @@
+{
+  "real_path": "../data/monet_jpg",
+  "fake_path": "outputs/pred_B2A",
+  "n_real": 300,
+  "n_fake": 300,
+  "fid": 96.77947212404978,
+  "kid": 0.005721330642700195,
+  "generative_precision": 0.06,
+  "generative_recall": 0.02666666666666667,
+  "device": "cuda",
+  "lpips": "LPIPS requires paired or explicitly matched images; run paired evaluator separately"
+}
