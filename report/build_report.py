@@ -206,7 +206,9 @@ def teammate_models(task: str):
 
 def tm_val(m, key):
     v = (m.get("metrics") or {}).get(key)
-    return fnum(v) if v is not None else PEND
+    if v is None:
+        return PEND
+    return esc(v) if isinstance(v, str) else fnum(v)
 
 
 t1 = {r["metric"] + ("" if r["metric"] != "Total training time" else f" ({r['notes']})"): r
@@ -285,10 +287,11 @@ def build() -> Path:
     story.append(P(
         " ".join(f"{m['name']} built {m['built'].rstrip('.')}." for m in members) +
         " Each member trained their own models from scratch in a personal folder for every task "
-        "(`task1_llm/<member>`, `task2_sentiment/<member>`, `task3_gan/<member>`). To keep the results "
-        "comparable we shared the raw TinyStories file and the generation prompts for Task 1, the official Yelp "
-        "Polarity test split and a common metric module for Task 2, and the instructor's evaluation script for "
-        "Task 3. The comparison tables and the analysis sections of this report were written jointly."))
+        "(`task1_llm/<member>`, `task2_sentiment/<member>`, `task3_gan/<member>`). Both members trained on the "
+        "same datasets (the TinyStories training split, Yelp Review Polarity and the course Monet/photo images) "
+        "and scored Task 3 with the instructor's evaluation script; where the members' evaluation protocols "
+        "differ, for example the Task 2 test split, this is stated next to the results. The comparison tables "
+        "and the analysis sections of this report were written jointly."))
     story.append(Paragraph("1.1 Repository Organisation and Reproducibility", H2))
     story.append(P(
         "Every member folder follows the same layout: source code and the task notebook in `src/`, configuration "
@@ -351,7 +354,9 @@ def build() -> Path:
         f"blocks and the residual connections) were written by hand following Vaswani et al. [1], with the "
         f"pre-LayerNorm arrangement of Xiong et al. [5] and the GPT-2 initialisation scheme [4]; no built-in "
         f"Transformer or attention module of PyTorch is used, and a unit test (`tests/test_model.py`) checks this. "
-        f"Each member drew their own split from the cleaned story pool. Shibin's split contains 100,000 training "
+        f"For preprocessing, typographic Unicode characters were mapped to ASCII and stories that still contained "
+        f"non-ASCII characters or were shorter than 50 characters were removed, which kept 1,989,367 of 2,119,719 "
+        f"stories. Each member drew their own split from the cleaned story pool. Shibin's split contains 100,000 training "
         f"and 10,000 validation stories (seed 266), and the character vocabulary of 90 symbols was built from the "
         f"training split only. The network has {m['n_layer']} layers, a model width of {m['d_model']}, "
         f"{m['n_head']} attention heads and a context of {m['block_size']} characters, about 7.5 million parameters "
@@ -553,12 +558,16 @@ def build() -> Path:
     story.append(P(
         "All Task 2 models classify a review from the Yelp Review Polarity dataset [6] as positive or negative and "
         "learn their word embeddings from random "
-        "initialisation; no pretrained embeddings or language models are used. The official test split (38,000 "
-        "reviews) is shared by the team. Each member carved a validation set out of the training split; Shibin "
-        "used 50,000 reviews (seed 266) for early stopping and model selection. Preprocessing removes duplicates "
+        "initialisation; no pretrained embeddings or language models are used. Shibin evaluates on the official "
+        "test split (38,000 reviews) and carved a validation set of 50,000 reviews (seed 266) out of the training "
+        "split for early stopping and model selection; Denisha's protocol is described below. Preprocessing removes duplicates "
         "and reviews that also appear in the test set, lowercases the text, expands contractions, removes "
         "punctuation and stopwords while keeping negations and contrast words, and applies Snowball stemming. "
-        "The vocabulary of 30,000 tokens is built from the training split only."))
+        "The vocabulary of 30,000 tokens is built from the training split only. The data analysis showed "
+        "perfectly balanced classes (50% positive in every split), a mean review length of 134 words (median 98, "
+        "95th percentile 375) and longer negative than positive reviews (153 against 116 words on average); 102 "
+        "duplicate training reviews and 15 reviews that also occur in the test set were removed. After "
+        "preprocessing, a review has 66.5 tokens on average and only 1.8% exceed the 256-token limit."))
     story.append(P(
         "Shibin trained three models that share the same 128-dimensional embedding, so that differences in the "
         "results come from the architecture. The baseline averages the word embeddings of a review and feeds them "
@@ -1014,7 +1023,6 @@ def build() -> Path:
         ("Failure analysis", f"{T3}/failure_analysis.md", False),
         ("Executed notebook", f"{T3}/src/task3_cyclegan.ipynb", False),
     ], [("Configuration", f"{D3}/config_competition.yaml", False),
-        ("Training log", "reproducibility/raw_logs/task3_denisha.log", False),
         ("Run manifest", "reproducibility/manifests/task3_denisha.json", False),
         ("Official evaluation", f"{D3}/outputs/submission_metrics_official.json", False),
         ("Kaggle submission file", f"{D3}/outputs/submission.csv", False),
