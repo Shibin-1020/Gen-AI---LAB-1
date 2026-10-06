@@ -5,8 +5,8 @@
   "content_preservation_cosine_B2A": 0.3046045767143369,
   "exported_A2B": 300,
   "exported_B2A": 300,
-  "generator_gradient_norm_mean": NaN,
-  "generator_gradient_norm_max": NaN,
+  "generator_gradient_norm_mean": "not_recorded",
+  "generator_gradient_norm_max": "not_recorded",
   "gradient_nan_count": 0,
   "parameter_count_generators": 22756358,
   "parameter_count_discriminators": 5529474,
@@ -14,8 +14,55 @@
   "images_per_second": 58.495680941128185,
   "peak_memory_mb": 4815.53076171875,
   "device": "cuda",
-  "fid_kid_precision_recall": "run evaluate_metrics.py for both directions",
-  "lpips": "run evaluate_lpips.py for both reconstruction folders",
-  "kaggle_submission": "C:\\Users\\rishitha\\Downloads\\GenAI\\task3_gan\\member_denisha\\outputs\\images.zip",
-  "human_audit": "complete human_audit.csv"
+  "fid_kid_precision_recall": {
+    "A2B": {
+      "real_path": "../data/photo_jpg",
+      "fake_path": "outputs/pred_A2B",
+      "n_real": 7038,
+      "n_fake": 300,
+      "fid": 84.37599687960974,
+      "kid": 0.017406940460205078,
+      "generative_precision": 0.15333333333333332,
+      "generative_recall": 0.0,
+      "device": "cuda",
+      "lpips": "LPIPS requires paired or explicitly matched images; run paired evaluator separately"
+    },
+    "B2A": {
+      "real_path": "../data/monet_jpg",
+      "fake_path": "outputs/pred_B2A",
+      "n_real": 300,
+      "n_fake": 300,
+      "fid": 96.77947212404978,
+      "kid": 0.005721330642700195,
+      "generative_precision": 0.06,
+      "generative_recall": 0.02666666666666667,
+      "device": "cuda",
+      "lpips": "LPIPS requires paired or explicitly matched images; run paired evaluator separately"
+    }
+  },
+  "lpips": {
+    "reconstruction_A": {
+      "n_pairs": 300,
+      "lpips_mean": 0.2840504684050878,
+      "real": "../data/monet_jpg",
+      "recon": "outputs/recon_A",
+      "device": "cuda",
+      "pairing": "sorted index order"
+    },
+    "reconstruction_B": {
+      "n_pairs": 300,
+      "lpips_mean": 0.21652673840522765,
+      "real": "../data/photo_jpg",
+      "recon": "outputs/recon_B",
+      "device": "cuda",
+      "pairing": "sorted index order"
+    }
+  },
+  "kaggle_submission": "outputs/images.zip",
+  "human_audit": {
+    "file": "outputs/human_audit.csv",
+    "rater_1": "complete",
+    "rater_2": "pending",
+    "agreement_metrics": "pending"
+  }
 }

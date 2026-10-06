@@ -28,7 +28,12 @@ task3_gan/
   (1–5), with quadratic-weighted Cohen's κ.
 
 ## Members
-| Member | Folder | Generator | Discriminator | Kaggle FID | Rank |
+| Member | Folder | Generator | Discriminator | Kaggle score | Rank |
 |---|---|---|---|---|---|
-| Shibin Thomas | [`shibin_thomas/`](shibin_thomas/) | ResNet-9, resize-conv upsampling | 70×70 PatchGAN | | |
-| _teammate_ | | | | | |
+| Shibin Thomas | [`shibin_thomas/`](shibin_thomas/) | ResNet-9, resize-conv upsampling | 70×70 PatchGAN | recorded in `kaggle_leaderboard.json` | recorded in report |
+| Denisha Ketan Tank | [`member_denisha/`](member_denisha/) | ResNet-9 CycleGAN | PatchGAN | -50.6033 | 34 |
+
+Denisha's official evaluator outputs are in `member_denisha/outputs/submission_metrics_official.json`,
+and the expanded metric table is `member_denisha/outputs/full_metrics_report.csv`. The exported
+archive contains 300 competition images. The 2-rater human audit is intentionally marked incomplete
+until Rater 2 independently fills the second score columns and the agreement script produces its JSON.
