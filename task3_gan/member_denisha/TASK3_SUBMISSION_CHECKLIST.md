@@ -29,8 +29,8 @@ The final competition config is 60 epochs, batch size 4, 2,000 samples per epoch
 
 ## Manual requirements after training
 
-1. Two raters must independently complete the six score columns for all 30 rows in `outputs/human_audit.csv`.
-2. Run `python task3_gan/member_denisha/src/audit_agreement.py` and record the generated agreement metrics.
+1. Two raters independently completed the six score columns for all 30 rows in `outputs/human_audit.csv`.
+2. `python src/audit_agreement.py` was run and the generated metrics are stored in `outputs/human_audit_metrics.json`.
 3. Upload `outputs/submission.csv` to Kaggle and record the leaderboard score and rank in the final report.
 
 These three values cannot be generated honestly by the training code: the human scores require human raters, and the Kaggle score/rank requires the competition server.

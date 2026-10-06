@@ -7,7 +7,7 @@ Each member's work lives in a named folder inside each task folder.
 |---|---|---|
 | 1 — GPT-style character LLM from scratch (TinyStories) | [`task1_llm/`](task1_llm/) | Shibin and Denisha complete; Denisha val BPC 0.9842 on Tesla T4 |
 | 2 — Yelp Polarity sentiment classification | [`task2_sentiment/`](task2_sentiment/) | Shibin and Denisha complete; Denisha best BiGRU accuracy 95.19% on Tesla T4 |
-| 3 — CycleGAN Monet ↔ Photo (Kaggle) | [`task3_gan/`](task3_gan/) | Both independent runs and official FID/MiFID results recorded; human audit still needs Rater 2 |
+| 3 — CycleGAN Monet ↔ Photo (Kaggle) | [`task3_gan/`](task3_gan/) | Both independent runs, official FID/MiFID, Kaggle result, and completed two-rater audit recorded |
 
 ```
 .

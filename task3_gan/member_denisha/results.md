@@ -68,9 +68,17 @@ Kaggle record:
 
 ## Human audit status
 
-`outputs/human_audit.csv` contains the 30 fixed samples, but both raters' six
-score columns are still blank. Cohen's kappa/percent agreement cannot be
-computed honestly until two raters complete those fields. After completion run:
+Both raters independently scored all 30 fixed samples in
+`outputs/human_audit.csv`. The agreement script was run and produced:
+
+| Dimension | Cohen's kappa | Percent agreement |
+|---|---:|---:|
+| Style | -0.028571 | 0.80 |
+| Content | 1.000000 | 1.00 |
+| Artifacts | 1.000000 | 1.00 |
+
+The generated metrics are stored in `outputs/human_audit_metrics.json`.
+The command used was:
 
 ```bash
 python src/audit_agreement.py
@@ -85,6 +93,7 @@ python src/audit_agreement.py
 - `outputs/history.json`: generator/discriminator/cycle/identity loss history.
 - `outputs/metrics_A2B.json`, `outputs/metrics_B2A.json`: additional local metrics.
 - `outputs/lpips_A.json`, `outputs/lpips_B.json`: reconstruction LPIPS.
-- `outputs/human_audit.csv`: 30-sample audit template.
+- `outputs/human_audit.csv`: completed two-rater audit for 30 fixed samples.
+- `outputs/human_audit_metrics.json`: Cohen's kappa and percent agreement.
 - `reproducibility/raw_logs/task3_denisha.log`: unedited GPU training log.
 - `reproducibility/manifests/task3_denisha.json`: run manifest.

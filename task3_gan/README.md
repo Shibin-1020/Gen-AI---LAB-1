@@ -35,5 +35,6 @@ task3_gan/
 
 Denisha's official evaluator outputs are in `member_denisha/outputs/submission_metrics_official.json`,
 and the expanded metric table is `member_denisha/outputs/full_metrics_report.csv`. The exported
-archive contains 300 competition images. The 2-rater human audit is intentionally marked incomplete
-until Rater 2 independently fills the second score columns and the agreement script produces its JSON.
+archive contains 300 competition images. The 2-rater human audit is complete in
+`member_denisha/outputs/human_audit.csv`, with agreement metrics in
+`member_denisha/outputs/human_audit_metrics.json`.

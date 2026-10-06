@@ -62,7 +62,7 @@
   "human_audit": {
     "file": "outputs/human_audit.csv",
     "rater_1": "complete",
-    "rater_2": "pending",
-    "agreement_metrics": "pending"
+    "rater_2": "complete",
+    "agreement_metrics": "outputs/human_audit_metrics.json"
   }
 }
