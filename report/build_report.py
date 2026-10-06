@@ -256,7 +256,7 @@ def shibin_audit_cell():
 
 # ======================================================================================================
 def build() -> Path:
-    out = REPORT / f"DATA266_Lab1_Report_Team_{INFO['team_number']}.pdf"
+    out = REPORT / "drafts" / f"DATA266_Lab1_Report_Team_{INFO['team_number']}_integrated.pdf"
     members = INFO["members"]
     story = []
 
