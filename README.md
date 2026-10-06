@@ -1,13 +1,13 @@
 # DATA266 Lab 1 — LLM Pretraining · Sentiment Classification · CycleGAN Style Transfer
 
-Team repository for DATA266 Lab 1 (Fall 2026). Every member builds and trains their own models.
-Each member's work lives in a named folder inside each task folder.
+Project repository for DATA266 Lab 1 (Fall 2026). The repository contains the code, experiments,
+reproducibility artifacts, and combined report for all three tasks.
 
 | Task | Folder | Status |
 |---|---|---|
-| 1 — GPT-style character LLM from scratch (TinyStories) | [`task1_llm/`](task1_llm/) | Shibin: done (10 epochs, val BPC 0.824, RTX 5090) |
-| 2 — Yelp Polarity sentiment classification | [`task2_sentiment/`](task2_sentiment/) | Shibin: done (3 models; best BiGRU+attention 95.58% test accuracy, RTX 5090) |
-| 3 — CycleGAN Monet ↔ Photo (Kaggle) | [`task3_gan/`](task3_gan/) | Shibin: v1 run done (FID 117.7); improved v2 config ready (`configs/cyclegan_v2.yaml`) |
+| 1 — GPT-style character LLM from scratch (TinyStories) | [`task1_llm/`](task1_llm/) | implementation and results included |
+| 2 — Yelp Polarity sentiment classification | [`task2_sentiment/`](task2_sentiment/) | multiple model implementations and results included |
+| 3 — CycleGAN Monet ↔ Photo (Kaggle) | [`task3_gan/`](task3_gan/) | training, evaluation, and audit artifacts included |
 | Final report | [`report/DATA266_Lab1_Report_Team_09.pdf`](report/DATA266_Lab1_Report_Team_09.pdf) | combined team report (rebuild: `python report/build_report.py`) |
 
 ```
@@ -36,29 +36,28 @@ pip install -r requirements.txt
 ```
 
 ## Smoke test (one command)
-Run this from the repository root. It reproduces a member's full pipeline at small scale: it downloads 3,000
+Run this from the repository root. It reproduces a task pipeline at small scale: it downloads 3,000
 TinyStories, preprocesses them, trains for 2 epochs, evaluates every metric, and writes the failure candidates.
 It takes a few minutes on a CPU and about one minute on a GPU.
 ```bash
-python task1_llm/shibin_thomas/src/run_pipeline.py --config task1_llm/shibin_thomas/configs/smoke.yaml
+python task1_llm/<member_name>/src/run_pipeline.py --config task1_llm/<member_name>/configs/smoke.yaml
 ```
-Unit tests (no data needed): `python task1_llm/shibin_thomas/tests/test_model.py`
+Unit tests (no data needed): `python task1_llm/<member_name>/tests/test_model.py`
 
-## Reproducing a member's full run
+## Reproducing a full run
 | Member | Task 1 command |
 |---|---|
-| Shibin Thomas | `python task1_llm/shibin_thomas/src/run_pipeline.py --config task1_llm/shibin_thomas/configs/gpt_char_v1.yaml` |
+| Project run | `python task1_llm/<member_name>/src/run_pipeline.py --config task1_llm/<member_name>/configs/gpt_char_v1.yaml` |
 
 | Member | Task 2 command |
 |---|---|
-| Shibin Thomas | `python task2_sentiment/shibin_thomas/src/run_pipeline.py` (smoke: add `--smoke`) |
+| Project run | `python task2_sentiment/<member_name>/src/run_pipeline.py` (smoke: add `--smoke`) |
 
 | Member | Task 3 command |
 |---|---|
-| Shibin Thomas | v1: `python task3_gan/shibin_thomas/src/run_pipeline.py` · v2: add `--config task3_gan/shibin_thomas/configs/cyclegan_v2.yaml` (smoke: `--config task3_gan/shibin_thomas/configs/smoke.yaml`) |
+| Project run | v1: `python task3_gan/<member_name>/src/run_pipeline.py` · v2: add the appropriate YAML configuration (smoke: use the task's smoke configuration) |
 
-Detailed GPU Lab instructions (including resume after a session ends):
-[`task1_llm/shibin_thomas/README.md`](task1_llm/shibin_thomas/README.md).
+Detailed GPU Lab instructions and task-specific run notes are available in the README files inside each task folder.
 
 ## Where results live
 | What | Where |
@@ -75,9 +74,4 @@ Detailed GPU Lab instructions (including resume after a session ends):
   and runs are driven by YAML configs (override with `--set key=value`; overrides are logged).
 * Raw logs are append-only and are never edited after a run.
 * Task 1 uses no prebuilt Transformer or attention modules. This is checked by
-  `task1_llm/shibin_thomas/tests/test_model.py`.
-
-## Team
-| Member | Task 1 | Task 2 | Task 3 |
-|---|---|---|---|
-| Shibin Thomas | [`task1_llm/shibin_thomas`](task1_llm/shibin_thomas/) | [`task2_sentiment/shibin_thomas`](task2_sentiment/shibin_thomas/) | [`task3_gan/shibin_thomas`](task3_gan/shibin_thomas/) |
+  `task1_llm/<member_name>/tests/test_model.py`.
