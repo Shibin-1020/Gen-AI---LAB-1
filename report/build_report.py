@@ -34,6 +34,20 @@ BLOB = f"{INFO['repo_url']}/blob/{INFO['repo_branch']}/"
 TREE = f"{INFO['repo_url']}/tree/{INFO['repo_branch']}/"
 BRANCH_URL = f"{INFO['repo_url']}/tree/{INFO['repo_branch']}"
 
+TM = next((m for m in INFO["members"] if m.get("branch")), None)
+TM_BRANCH = TM["branch"] if TM else None
+TM_BLOB = f"{INFO['repo_url']}/blob/{TM_BRANCH}/" if TM else ""
+TM_TREE = f"{INFO['repo_url']}/tree/{TM_BRANCH}/" if TM else ""
+D1, D2, D3 = "task1_llm/member_denisha", "task2_sentiment/member_denisha", "task3_gan/member_denisha"
+
+
+def tm_bytes(path: str) -> bytes:
+    """Read a teammate file from their branch (read-only; nothing is copied into this branch)."""
+    import subprocess
+    return subprocess.run(["git", "show", f"origin/{TM_BRANCH}:{path}"], cwd=ROOT, capture_output=True,
+                          check=True).stdout
+
+
 T1 = "task1_llm/shibin_thomas"
 T2 = "task2_sentiment/shibin_thomas"
 T3 = "task3_gan/shibin_thomas"
@@ -68,6 +82,7 @@ PEND = "Pending"
 WIDTH = letter[0] - 2.0 * inch
 
 _fig = [0]
+TAB = {}
 _tab = [0]
 
 
@@ -86,8 +101,8 @@ def P(s, style=BODY):
     return Paragraph(md(s), style)
 
 
-def path_ref(path: str, tree=False) -> str:
-    url = (TREE if tree else BLOB) + path
+def path_ref(path: str, tree=False, teammate=False) -> str:
+    url = ((TM_TREE if tree else TM_BLOB) if teammate else (TREE if tree else BLOB)) + path
     return f'<link href="{url}"><font name="Mono" size="7.4">{esc(path)}</font></link>'
 
 
@@ -122,12 +137,13 @@ def tcap(text: str):
                                                                          spaceAfter=4, keepWithNext=1))
 
 
-def source(*paths, tree=False):
-    return Paragraph("Source: " + ", ".join(path_ref(p, tree) for p in paths), SMALL)
+def source(*paths, tree=False, teammate=()):
+    refs = [path_ref(p, tree) for p in paths] + [path_ref(p, teammate=True) + f" (branch {TM_BRANCH})" for p in teammate]
+    return Paragraph("Source: " + ", ".join(refs), SMALL)
 
 
-def figure(path: str, caption: str, width=WIDTH, max_h=4.0 * inch):
-    src = ROOT / path
+def figure(path: str, caption: str, width=WIDTH, max_h=4.0 * inch, teammate=False):
+    src = io.BytesIO(tm_bytes(path)) if teammate else ROOT / path
     im = PILImage.open(src).convert("RGB")
     w, h = im.size
     scale = min(width / w, max_h / h)
@@ -139,12 +155,14 @@ def figure(path: str, caption: str, width=WIDTH, max_h=4.0 * inch):
     buf.seek(0)
     _fig[0] += 1
     return KeepTogether([Image(buf, width=w * scale, height=h * scale),
-                         Paragraph(f"<b>Figure {_fig[0]}.</b> {md(caption)} ({path_ref(path)})", CAP)])
+                         Paragraph(f"<b>Figure {_fig[0]}.</b> {md(caption)} ({path_ref(path, teammate=teammate)})", CAP)])
 
 
-def evidence(items):
+def evidence(items, tm_items=()):
     rows = [["Evidence", "Location in the repository"]]
-    rows += [[Paragraph(md(d), CELL), Paragraph(path_ref(p, tree=t), CELL)] for d, p, t in items]
+    rows += [[Paragraph(md("Shibin: " + d), CELL), Paragraph(path_ref(p, tree=t), CELL)] for d, p, t in items]
+    rows += [[Paragraph(md("Denisha: " + d), CELL),
+              Paragraph(path_ref(p, tree=t, teammate=True) + f" (branch {TM_BRANCH})", CELL)] for d, p, t in tm_items]
     return table(rows, [2.0 * inch, WIDTH - 2.0 * inch])
 
 
@@ -264,7 +282,10 @@ def build() -> Path:
         f"and 10,000 validation stories (seed 266), and the character vocabulary of 90 symbols was built from the "
         f"training split only. The network has {m['n_layer']} layers, a model width of {m['d_model']}, "
         f"{m['n_head']} attention heads and a context of {m['block_size']} characters, about 7.5 million parameters "
-        f"in total."))
+        f"in total. Denisha built a smaller and shallower model (4 layers, width 256, 4 heads, context 128, "
+        f"3.25 million parameters) on her own 100,000/10,000 split (seed 20260929) and trained it on a Tesla T4 "
+        f"with fp16 mixed precision, so the two models differ in depth, width, context length and optimiser "
+        f"settings."))
 
     story.append(Paragraph("2.1 Model Comparison", H2))
     tms = teammate_models("task1")
@@ -311,12 +332,15 @@ def build() -> Path:
     story.append(tcap("Task 1 comparison of architecture, hyperparameters and metrics. Losses, perplexity, BPC and "
                       "accuracy are computed on the best checkpoint; metric definitions follow the shared module "
                       "`task1_llm/shared_eval/metrics.py`."))
+    TAB["t1"] = _tab[0]
     story.append(table(rows, [2.0 * inch] + [(WIDTH - 2.0 * inch) / ncol] * ncol, first_col_bold=True))
-    story.append(source(f"{T1}/metrics_report.csv"))
+    story.append(source(f"{T1}/metrics_report.csv", teammate=[f"{D1}/outputs/metrics.csv", f"{D1}/config.yaml"]))
 
     story.append(Paragraph("2.2 Training Behaviour", H2))
     story.append(figure(f"{T1}/outputs/{RUN1}/loss_curves.png",
                         "Task 1 training and validation loss (Shibin Thomas)", max_h=2.9 * inch))
+    story.append(figure(f"{D1}/outputs/loss_curves.png", "Task 1 training and validation loss per epoch "
+                        "(Denisha Ketan Tank)", max_h=2.6 * inch, teammate=True))
     ep_rows = [["Epoch"] + [r["epoch"] for r in t1_epochs],
                ["Val. CE"] + [f"{float(r['val_loss']):.3f}" for r in t1_epochs],
                ["Val. acc."] + [f"{float(r['val_top1_acc']) * 100:.1f}" for r in t1_epochs]]
@@ -330,22 +354,33 @@ def build() -> Path:
         "0.571, so the last epoch is also the best one. The gap between validation and training loss stays very "
         "small (0.012 nats at the end), which is expected with roughly 120 training characters per parameter. "
         "Training was stable: there were no NaN steps or loss spikes, and all of the 738 clipped steps happened "
-        "during the learning-rate warm-up."))
+        "during the learning-rate warm-up. Denisha's model followed the same pattern with a slightly negative "
+        "generalisation gap (validation loss 0.682 against a training loss of 0.713 measured with dropout active), "
+        "no NaN gradients and a final gradient norm of 0.23."))
 
     story.append(Paragraph("2.3 Discussion", H2))
     story.append(P(
-        "*Strengths.* A small model of 7.5 million parameters, trained for 29 minutes on one GPU, already writes "
-        "fluent TinyStories-style text with named characters, dialogue and simple cause and effect. It reaches a "
-        "validation BPC of 0.824 and predicts the next character correctly 81.7% of the time. With temperature "
-        "sampling the output is varied (Distinct-3 of 0.93 and almost no repeated 4-grams)."))
+        "*Strengths.* Both small models, trained from scratch on a single GPU, write fluent TinyStories-style text "
+        "with named characters, dialogue and simple cause and effect. Shibin's 7.5M-parameter model reaches a "
+        "validation BPC of 0.824 and 81.7% next-character accuracy; Denisha's 3.25M-parameter model reaches 0.984 "
+        "and 78.2%. The comparison shows the expected effect of capacity and context: the deeper, wider model "
+        "with twice the context predicts better and also produces more varied text (Distinct-3 of 0.93 against "
+        "0.74 and a repeated 4-gram rate of 0.007 against 0.153), while the smaller model needs less than a "
+        "tenth of the GPU memory (408 MB against 3,347 MB)."))
     story.append(P(
-        "*Weaknesses.* Greedy decoding falls into loops, with a repeated 4-gram rate of 0.137. Because words are "
-        "produced one character at a time, rare words are often misspelled, and sometimes spelled differently "
-        "each time they appear. Stories also lose their thread once they grow beyond the 256-character context."))
+        "*Weaknesses.* Both models show the same three failure types: repetition, broken or invented words, and "
+        "loss of coherence. Greedy decoding falls into loops (repeated 4-gram rate 0.137 for Shibin's model). "
+        "Because words are produced one character at a time, rare words are misspelled and sometimes spelled "
+        "differently each time they appear. Stories lose their thread once they grow beyond the context window, "
+        "which happens sooner for Denisha's 128-character context, where a new story often starts in the middle "
+        "of a continuation."))
     story.append(P(
-        "*Limitations.* Each model was trained once with a single seed. The validation loss was still decreasing "
-        "at epoch 10, so the model is not fully converged. Distinct-n and the repetition rate measure diversity "
-        "rather than story quality, and generation speed was measured without a key-value cache."))
+        "*Limitations.* Each model was trained once with a single seed, on different hardware (RTX 5090 and "
+        "Tesla T4) and on different random splits, so small differences should not be over-interpreted. The "
+        "diversity metrics were computed on different prompts and temperatures (10 shared prompts at T = 0.8 "
+        "for Shibin, one prompt at T = 0.7 to 1.1 for Denisha). Neither validation loss had fully flattened by "
+        "epoch 10, Distinct-n measures diversity rather than story quality, and generation speed was measured "
+        "without a key-value cache."))
     story.append(P(
         "*Next steps.* We would train for more epochs or use a slightly larger model, extend the context to 512 "
         "characters, and compare top-k or nucleus sampling with a repetition penalty on the shared prompts. A "
@@ -390,9 +425,39 @@ def build() -> Path:
     ]
     for i, (title, text, obs) in enumerate(fails, 1):
         story += [Paragraph(f"Case {i}: {title}", H3), Preformatted(text, QUOTE), P(obs)]
-    story.append(P("The teammate's failure cases are in their own `task1_llm/<member>/failure_analysis.md`."))
+    story.append(Paragraph("2.5 Failure Analysis (Denisha Ketan Tank)", H2))
+    story.append(P(
+        "Denisha generated continuations of the prompt \u201cHenry the mule was so pleased\u201d at temperatures "
+        "0.7, 0.9 and 1.1 and analysed one failure in each."))
+    dfails = [
+        ("Repetition (T = 0.7)",
+         'Henry the mule was so pleased with his paint and he said, "You are very sweet,\n'
+         'Lily. You are very brave and smart. You are very smart and kind."\n\n'
+         "Lily and Tom nodded. They got in the car and drove to their car. ...",
+         "The phrase \u201cYou are very\u201d repeats three times in two sentences, and the repetition rate "
+         "Denisha measured for this continuation is 0.237. \u201cdrove to their car\u201d after \u201cgot in the car\u201d is a "
+         "local loop. Denisha's proposed test is to compare temperatures 0.7, 0.9 and 1.1 and add a repetition "
+        "penalty, measuring the repeated 4-gram rate."),
+        ("Abrupt topic change (T = 0.9)",
+         "Henry the mule was so pleased that he spilled his hand.\n\nThe End.\n"
+         "Once there was a girl. She always wanted to explore. One day she was walking in\n"
+         "the park and she saw the sand spraying snowball covered popcorn. ...",
+         "After one nonsensical sentence the model writes \u201cThe End.\u201d and starts an unrelated story. "
+         "With a 128-character context the original character is forgotten almost immediately, and the "
+         "noun phrase \u201csand spraying snowball covered popcorn\u201d is grammatical but meaningless."),
+        ("Broken grammar and coherence (T = 1.1)",
+         "Henry the mule was so pleased that he and helped her mommy cook a nice magic fort!\n"
+         "After that, his mummy reminded him to listen carefully and jog with his owner.\n"
+         "... She loved good dream about the airport. One day, she decided to use a whip to belong",
+         "At high temperature the grammar breaks (\u201che and helped\u201d, \u201cloved good dream\u201d, "
+         "\u201cto use a whip to belong\u201d) and the pronouns switch between him and her. Lower temperatures "
+         "and longer training are the proposed fixes."),
+    ]
+    for i, (title, text, obs) in enumerate(dfails, 1):
+        story += [Paragraph(f"Case {i}: {title}", H3), Preformatted(text, QUOTE), P(obs)]
+    story.append(source(teammate=[f"{D1}/failure_analysis.md", f"{D1}/outputs/samples.json"]))
 
-    story.append(Paragraph("2.5 Evidence", H2))
+    story.append(Paragraph("2.6 Evidence", H2))
     story.append(evidence([
         ("Configuration", f"{T1}/configs/gpt_char_v1.yaml", False),
         ("Training log", f"reproducibility/raw_logs/task1_llm/shibin_thomas/{RUN1}/train.log", False),
@@ -403,7 +468,12 @@ def build() -> Path:
         ("Best checkpoint", f"{T1}/checkpoints/{RUN1}/best_model.pt", False),
         ("Results and design choices", f"{T1}/results.md", False),
         ("Executed notebook", f"{T1}/src/task1_gpt_tinystories.ipynb", False),
-    ]))
+    ], [("Configuration", f"{D1}/config.yaml", False), ("Training log", "reproducibility/raw_logs/task1_denisha.log", False),
+        ("Run manifest", "reproducibility/manifests/task1_denisha.json", False),
+        ("Metrics and history", f"{D1}/outputs/metrics.csv", False), ("Loss curves", f"{D1}/outputs/loss_curves.png", False),
+        ("Generated samples", f"{D1}/outputs/samples.json", False),
+        ("Checkpoint", f"{D1}/checkpoints/gpt_from_scratch.pt", False), ("Results", f"{D1}/results.md", False),
+        ("Notebook", f"{D1}/Task1_GPT_Colab.ipynb", False)]))
 
     # ===================================================================================== 3 TASK 2
     story += [PageBreak(), Paragraph("3 Task 2: Sentiment Classification on Yelp Polarity", H1)]
@@ -421,6 +491,17 @@ def build() -> Path:
         "results come from the architecture. The baseline averages the word embeddings of a review and feeds them "
         "to a small MLP, in the spirit of fastText [8]. The first experimental model is a TextCNN [7] with filter widths 3, 4 and 5 and max "
         "pooling over time. The second is a two-layer bidirectional GRU with additive attention pooling [9]."))
+    story.append(P(
+        "Denisha also trained a mean-pooling baseline, a TextCNN and a two-layer bidirectional GRU with "
+        "learned 128-dimensional embeddings, but with different hyperparameters: batch size 512, a "
+        "reduce-on-plateau learning-rate schedule, up to 12 epochs, bfloat16 mixed precision, an MLP hidden size "
+        "of 128 for the baseline, dropout 0.3 for the CNN, and a GRU classifier that reads the output at the last "
+        "token instead of using attention. Her TextCNN has the same layer sizes as Shibin's, so the two differ only "
+        "in their training hyperparameters. One important difference concerns evaluation: Denisha split the "
+        "560,000 official training reviews into her own training, validation and test sets and evaluated on her "
+        "held-out test set of 112,000 reviews, whereas Shibin evaluated on the official test split of 38,000 "
+        "reviews. Both test sets come from the same distribution and are large, but the numbers are not computed "
+        "on identical reviews."))
 
     story.append(Paragraph("3.1 Model Comparison", H2))
     tms2 = teammate_models("task2")
@@ -443,53 +524,67 @@ def build() -> Path:
     for k in t2_rows:
         rows.append([k] + [esc(t2[k][mm]) for mm in T2_MODELS] + [tm_val(x, k) for x in tms2])
     rows.append(["Checkpoint (SHA-256)"] + [f"{t2_man['checkpoints_files'][mm]['sha256'][:12]}" for mm in T2_MODELS]
-                + [PEND for _ in tms2])
+                + [tm_val(x, "Checkpoint (SHA-256)") for x in tms2])
     ncol = len(T2_MODELS) + len(tms2)
-    story.append(tcap("Task 2 comparison on the official test split (n = 38,000). All models share: vocabulary 30K, "
-                      "maximum length 256 tokens (head and tail), 3% warm-up with cosine decay, weight decay 1e-4, "
-                      "gradient clipping 1.0, early stopping on validation macro-F1 (patience 2), threshold 0.5. "
-                      f"Run `{RUN2}`."))
+    story.append(tcap("Task 2 comparison. Shibin's models are evaluated on the official test split (n = 38,000) and "
+                      "share: vocabulary 30K, maximum length 256 tokens (head and tail), 3% warm-up with cosine decay, "
+                      f"weight decay 1e-4, gradient clipping 1.0, early stopping on validation macro-F1 (run `{RUN2}`). "
+                      "Denisha's models are evaluated on her own held-out test split (n = 112,000) and share: vocabulary "
+                      "30K, maximum length 256, weight decay 1e-4, early stopping on validation loss. Threshold 0.5 "
+                      "for all models."))
+    TAB["t2"] = _tab[0]
     story.append(table(rows, [1.3 * inch] + [(WIDTH - 1.3 * inch) / ncol] * ncol, first_col_bold=True,
                        font=7.4 if ncol > 3 else 8.2))
-    story.append(source(f"{T2}/outputs/{RUN2}/comparison.csv", "task2_sentiment/shared_eval/metrics.py"))
+    story.append(source(f"{T2}/outputs/{RUN2}/comparison.csv", "task2_sentiment/shared_eval/metrics.py",
+                        teammate=[f"{D2}/metrics_report.csv", f"{D2}/config.yaml"]))
     story.append(P(
-        "Macro, micro and weighted scores are identical because the test set is exactly balanced (19,000 reviews "
-        "per class): weighted averaging then uses equal weights, and micro averaging always equals accuracy for a "
-        "single-label binary task."))
+        "Macro, micro and weighted scores are identical, or nearly so, because both test sets are balanced "
+        "(19,000 reviews per class in the official split and 56,000 per class in Denisha's split): weighted "
+        "averaging then uses equal weights, and micro averaging always equals accuracy for a single-label binary "
+        "task."))
 
-    sl = [["Slice (n)", "Baseline", "TextCNN", "BiGRU + attn."],
-          ["Contains a negation (28,544)", "7.47", "5.50", "4.48"],
-          ["Contains a contrast word (22,713)", "7.89", "5.94", "4.87"],
-          ["Neither negation nor contrast (6,688)", "4.93", "4.53", "4.16"],
-          ["Short, at most 50 words (9,287)", "6.96", "5.29", "5.01"],
-          ["Medium, 51 to 150 words (16,910)", "6.94", "5.22", "4.09"],
-          ["Long, more than 150 words (11,803)", "7.00", "5.52", "4.45"]]
-    story.append(tcap("Error rate (%) of Shibin's three models on subsets of the test set."))
-    story.append(table(sl, [2.8 * inch] + [(WIDTH - 2.8 * inch) / 3] * 3))
-    story.append(source(f"{T2}/metrics_report.csv"))
+    sl = [["Slice", "Shibin: Baseline", "Shibin: TextCNN", "Shibin: BiGRU + attn.", "Denisha: Baseline",
+           "Denisha: TextCNN", "Denisha: BiGRU"],
+          ["Contains a negation", "7.47", "5.50", "4.48", "-", "-", "-"],
+          ["Contains a contrast word", "7.89", "5.94", "4.87", "-", "-", "-"],
+          ["Neither negation nor contrast", "4.93", "4.53", "4.16", "-", "-", "-"],
+          ["Short reviews", "6.96", "5.29", "5.01", "6.96", "5.94", "5.32"],
+          ["Medium-length reviews", "6.94", "5.22", "4.09", "6.69", "5.11", "4.67"],
+          ["Long reviews", "7.00", "5.52", "4.45", "6.81", "5.14", "4.64"]]
+    story.append(tcap("Error rate (%) on subsets of each member's test set. Shibin's length slices are at most 50, "
+                      "51 to 150 and more than 150 words (n = 9,287 / 16,910 / 11,803); Denisha's use her own length "
+                      "bins (n = 26,869 / 50,261 / 34,870). Denisha did not compute the negation and contrast slices."))
+    story.append(table(sl, [1.7 * inch] + [(WIDTH - 1.7 * inch) / 6] * 6, font=8))
+    story.append(source(f"{T2}/metrics_report.csv", teammate=[f"{D2}/metrics_report.csv"]))
     story.append(figure(f"{T2}/outputs/{RUN2}/training_curves.png",
                         "Training and validation loss and validation macro-F1 per epoch for the three Task 2 models",
                         max_h=2.7 * inch))
 
     story.append(Paragraph("3.2 Discussion", H2))
     story.append(P(
-        "*Strengths.* The ranking BiGRU > TextCNN > baseline holds for every discrimination metric, the 95% "
-        "bootstrap intervals do not overlap, and paired McNemar tests on the same 38,000 reviews give p-values "
-        "below 1e-20 for each pair. Compared with the baseline, the BiGRU removes 36% of all errors, and 40% and "
+        "*Strengths.* Both members found the same ranking, recurrent model > TextCNN > baseline, on every "
+        "discrimination metric, which makes the result robust to the different splits, hyperparameters and "
+        "hardware. The best models reach 95.58% (Shibin, BiGRU with attention, official test set) and 95.19% "
+        "(Denisha, BiGRU, her own test set) accuracy, and the baselines agree closely (93.04% and 93.21%). "
+        "For Shibin's models the 95% bootstrap intervals do not overlap and paired McNemar tests on the same "
+        "38,000 reviews give p-values below 1e-20 for each pair; Denisha's McNemar tests against her baseline give "
+        "p-values below 1e-110. Compared with the baseline, the BiGRU removes 36% of all errors, and 40% and "
         "38% of the errors on reviews containing a negation or a contrast word, which is exactly where a bag of "
         "words cannot work. All three models are well calibrated (expected calibration error [10] at most 1.1%). Since the shared embedding "
         "table holds 3.84 of the roughly 4 million parameters in every model, the gains come from the way the text "
         "is read rather than from model size."))
     story.append(P(
-        "*Weaknesses.* The BiGRU is by far the slowest model: it trains about 120 times slower than the baseline "
-        "(19 minutes against 21 seconds) and it is slightly over-confident, with 544 of its 1,681 errors made at a "
-        "confidence above 90%. Short reviews are its hardest subset, and reviews with mixed sentiment account for "
-        "most of its confident mistakes."))
+        "*Weaknesses.* The recurrent models are the slowest: Shibin's BiGRU trains about 120 times slower than his "
+        "baseline (19 minutes against 21 seconds) and is slightly over-confident, with 544 of its 1,681 errors "
+        "made at a confidence above 90%. For both members short reviews are the hardest subset (5.0% and 5.3% "
+        "error for the best models), and both error reviews find that mixed sentiment, negation and sarcasm cause "
+        "most confident mistakes."))
     story.append(P(
         "*Limitations.* The labels come from star ratings, not from the text, so some are simply wrong: 5 of the 20 "
         "errors we reviewed contradict their own text, and 932 test reviews are misclassified by all three models. "
         "Without pretrained knowledge, idioms and sarcasm are hard to learn. We used a single seed per model and a "
-        "fixed decision threshold of 0.5."))
+        "fixed decision threshold of 0.5, and because the two members evaluated on different test sets, "
+        "differences of a few tenths of a percent between members are not meaningful."))
     story.append(P(
         "*Next steps.* Marking the tokens that follow a contrast word or a negation is a cheap change we would test "
         "first, on the contrast slice with a McNemar test. We would also try a longer maximum length for long "
@@ -533,9 +628,38 @@ def build() -> Path:
         "verdict sits in the clause after “but” or “however”. As a testable fix we propose to "
         "prefix every token after the last contrast word with a marker, retrain the BiGRU with only this change, "
         "and compare the error rate on the contrast slice (currently 4.87%) with a McNemar test on the same test "
-        "set. The teammate's error review is in their own `task2_sentiment/<member>/failure_analysis.md`."))
+        "set."))
+    story.append(Paragraph("3.4 Error Review (Denisha Ketan Tank)", H2))
+    story.append(P(
+        "Denisha reviewed 20 errors of her best model (BiGRU) chosen with the same scheme: five confident false "
+        "positives, five confident false negatives, five near-threshold errors and five errors from one slice. "
+        f"Table {_tab[0] + 1} shows ten of them."))
+    import json as _json
+    recs = _json.loads(tm_bytes(f"{D2}/outputs/error_review.json"))
+    pick = {1: "Advice, implicit negation", 2: "No context", 5: "Label noise", 6: "Negation", 8: "Negation and contrast",
+            10: "Slang, negative words in a positive review", 16: "Mixed sentiment", 19: "Non-English text",
+            11: "Mixed sentiment, late verdict", 13: "Possible label noise"}
+    group = {"confident_false_positive": "Confident FP", "confident_false_negative": "Confident FN",
+             "near_threshold": "Near threshold", "slice_specific": "Slice (medium)"}
+    rows = [["Test idx", "Label", "P(pos)", "Group", "Error type", "Review text (excerpt)"]]
+    for i in [1, 2, 5, 6, 8, 10, 16, 19, 11, 13]:
+        r = recs[i - 1]
+        txt = " ".join(str(r["text"]).replace("\\n", " ").split())
+        txt = txt if len(txt) <= 170 else txt[:167].rsplit(" ", 1)[0] + " ..."
+        rows.append([r["index"], "pos" if str(r["label"]) == "1" else "neg", f"{float(r['probability']):.3f}",
+                     group[r["review_bucket"]], pick[i], f"<i>{esc(txt)}</i>"])
+    story.append(tcap("Examples from Denisha's manual review of 20 misclassified test reviews."))
+    story.append(table(rows, [0.55 * inch, 0.4 * inch, 0.45 * inch, 0.8 * inch, 1.15 * inch, WIDTH - 3.35 * inch], font=8))
+    story.append(source(teammate=[f"{D2}/failure_analysis.md", f"{D2}/outputs/error_review.json"]))
+    story.append(P(
+        "Denisha's review finds the same broad pattern as Shibin's. Very short reviews (\u201cYup\u201d) give "
+        "the model almost nothing to work with, local negation (\u201cNot expensive\u201d) is read word by word, "
+        "and long reviews that mix praise and criticism are judged by their most frequent sentiment words rather "
+        "than by the final verdict. She also found one non-English review and two probable label errors. Her "
+        "proposed fixes are negation-aware features, an attention or sentence-level pooling layer that can weight "
+        "the concluding sentences, and an abstention analysis for extremely short reviews."))
 
-    story.append(Paragraph("3.4 Evidence", H2))
+    story.append(Paragraph("3.5 Evidence", H2))
     story.append(evidence([
         ("Configurations", f"{T2}/configs", True),
         ("Training and evaluation logs", f"reproducibility/raw_logs/task2_sentiment/shibin_thomas/{RUN2}", True),
@@ -546,7 +670,13 @@ def build() -> Path:
         ("Checkpoints", f"{T2}/checkpoints/{RUN2}", True),
         ("Results and analysis", f"{T2}/results.md", False),
         ("Executed notebook", f"{T2}/src/task2_yelp_sentiment.ipynb", False),
-    ]))
+    ], [("Configuration", f"{D2}/config.yaml", False), ("Training log", "reproducibility/raw_logs/task2_denisha.log", False),
+        ("Run manifest", "reproducibility/manifests/task2_denisha.json", False),
+        ("All metrics for every model", f"{D2}/metrics_report.csv", False),
+        ("Data analysis", f"{D2}/outputs/data_analysis.json", False),
+        ("Error review records", f"{D2}/outputs/error_review.json", False),
+        ("Checkpoints", f"{D2}/checkpoints", True), ("Results", f"{D2}/results.md", False),
+        ("Notebook", f"{D2}/Task2_Sentiment_Colab.ipynb", False)]))
 
     # ===================================================================================== 4 TASK 3
     story += [PageBreak(), Paragraph("4 Task 3: CycleGAN Style Transfer between Monet Paintings and Photos", H1)]
@@ -562,6 +692,11 @@ def build() -> Path:
         "density and coverage, LPIPS [16], the cycle-reconstruction error and a content similarity score. The "
         "submitted images are the unedited outputs of the trained generators; the pretrained Inception and LPIPS "
         "networks are only used to measure them."))
+    story.append(P(
+        "Denisha trained an independent CycleGAN with the same ResNet-9 generator depth but transposed-convolution "
+        "upsampling, a PatchGAN discriminator with four stride-2 layers, an identity weight of 2.5, 60 epochs "
+        "(30 constant and 30 with linear decay), gradient clipping at 5.0 and fp16 mixed precision on an RTX 4090. "
+        "Her submission is the team's best Kaggle entry."))
 
     story.append(Paragraph("4.1 Model Comparison", H2))
     tms3 = teammate_models("task3")
@@ -592,7 +727,8 @@ def build() -> Path:
     rank = kaggle.get("public_rank")
     both = [
         ("Kaggle file: FID / MiFID (average)", f"{fid_avg:.4f} / {mifid_avg:.4f}, score {kaggle_score:.2f}"),
-        ("Kaggle leaderboard: score / rank", f"{pub if pub is not None else PEND} / {rank if rank is not None else PEND}"),
+        ("Kaggle leaderboard: score / rank", f"submitted (scores -{kaggle_score:.2f}); team best entry "
+                                             f"{pub if pub is not None else PEND}, rank {rank if rank is not None else PEND}"),
         ("Final epoch losses: G / D_A / D_B", f"{float(trn('final_epoch_mean_loss_G')):.3f} / "
                                               f"{float(trn('final_epoch_mean_loss_D_A')):.3f} / {float(trn('final_epoch_mean_loss_D_B')):.3f}"),
         ("Final epoch cycle A / B, identity A / B", f"{float(trn('final_epoch_mean_cyc_A')):.3f} / {float(trn('final_epoch_mean_cyc_B')):.3f}, "
@@ -610,16 +746,26 @@ def build() -> Path:
         rows.append([label, Paragraph(esc(val), CELL), ""] + [tm_val(x, label) for x in tms3])
     ck = f"{T3}/checkpoints/{RUN3}"
     rows.append(["Checkpoints (SHA-256)", f"G_BA.pt {sha256(ck + '/G_BA.pt')[:12]}",
-                 f"G_AB.pt {sha256(ck + '/G_AB.pt')[:12]}"] + [PEND for _ in tms3])
+                 f"G_AB.pt {sha256(ck + '/G_AB.pt')[:12]}"] + [tm_val(x, "Checkpoints (SHA-256)") for x in tms3])
     ncol = 2 + len(tms3)
     story.append(tcap(f"Task 3 comparison. Directional metrics use the 300 scored images; the Kaggle score is "
-                      f"(FID + MiFID) / 2. Run `{RUN3}`."))
+                      f"(FID + MiFID) / 2. Shibin's run `{RUN3}`. In Denisha's column, two values are given as "
+                      f"photo to Monet / Monet to photo."))
+    TAB["t3"] = _tab[0]
     t = table(rows, [1.85 * inch] + [(WIDTH - 1.85 * inch) / ncol] * ncol, first_col_bold=True, font=8)
     first_both = 3 + len(t3_rows)
     t.setStyle(TableStyle([("SPAN", (1, 1), (2, 1)), ("SPAN", (1, 2), (2, 2))]
                           + [("SPAN", (1, i), (2, i)) for i in range(first_both, first_both + len(both))]))
     story.append(t)
-    story.append(source(f"{T3}/full_metrics_report.csv", f"{T3}/submission.csv", f"{T3}/kaggle_leaderboard.json"))
+    story.append(source(f"{T3}/full_metrics_report.csv", f"{T3}/submission.csv", f"{T3}/kaggle_leaderboard.json",
+                        teammate=[f"{D3}/outputs/submission_metrics_official.json", f"{D3}/outputs/metrics_A2B.json",
+                                  f"{D3}/outputs/metrics_B2A.json", f"{D3}/outputs/metrics.json", f"{D3}/results.md"]))
+    story.append(Paragraph(
+        "* Denisha's KID and precision/recall were computed with torch-fidelity against all 7,038 photos for "
+        "Monet to photo, so they are not on exactly the same reference set as Shibin's. ** Denisha's cycle L1 was "
+        "recorded on the [-1, 1] pixel scale (0.0914 and 0.0778) and is shown here divided by 2 to match Shibin's "
+        "[0, 1] scale. *** Denisha's content cosine is computed on a different feature representation from "
+        "Shibin's Inception features, so only the within-member comparison of directions is meaningful.", SMALL))
 
     story.append(Paragraph("4.2 Training Behaviour and Results", H2))
     story.append(figure(f"{T3}/outputs/{RUN3}/loss_curves.png",
@@ -640,6 +786,13 @@ def build() -> Path:
         "smoothly over the whole run. FID improves quickly during the first 25 epochs and then stays within about "
         "4 points of 120, which is within the noise of a 300-image FID. No training step produced a NaN or "
         "infinite value."))
+    story.append(figure(f"{D3}/outputs/loss_curves.png", "Task 3 generator, discriminator, cycle and identity losses "
+                        "per epoch (Denisha Ketan Tank)", max_h=2.6 * inch, teammate=True))
+    story.append(P(
+        "Denisha's run shows the same balance: her discriminators finish at 0.084 (Monet) and 0.144 (photo), "
+        "almost exactly the values of Shibin's run, while the cycle and identity losses decrease throughout. "
+        "Her gradient-norm statistics were written as NaN in the metrics file even though the explicit NaN "
+        "counter is zero; we report this as a logging defect rather than a training failure."))
     story.append(figure(f"{T3}/outputs/{RUN3}/final_samples_B2A.png",
                         "Photo to Monet. Top row: input photos; middle: generated paintings; bottom: reconstructions",
                         max_h=2.5 * inch))
@@ -649,7 +802,16 @@ def build() -> Path:
 
     story.append(Paragraph("4.3 Discussion", H2))
     story.append(P(
-        "*Strengths.* Training was stable from start to finish and neither generator collapsed. The cycle constraint "
+        "*Comparison.* Denisha's CycleGAN reaches a clearly better FID (98.4 and 103.2 against 118.1 and 117.3, "
+        "average 100.8 against 117.7), which gives the team's Kaggle score of -50.60 and rank 34. The two runs "
+        "differ mainly in the training recipe: 60 instead of 40 epochs, a lower identity weight (2.5 instead of "
+        "5), which lets the generator move further from the input colours, and transposed-convolution "
+        "upsampling. This agrees with the weaknesses Shibin's run showed (FID flat after epoch 30 and weak "
+        "Monet style) and with the changes in his prepared second configuration. Denisha's run also reconstructs "
+        "inputs more closely (cycle L1 0.046 and 0.039 on the [0, 1] scale against 0.062 and 0.053, LPIPS 0.22 "
+        "and 0.28 against 0.38 and 0.47)."))
+    story.append(P(
+        "*Strengths.* Both trainings were stable from start to finish and no generator collapsed. The cycle constraint "
         "works: reconstructions keep the layout, objects and colours of the inputs (cycle L1 of 0.05 to 0.06), and "
         "photo-to-Monet translations preserve the content of the scene (content cosine 0.75) while moving the "
         "colours towards Monet's palette. Our implementation of the scoring protocol matches the instructor's script, "
@@ -661,9 +823,10 @@ def build() -> Path:
         "photo distribution (recall 0.32) and still look painted. The Monet discriminator over-fits the small "
         "training set."))
     story.append(P(
-        "*Limitations.* FID on 300 images has high variance, and we trained a single seed. The script's MiFID is "
+        "*Limitations.* FID on 300 images has high variance, each member trained a single seed on different GPUs, "
+        f"and some secondary metrics were computed with different tools (see the notes under Table {TAB['t3']}). The script's MiFID is "
         "a mean cosine distance between unrelated real and generated images and hardly changes between models, so "
-        "the Kaggle score is driven almost entirely by FID. The human audit is still being completed."))
+        "the Kaggle score is driven almost entirely by FID. The two-rater human audit is still being completed."))
     story.append(P(
         "*Next steps.* Based on these findings we prepared a second configuration (`configs/cyclegan_v2.yaml`) "
         "with differentiable augmentation for the discriminators [18], an exponential moving average of the "
@@ -699,7 +862,7 @@ def build() -> Path:
         "turquoise storms, and a thin poplar tree disappears. Photos are rarely foggy, so the generator invents "
         "contrast and colour. We also observed a regular stipple texture in most photo-to-Monet outputs and visible "
         "brush strokes and signatures in most Monet-to-photo outputs. The full analysis of all five failure types "
-        "is in `failure_analysis.md`; the teammate's analysis is in their own Task 3 folder."))
+        "is in `failure_analysis.md`."))
 
     story.append(Paragraph("4.5 Evidence", H2))
     story.append(evidence([
@@ -714,28 +877,40 @@ def build() -> Path:
         ("Results and analysis", f"{T3}/results.md", False),
         ("Failure analysis", f"{T3}/failure_analysis.md", False),
         ("Executed notebook", f"{T3}/src/task3_cyclegan.ipynb", False),
-    ]))
+    ], [("Configuration", f"{D3}/config_competition.yaml", False),
+        ("Training log", "reproducibility/raw_logs/task3_denisha.log", False),
+        ("Run manifest", "reproducibility/manifests/task3_denisha.json", False),
+        ("Official evaluation", f"{D3}/outputs/submission_metrics_official.json", False),
+        ("Kaggle submission file", f"{D3}/outputs/submission.csv", False),
+        ("Generated images (photo to Monet)", f"{D3}/outputs/images.zip", False),
+        ("Loss history and curves", f"{D3}/outputs/history.json", False),
+        ("Human audit sheet", f"{D3}/outputs/human_audit.csv", False), ("Results", f"{D3}/results.md", False),
+        ("Notebook", f"{D3}/Task3_VSCode.ipynb", False)]))
 
     # ===================================================================================== 5 checklist, refs
     story += [PageBreak(), Paragraph("5 Pre-Submission Checklist", H1)]
     kaggle_done = kaggle.get("public_rank") is not None
-    tm_done = any(x.get("arch") for tk in ("task1", "task2", "task3") for x in teammate_models(tk))
+    merged = (ROOT / "task1_llm" / "member_denisha").exists()
+    folders = ("Done for both members" if merged else
+               f"Shibin: branch {INFO['repo_branch']}; Denisha: member_denisha folders on branch {TM_BRANCH}")
+    audit = INFO.get("human_audit_status", "Pending: ratings from both raters")
     ck_rows = [["Item", "Status"],
-               ["Every member's folder exists under all three tasks with code, configuration, logs and results.md",
-                "Done" if tm_done else "Shibin: done; teammate: pending"],
+               ["Every member's folder exists under all three tasks with code, configuration, logs and results.md", folders],
                ["No two members share the same architecture and hyperparameters",
-                "Confirmed" if tm_done else "To be confirmed with the teammate's entries"],
-               ["Task 1 uses no prebuilt Transformer or attention modules", "Done (checked by a unit test)"],
-               ["Task 2 uses no pretrained embeddings or language models; three models per member",
-                "Done" if tm_done else "Shibin: done; teammate: pending"],
+                "Confirmed (Section 2 to 4); the two TextCNNs share layer sizes but differ in batch size, dropout, "
+                "schedule, epochs and precision"],
+               ["Task 1 uses no prebuilt Transformer or attention modules", "Done for both members"],
+               ["Task 2 uses no pretrained embeddings or language models; three models per member", "Done for both members"],
                ["All required metrics are reported for every model in Tasks 1 to 3",
-                "Done" if tm_done else "Shibin: done; teammate: pending"],
+                f"Done (Tables {TAB['t1']}, {TAB['t2']} and {TAB['t3']}); a few secondary values that a member did not record are marked"],
                ["Task 3 Kaggle submission made and leaderboard rank recorded",
-                "Done" if kaggle_done else "Submitted; rank to be recorded"],
+                f"Done: team score {kaggle.get('public_score')}, rank {kaggle.get('public_rank')}" if kaggle_done
+                else "Submitted; rank to be recorded"],
+               ["Task 3 two-rater human audit (30 samples)", audit],
                ["Comparison tables with architecture, hyperparameters and metrics for all three tasks",
-                "Done (Tables 1, 3 and 7)"],
+                f"Done (Tables {TAB['t1']}, {TAB['t2']} and {TAB['t3']})"],
                ["Raw logs and manifests committed and unmodified", "Done"]]
-    story.append(table(ck_rows, [WIDTH - 2.2 * inch, 2.2 * inch]))
+    story.append(table(ck_rows, [WIDTH - 2.6 * inch, 2.6 * inch]))
 
     story.append(Paragraph("References", H1))
     refs = [
