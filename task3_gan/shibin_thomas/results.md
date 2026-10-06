@@ -163,13 +163,52 @@ _Human audit: pending (see `outputs/human_audit/INSTRUCTIONS.md`)._
 
 ## 5. Training behaviour, convergence and stability (3.1.5, 3.2.3)
 
-_Written after the full run, from `loss_curves.png`, `epoch_curves.png`, `steps.csv` and `epochs.csv`. It
-covers:_
-* the generator/discriminator balance;
-* the cycle and identity losses over time;
-* the FID trajectory;
-* gradient norms and NaN steps;
-* the effect of the LR decay.
+Sources:
+* `outputs/cyclegan_v1_20261001-201801/loss_curves.png` and `epoch_curves.png`;
+* `reproducibility/raw_logs/task3_gan/shibin_thomas/cyclegan_v1_20261001-201801/steps.csv` and `epochs.csv`.
+
+| Epoch | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 |
+|---|---|---|---|---|---|---|---|---|
+| FID photo→Monet (B2A) | 153.1 | 145.4 | 147.1 | 128.7 | 130.2 | **119.0** | 123.5 | 121.6 |
+| FID Monet→photo (A2B) | 187.7 | 155.3 | 169.5 | 128.7 | 119.7 | 121.8 | 121.3 | **118.1** |
+
+**Generator/discriminator balance.**
+* Both discriminators quickly settle below the LSGAN balance point of 0.25, and keep falling slowly:
+  * D_A (Monet) ends at 0.089, D_B (photo) at 0.139.
+  * The generators' adversarial losses rise from about 0.40 to 0.53 (G_AB) and 0.68 (G_BA).
+* The discriminators gradually win the game, and **D_A wins most**. With only 300 paintings it starts to
+  memorise them. This is the main motivation for DiffAugment in v2 (§5b).
+* There are two short oscillations, at about step 4,000 (D_A jumps to 0.35 while G_BA's loss drops) and
+  step 5,700 (D_B jumps to 0.30 while G_AB's loss drops). Both recover within a few hundred steps. The
+  image pool damps these swings.
+
+**Cycle and identity losses** fall smoothly over the whole run:
+* cycle A 0.30 → 0.096;
+* cycle B 0.31 → 0.120;
+* identity terms 0.29 → 0.11.
+
+The fixed-batch reconstruction L1 halves: A 0.111 → 0.052, B 0.104 → 0.062. The generators keep learning to
+invert each other even after FID stops improving.
+
+**Convergence by FID.**
+* Most of the improvement happens in the first 25 epochs (B2A 153 → 130, A2B 188 → 120).
+* From epoch 25 to 40, FID only moves within ±4 of 120. Differences that small are within the sampling
+  noise of a 300-image FID.
+* The linear learning-rate decay (epochs 21–40, staircase in the bottom-left panel) mainly lowers the
+  cycle/identity losses and makes the sample grids sharper. It does not lower FID further.
+* The recipe therefore had **converged at about FID 120**, so more epochs of the same recipe would not
+  help. This is the evidence behind the v2 changes.
+
+**Stability.**
+* No non-finite step in 20,000 steps.
+* Pre-clip gradient norms: G mean 48 (p99 181, max 727); D mean 17 (p99 40, max 342).
+* The generator norm drifts upward during LR decay, as the discriminators' gradients sharpen. Adam's
+  normalisation keeps the effective step bounded, and no loss spike followed.
+
+**Cost.**
+* Training: 91.2 minutes on the RTX 5090 at 36 images/s; the GPU was shared with another job (logged in
+  the manifest).
+* Peak memory: 19.9 GB allocated, mostly for the periodic Inception evaluation.
 
 ## 5b. From v1 to v2: changes aimed at v1's measured weaknesses
 
@@ -208,11 +247,84 @@ The comparison of the two runs is in §4 (METRICS) and in `outputs/<run_id>/full
   LPIPS between each input and its reconstruction G_back(G(x)), in both directions. The third row of
   `final_samples_*.png` shows the reconstructions next to the inputs.
 
-_Interpretation written after the full run._
+**Interpretation for the submitted model** (`full_metrics_report.csv`):
+
+| | photo → Monet → photo | Monet → photo → Monet |
+|---|---|---|
+| Cycle L1 (pixels in [0, 1]) | 0.062 | 0.053 |
+| LPIPS input vs reconstruction | 0.384 | 0.468 |
+| LPIPS input vs translation | 0.451 | 0.366 |
+
+* **The pixel error is small.** On average, a reconstructed pixel is off by 5–6% of the intensity
+  range, and the third row of `final_samples_*.png` shows reconstructions with the same layout,
+  objects and colours as the inputs. The cycle constraint works, and neither generator collapsed to a
+  constant output.
+* **The perceptual error is larger than the pixel error.**
+  * The LPIPS between input and reconstruction (0.38–0.47) is close to the LPIPS between input and
+    translation. The reconstructions are blurrier and lose fine texture, which LPIPS penalises much more
+    than L1.
+  * In the Monet → photo → Monet cycle, LPIPS (0.47) is even higher than for the translation itself
+    (0.37): the painted brush texture is not fully restored.
+* **The cycle is sometimes satisfied by "hiding" information.** The worst cycle errors (L1 0.13–0.17)
+  are photos with saturated reds and oranges. Their translation is recoloured, yet the reconstruction
+  recovers the colour: the steganography effect described in `failure_analysis.md` (Failure 2).
+* **Conclusion.** Cycle consistency holds at the pixel level, but it does not guarantee a faithful
+  translation.
+
+
 
 ## 7. Visual quality, human audit and discussion (3.2.1, 3.2.4, 3.2.6)
 
-_Written after the full run and after the human audit (2 raters, 30 fixed blinded samples)._
+**Visual quality** (`final_samples_B2A.png`, `final_samples_A2B.png`, 8 random scored images each):
+* **Photo → Monet.**
+  * The scene layout is always kept, and colours move convincingly to Monet's pastel palette: blue-lilac
+    skies, ochre fields, soft reflections on water.
+  * Daylight landscapes and seascapes (the lighthouse, the river valley, the brick building) are the best
+    cases.
+  * The weaknesses (`failure_analysis.md`): a regular stipple texture instead of brush strokes; washed-out
+    dark or night photos; and saturated reds and oranges replaced by blue.
+* **Monet → photo.**
+  * Outputs are sharper, more contrasty and more saturated, for example the Houses of Parliament with an
+    orange sky and the night harbour.
+  * But they keep visible brush strokes, painted skies and sometimes Monet's signature, so they remain
+    "photo-like paintings". This matches the low recall (0.32).
+
+**What the numbers say.**
+* FID is almost identical in both directions (118.1 vs 117.3), but the error profiles differ:
+  * photo → Monet has high recall (0.64) but low precision (0.27): diverse outputs, many of them not
+    realistic Monets;
+  * Monet → photo has the opposite pattern (precision 0.61, recall 0.32): realistic-looking textures,
+    but low diversity.
+* KID (unbiased, more reliable with 300 images) ranks photo → Monet better (0.020 vs 0.036).
+* Content cosine (0.75 / 0.79) shows that most of each input's semantic content survives.
+
+**Human audit.**
+* The blinded pack is ready in `outputs/human_audit/`: 30 fixed samples, 15 per direction, shuffled IDs
+  S01–S30.
+* The two team raters score style, content and artifacts from 1 to 5 in `rater1.csv` / `rater2.csv`.
+* `src/human_audit.py score` then adds the means and Cohen's κ to `metrics_report.csv` and §4.
+  * Status: pending until both raters have finished.
+
+**Discussion.**
+* **Strengths.**
+  * A stable from-scratch CycleGAN: no divergence, no mode collapse.
+  * Good content preservation.
+  * A fully reproducible pipeline whose Kaggle numbers match the instructor's script exactly.
+* **Weaknesses.**
+  * Photo → Monet realism (precision 0.27) and Monet → photo diversity (recall 0.32).
+  * Texture artifacts.
+  * Discriminator overfitting on the 300 paintings.
+* **Limitations.**
+  * FID on only 300 images has a large bias and variance (±3–4 between neighbouring epochs).
+  * Single seed.
+  * The Kaggle "MiFID" in the instructor script is a mean paired cosine distance between *unrelated*
+    real and generated images, so it barely varies between models (0.41–0.43). The score is driven
+    almost entirely by FID.
+* **Next steps.** These are implemented in `configs/cyclegan_v2.yaml` (§5b): DiffAugment, generator EMA,
+  λ_id 2.5, 60 epochs and held-out epoch selection. A multi-scale discriminator would address the stroke
+  texture.
+
+
 
 ## 8. Kaggle submission (3.2.5)
 
@@ -225,7 +337,7 @@ private score and rank are recorded in `kaggle_leaderboard.json`.
 
 | Member | Generator | Discriminator | Losses (λ_cyc / λ_id) | Training | FID (avg) | KID B2A | Human audit |
 |---|---|---|---|---|---|---|---|
-| Shibin Thomas | ResNet-9, resize-conv upsampling | 70×70 PatchGAN | LSGAN + cycle 10 + identity 5 | 40 epochs × 2,000 pairs, batch 4 | | | |
+| Shibin Thomas | ResNet-9, resize-conv upsampling | 70×70 PatchGAN | LSGAN + cycle 10 + identity 5 | 40 epochs × 2,000 pairs, batch 4 | 117.71 | 0.0197 | pending |
 | _teammate_ | | | | | | | |
 
 ## References
@@ -240,4 +352,6 @@ private score and rank are recorded in `kaggle_leaderboard.json`.
 * Bińkowski et al., *Demystifying MMD GANs* (KID), ICLR 2018.
 * Kynkäänniemi et al., *Improved Precision and Recall Metric for Assessing Generative Models*, NeurIPS 2019.
 * Naeem et al., *Reliable Fidelity and Diversity Metrics for Generative Models* (density / coverage), ICML 2020.
+* Chu, Zhmoginov & Sandler, *CycleGAN, a Master of Steganography*, NeurIPS 2017 workshop.
+* Zhao et al., *Differentiable Augmentation for Data-Efficient GAN Training*, NeurIPS 2020.
 * Zhang et al., *The Unreasonable Effectiveness of Deep Features as a Perceptual Metric* (LPIPS), CVPR 2018.

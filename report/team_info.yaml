@@ -1,0 +1,53 @@
+# Team information for the combined report. Edit this file, then rebuild the PDF:
+#     python report/build_report.py
+# Shibin Thomas's numbers are read directly from the committed result files, so they are
+# not typed here. Each teammate fills in their own section below with the values from their
+# own results.md / metrics_report.csv. Leave a value as null if it is not available yet:
+# the report then shows "pending".
+
+team_number: "09"
+team_name: PairProgramming_Team_09          # Kaggle team name
+repo_url: https://github.com/Shibin-1020/Gen-AI---LAB-1
+repo_branch: claude/zen-mccarthy-mpamlz      # set to main once the work is merged
+
+members:
+  - name: Shibin Thomas
+    folder: shibin_thomas
+    built: >-
+      Task 1 character-level GPT (gpt_char_v1), Task 2 baseline mean-pool, TextCNN and BiGRU+attention
+      classifiers, Task 3 CycleGAN (v1 submitted, v2 recipe), the shared TinyStories download and the
+      shared metric modules (task1_llm/shared_eval, task2_sentiment/shared_eval), and the repository
+      layout, reproducibility manifests and smoke tests.
+  - name: Teammate (name to be added)
+    folder: teammate_folder
+    built: >-
+      Own Task 1 language model, own three Task 2 classifiers and own Task 3 CycleGAN (to be described
+      by the teammate).
+
+# ---------------------------------------------------------------------------------------------
+# Teammate results. One entry per model; "arch" and "hparams" are short one-line summaries.
+# Metric names must match the row labels used in the report (see build_report.py).
+teammate:
+  task1:
+    - model: teammate GPT
+      arch: null
+      hparams: null
+      metrics: {}        # e.g. {"Validation CE (nats/char)": 0.60, "Validation BPC": 0.87, ...}
+  task2:
+    - model: teammate baseline
+      arch: null
+      hparams: null
+      metrics: {}        # e.g. {"Accuracy": 0.93, "F1 (macro)": 0.93, "ROC-AUC": 0.98, ...}
+    - model: teammate experiment 1
+      arch: null
+      hparams: null
+      metrics: {}
+    - model: teammate experiment 2
+      arch: null
+      hparams: null
+      metrics: {}
+  task3:
+    - model: teammate CycleGAN
+      arch: null
+      hparams: null
+      metrics: {}        # e.g. {"FID (avg, Kaggle)": 110.0, "MiFID (avg, Kaggle)": 0.42, ...}
