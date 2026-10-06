@@ -32,6 +32,7 @@ REPORT = ROOT / "report"
 INFO = yaml.safe_load((REPORT / "team_info.yaml").read_text(encoding="utf-8"))
 BLOB = f"{INFO['repo_url']}/blob/{INFO['repo_branch']}/"
 TREE = f"{INFO['repo_url']}/tree/{INFO['repo_branch']}/"
+BRANCH_URL = f"{INFO['repo_url']}/tree/{INFO['repo_branch']}"
 
 T1 = "task1_llm/shibin_thomas"
 T2 = "task2_sentiment/shibin_thomas"
@@ -226,21 +227,21 @@ def build() -> Path:
               Paragraph("<br/>".join(esc(m["name"]) for m in members), c(12)),
               Spacer(1, 36),
               Paragraph(f'Repository: <link href="{INFO["repo_url"]}">{esc(INFO["repo_url"])}</link>', c(10.5)),
-              Paragraph(f'Branch: <link href="{TREE}">{esc(INFO["repo_branch"])}</link>', c(10.5)),
+              Paragraph(f'Branch: <link href="{BRANCH_URL}">{esc(INFO["repo_branch"])}</link>', c(10.5)),
               Spacer(1, 24),
               Paragraph(esc(INFO.get("report_date", "October 2026")), c(11)),
               PageBreak()]
 
     # ------------------------------------------------------------------------------------- 1 ownership
     story.append(Paragraph("1 Team Ownership Statement", H1))
-    for m in members:
-        story.append(P(f"*{m['name']}* built {m['built']}"))
     story.append(P(
-        "Each member trained their own models from scratch in a personal folder for every task "
+        " ".join(f"{m['name']} built {m['built'].rstrip('.')}." for m in members) +
+        " Each member trained their own models from scratch in a personal folder for every task "
         "(`task1_llm/<member>`, `task2_sentiment/<member>`, `task3_gan/<member>`). To keep the results "
         "comparable we shared the raw TinyStories file and the generation prompts for Task 1, the official Yelp "
         "Polarity test split and a common metric module for Task 2, and the instructor's evaluation script for "
-        "Task 3. The comparison tables and the analysis sections of this report were written together."))
+        "Task 3. The comparison tables and the analysis sections of this report were written jointly."))
+    story.append(Paragraph("1.1 Repository Organisation and Reproducibility", H2))
     story.append(P(
         "Every member folder follows the same layout: source code and the task notebook in `src/`, configuration "
         "files in `configs/`, model weights in `checkpoints/<run_id>/`, plots and samples in `outputs/<run_id>/`, "
@@ -256,7 +257,8 @@ def build() -> Path:
     story.append(P(
         f"The model is a decoder-only Transformer trained on characters from TinyStories [2]. All components "
         f"(token and positional embeddings, layer normalisation, multi-head causal self-attention, the feed-forward "
-        f"blocks and the residual connections) were written by hand following Vaswani et al. [1]; no built-in "
+        f"blocks and the residual connections) were written by hand following Vaswani et al. [1], with the "
+        f"pre-LayerNorm arrangement of Xiong et al. [5] and the GPT-2 initialisation scheme [4]; no built-in "
         f"Transformer or attention module of PyTorch is used, and a unit test (`tests/test_model.py`) checks this. "
         f"Each member drew their own split from the cleaned story pool. Shibin's split contains 100,000 training "
         f"and 10,000 validation stories (seed 266), and the character vocabulary of 90 symbols was built from the "
@@ -406,7 +408,8 @@ def build() -> Path:
     # ===================================================================================== 3 TASK 2
     story += [PageBreak(), Paragraph("3 Task 2: Sentiment Classification on Yelp Polarity", H1)]
     story.append(P(
-        "All Task 2 models classify a review as positive or negative and learn their word embeddings from random "
+        "All Task 2 models classify a review from the Yelp Review Polarity dataset [6] as positive or negative and "
+        "learn their word embeddings from random "
         "initialisation; no pretrained embeddings or language models are used. The official test split (38,000 "
         "reviews) is shared by the team. Each member carved a validation set out of the training split; Shibin "
         "used 50,000 reviews (seed 266) for early stopping and model selection. Preprocessing removes duplicates "
@@ -416,7 +419,7 @@ def build() -> Path:
     story.append(P(
         "Shibin trained three models that share the same 128-dimensional embedding, so that differences in the "
         "results come from the architecture. The baseline averages the word embeddings of a review and feeds them "
-        "to a small MLP. The first experimental model is a TextCNN [7] with filter widths 3, 4 and 5 and max "
+        "to a small MLP, in the spirit of fastText [8]. The first experimental model is a TextCNN [7] with filter widths 3, 4 and 5 and max "
         "pooling over time. The second is a two-layer bidirectional GRU with additive attention pooling [9]."))
 
     story.append(Paragraph("3.1 Model Comparison", H2))
@@ -474,7 +477,7 @@ def build() -> Path:
         "bootstrap intervals do not overlap, and paired McNemar tests on the same 38,000 reviews give p-values "
         "below 1e-20 for each pair. Compared with the baseline, the BiGRU removes 36% of all errors, and 40% and "
         "38% of the errors on reviews containing a negation or a contrast word, which is exactly where a bag of "
-        "words cannot work. All three models are well calibrated (ECE at most 1.1%). Since the shared embedding "
+        "words cannot work. All three models are well calibrated (expected calibration error [10] at most 1.1%). Since the shared embedding "
         "table holds 3.84 of the roughly 4 million parameters in every model, the gains come from the way the text "
         "is read rather than from model size."))
     story.append(P(
@@ -551,12 +554,14 @@ def build() -> Path:
         "The goal is unpaired translation between 300 Monet paintings (domain A) and 7,038 photos (domain B) "
         "with a CycleGAN [3] trained from random initialisation. Shibin's generators are ResNet encoder-decoders "
         "with nine residual blocks; upsampling uses nearest-neighbour resizing followed by a convolution instead of "
-        "transposed convolutions, to avoid checkerboard artifacts. The discriminators are 70x70 PatchGANs. "
-        "Training combines a least-squares adversarial loss, a cycle-consistency loss (weight 10) and an identity "
+        "transposed convolutions, to avoid checkerboard artifacts. The discriminators are 70x70 PatchGANs [11]. "
+        "Training combines a least-squares adversarial loss [12], a cycle-consistency loss (weight 10) and an identity "
         "loss (weight 5). The Kaggle score is computed with the instructor's script: FID and the script's MiFID on "
         "the first 300 sorted images in each direction, averaged, and the final score is the mean of the two "
-        "values (lower is better). The submitted images are the unedited outputs of the trained generators; the "
-        "pretrained Inception and LPIPS networks are only used to measure them."))
+        "values (lower is better). Besides FID [13] we report KID [14], generative precision and recall [15], "
+        "density and coverage, LPIPS [16], the cycle-reconstruction error and a content similarity score. The "
+        "submitted images are the unedited outputs of the trained generators; the pretrained Inception and LPIPS "
+        "networks are only used to measure them."))
 
     story.append(Paragraph("4.1 Model Comparison", H2))
     tms3 = teammate_models("task3")

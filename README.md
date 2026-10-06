@@ -8,6 +8,7 @@ Each member's work lives in a named folder inside each task folder.
 | 1 — GPT-style character LLM from scratch (TinyStories) | [`task1_llm/`](task1_llm/) | Shibin: done (10 epochs, val BPC 0.824, RTX 5090) |
 | 2 — Yelp Polarity sentiment classification | [`task2_sentiment/`](task2_sentiment/) | Shibin: done (3 models; best BiGRU+attention 95.58% test accuracy, RTX 5090) |
 | 3 — CycleGAN Monet ↔ Photo (Kaggle) | [`task3_gan/`](task3_gan/) | Shibin: v1 run done (FID 117.7); improved v2 config ready (`configs/cyclegan_v2.yaml`) |
+| Final report | [`report/DATA266_Lab1_Report_Team_09.pdf`](report/DATA266_Lab1_Report_Team_09.pdf) | combined team report (rebuild: `python report/build_report.py`) |
 
 ```
 .
