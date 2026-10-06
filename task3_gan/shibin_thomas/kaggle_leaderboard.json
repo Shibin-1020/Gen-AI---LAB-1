@@ -1,9 +1,9 @@
 {
   "team_name": "PairProgramming_Team_09",
-  "public_score": null,
+  "public_score": -50.6033,
   "private_score": null,
-  "public_rank": null,
+  "public_rank": 34,
   "private_rank": null,
   "submitted_utc": null,
-  "notes": "Fill in by hand after uploading submission.csv to the class competition, then re-run evaluate_local.py"
+  "notes": "Team leaderboard entry (best of the team's 2 submissions; the best entry is Denisha Ketan Tank's, FID 100.79). Shibin's submission of this folder's submission.csv scores (FID + MiFID)/2 = 59.06 with the instructor script."
 }

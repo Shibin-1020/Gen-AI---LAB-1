@@ -6,48 +6,168 @@
 # the report then shows "pending".
 
 team_number: "09"
-team_name: PairProgramming_Team_09          # Kaggle team name
+team_name: PairProgramming_Team_09
 repo_url: https://github.com/Shibin-1020/Gen-AI---LAB-1
-repo_branch: claude/zen-mccarthy-mpamlz      # set to main once the work is merged
-
+repo_branch: shibin-lab1
+report_date: October 2026
 members:
-  - name: Shibin Thomas
-    folder: shibin_thomas
-    built: >-
-      Task 1 character-level GPT (gpt_char_v1), Task 2 baseline mean-pool, TextCNN and BiGRU+attention
-      classifiers, Task 3 CycleGAN (v1 submitted, v2 recipe), the shared TinyStories download and the
-      shared metric modules (task1_llm/shared_eval, task2_sentiment/shared_eval), and the repository
-      layout, reproducibility manifests and smoke tests.
-  - name: Teammate (name to be added)
-    folder: teammate_folder
-    built: >-
-      Own Task 1 language model, own three Task 2 classifiers and own Task 3 CycleGAN (to be described
-      by the teammate).
-
-# ---------------------------------------------------------------------------------------------
-# Teammate results. One entry per model; "arch" and "hparams" are short one-line summaries.
-# Metric names must match the row labels used in the report (see build_report.py).
+- name: Shibin Thomas
+  folder: shibin_thomas
+  built: the character-level GPT for Task 1, the mean-pooling baseline, TextCNN and BiGRU-with-attention classifiers
+    for Task 2, and the CycleGAN for Task 3, including the Kaggle submission. Shibin also set up the shared TinyStories
+    download, the shared metric modules for Tasks 1 and 2, the repository layout, the run manifests and the smoke
+    tests.
+- name: Denisha Ketan Tank
+  folder: member_denisha
+  branch: denisha-lab1
+  built: an independent character-level GPT for Task 1, a mean-pooling baseline, TextCNN and bidirectional GRU classifiers
+    for Task 2, and a CycleGAN for Task 3, together with the team's best Kaggle submission and its official evaluation
 teammate:
   task1:
-    - model: teammate GPT
-      arch: null
-      hparams: null
-      metrics: {}        # e.g. {"Validation CE (nats/char)": 0.60, "Validation BPC": 0.87, ...}
+  - model: Denisha Ketan Tank (char GPT)
+    arch: 4 layers, d_model 256, 4 heads (head dim 64), FFN 1024 with GELU, pre-LayerNorm, learned positions, context
+      128, vocabulary 114
+    hparams: AdamW (0.9, 0.999), weight decay 0.01, peak LR 5e-4 with 500 warm-up steps and cosine decay to 10%,
+      batch 48 x 128, gradient clip 1.0, dropout 0.1, 10 epochs, fp16 AMP
+    metrics:
+      Training cross-entropy (nats/char): '0.7128'
+      Validation cross-entropy (nats/char): '0.6822'
+      Validation perplexity: '1.9783'
+      Validation bits per character: '0.9842'
+      Training perplexity / BPC: 2.0397 / 1.0283
+      Generalisation gap (val - train CE): '-0.0306'
+      Next-character accuracy (validation): '0.7822'
+      Distinct-1 / 2 / 3 (sampled, T = 0.8): 0.1080 / 0.4582 / 0.7360 (T = 0.7-1.1)
+      Repeated 4-gram rate (sampled / greedy): 0.1526 / not run
+      Gradient norm mean / p99 / max: final 0.232 / max 0.287 (per epoch)
+      Clipped steps / loss spikes / NaN steps: not logged / not logged / 0
+      Parameters (total / non-embedding): 3,250,688 / not reported
+      Training throughput (characters/s): 224,658
+      Generation speed (characters/s): '268.0'
+      Peak GPU memory (MB): '408'
+      Training time (min) / epochs / best epoch: 66.6 / 10 / 10
+      Hardware: NVIDIA Tesla T4 (Colab)
+      Run and checkpoint: '`checkpoints/gpt_from_scratch.pt` (SHA-256 3858840ebe56)'
   task2:
-    - model: teammate baseline
-      arch: null
-      hparams: null
-      metrics: {}        # e.g. {"Accuracy": 0.93, "F1 (macro)": 0.93, "ROC-AUC": 0.98, ...}
-    - model: teammate experiment 1
-      arch: null
-      hparams: null
-      metrics: {}
-    - model: teammate experiment 2
-      arch: null
-      hparams: null
-      metrics: {}
+  - model: 'Denisha: Baseline (BoW MLP)'
+    arch: Embedding 128, mean pooling, MLP (128), dropout 0.2
+    hparams: AdamW lr 1e-3, batch 512, dropout 0.2, up to 12 epochs, LR halved on plateau
+    metrics:
+      Accuracy: '0.9321'
+      Accuracy 95% CI: '[0.9307, 0.9337]'
+      Precision (macro): '0.9321'
+      Recall (macro): '0.9321'
+      F1 (macro): '0.9321'
+      Precision (micro): '0.9321'
+      Recall (micro): '0.9321'
+      F1 (micro): '0.9321'
+      Precision (weighted): '0.9321'
+      Recall (weighted): '0.9321'
+      F1 (weighted): '0.9321'
+      Confusion matrix [TN FP; FN TP]: '[52,150 3,850; 3,755 52,245]'
+      ROC-AUC: '0.9804'
+      PR-AUC: '0.9797'
+      MCC: '0.8642'
+      MCC 95% CI: '[0.8613, 0.8673]'
+      Brier score: '0.0510'
+      ECE (15 bins): '0.0064'
+      McNemar vs baseline (b / c, p): '- (baseline)'
+      Parameters: 3,856,641
+      Training time (min): '0.4411'
+      Epochs run (best): 12 (4)
+      Train examples/sec: 182,819
+      Inference examples/sec: not reported
+      Peak GPU memory (MB): '235'
+      Hardware: Tesla T4
+      Checkpoint (SHA-256): 65cddf7326f7
+  - model: 'Denisha: Exp. 1 (TextCNN)'
+    arch: Embedding 128, Conv1d widths 3/4/5 with 128 channels, max pooling
+    hparams: AdamW lr 1e-3, batch 512, dropout 0.3, up to 12 epochs, LR halved on plateau
+    metrics:
+      Accuracy: '0.9468'
+      Accuracy 95% CI: '[0.9456, 0.9482]'
+      Precision (macro): '0.9468'
+      Recall (macro): '0.9468'
+      F1 (macro): '0.9468'
+      Precision (micro): '0.9468'
+      Recall (micro): '0.9468'
+      F1 (micro): '0.9468'
+      Precision (weighted): '0.9468'
+      Recall (weighted): '0.9468'
+      F1 (weighted): '0.9468'
+      Confusion matrix [TN FP; FN TP]: '[53,049 2,951; 3,004 52,996]'
+      ROC-AUC: '0.9883'
+      PR-AUC: '0.9877'
+      MCC: '0.8937'
+      MCC 95% CI: '[0.8912, 0.8964]'
+      Brier score: '0.0396'
+      ECE (15 bins): '0.0080'
+      McNemar vs baseline (b / c, p): 1,849 / 3,499, p=1.38e-112
+      Parameters: 4,037,377
+      Training time (min): '3.0057'
+      Epochs run (best): 12 (5)
+      Train examples/sec: 26,829
+      Inference examples/sec: not reported
+      Peak GPU memory (MB): '431'
+      Hardware: Tesla T4
+      Checkpoint (SHA-256): 1e01df581320
+  - model: 'Denisha: Exp. 2 (BiGRU)'
+    arch: Embedding 128, 2-layer bidirectional GRU (128 per direction), output at the last valid token
+    hparams: AdamW lr 1e-3, batch 512, dropout 0.3, up to 12 epochs, LR halved on plateau
+    metrics:
+      Accuracy: '0.9519'
+      Accuracy 95% CI: '[0.9507, 0.9531]'
+      Precision (macro): '0.9519'
+      Recall (macro): '0.9519'
+      F1 (macro): '0.9519'
+      Precision (micro): '0.9519'
+      Recall (micro): '0.9519'
+      F1 (micro): '0.9519'
+      Precision (weighted): '0.9519'
+      Recall (weighted): '0.9519'
+      F1 (weighted): '0.9519'
+      Confusion matrix [TN FP; FN TP]: '[53,209 2,791; 2,601 53,399]'
+      ROC-AUC: '0.9901'
+      PR-AUC: '0.9898'
+      MCC: '0.9037'
+      MCC 95% CI: '[0.9015, 0.9062]'
+      Brier score: '0.0365'
+      ECE (15 bins): '0.0081'
+      McNemar vs baseline (b / c, p): 1,856 / 4,069, p=1.32e-181
+      Parameters: 4,334,849
+      Training time (min): '2.6504'
+      Epochs run (best): 12 (3)
+      Train examples/sec: 30,426
+      Inference examples/sec: not reported
+      Peak GPU memory (MB): 1,717
+      Hardware: Tesla T4
+      Checkpoint (SHA-256): cbcaf6a5f0f2
   task3:
-    - model: teammate CycleGAN
-      arch: null
-      hparams: null
-      metrics: {}        # e.g. {"FID (avg, Kaggle)": 110.0, "MiFID (avg, Kaggle)": 0.42, ...}
+  - model: Denisha Ketan Tank (CycleGAN)
+    arch: 'Generators: ResNet-9 with transposed-convolution upsampling, InstanceNorm, 11.38M parameters each. Discriminators:
+      70x70 PatchGAN, 2.76M each.'
+    hparams: LSGAN, cycle weight 10, identity weight 2.5; Adam 2e-4 (0.5, 0.999); 30 epochs constant LR then 30
+      epochs linear decay, 2,000 pairs per epoch; batch 4; replay buffer 50; resize 286, crop 256, flip; gradient
+      clip 5.0; fp16 AMP
+    metrics:
+      FID: 98.36 / 103.23
+      MiFID (instructor script): 0.4069 / 0.4189
+      KID: 0.0057 / 0.0174 *
+      Precision (k = 3): 0.060 / 0.153 *
+      Recall (k = 3): 0.027 / 0.000 *
+      Density / coverage (k = 5): not reported
+      Cycle reconstruction L1: 0.0457 / 0.0389 **
+      LPIPS, input vs translation: not reported
+      LPIPS, input vs reconstruction: 0.217 / 0.284
+      Content cosine similarity: 0.305 / 0.465 ***
+      'Kaggle file: FID / MiFID (average)': 100.7938 / 0.4129, score 50.60
+      'Kaggle leaderboard: score / rank': -50.6033 / 34 (team best entry)
+      'Final epoch losses: G / D_A / D_B': 3.098 / 0.084 / 0.144
+      Final epoch cycle A / B, identity A / B: 0.153 (A+B), 0.157 (A+B)
+      Gradient norm G (mean / max), D (mean / max): logged as NaN (see text)
+      Non-finite steps / total steps: 0 / 30,000
+      Training time / throughput / peak GPU memory: 68.4 min / 58.5 images/s / 4,816 MB
+      Total parameters: 28,285,832
+      Human audit (2 raters, 30 samples): 'mean of both raters: style 4.10, content 4.67, artifacts 4.17; within-1 agreement 97% / 93% / 100%'
+      Hardware: NVIDIA GeForce RTX 4090
+      Checkpoints (SHA-256): 340 MB, stored on Google Drive

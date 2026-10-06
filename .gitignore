@@ -45,3 +45,6 @@ task3_gan/data/dataset/
 task3_gan/data/__MACOSX/
 task3_gan/data/*.zip
 .DS_Store
+
+# Local rating panels for the Task 3 human audit of Denisha's images
+denisha_audit_panels/

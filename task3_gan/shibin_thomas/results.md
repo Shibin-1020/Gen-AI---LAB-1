@@ -303,7 +303,8 @@ The comparison of the two runs is in §4 (METRICS) and in `outputs/<run_id>/full
   S01–S30.
 * The two team raters score style, content and artifacts from 1 to 5 in `rater1.csv` / `rater2.csv`.
 * `src/human_audit.py score` then adds the means and Cohen's κ to `metrics_report.csv` and §4.
-  * Status: pending until both raters have finished.
+  * Status: rater 1 (Shibin) done. Mean scores: style 4.07, content 4.57, artifacts 4.70; photo→Monet
+    4.13 / 4.67 / 4.53, Monet→photo 4.00 / 4.47 / 4.87. Rater 2 (Denisha) pending.
 
 **Discussion.**
 * **Strengths.**
@@ -330,15 +331,16 @@ The comparison of the two runs is in §4 (METRICS) and in `outputs/<run_id>/full
 
 `submission.csv` is produced by `evaluate_local.py` from the direct outputs of my generators. There is no
 editing, selection or external model, and the scored images are the deterministic translations of the first
-300 sorted images of each domain. After uploading it to the class competition, the team name, public and
-private score and rank are recorded in `kaggle_leaderboard.json`.
+300 sorted images of each domain. The team (PairProgramming_Team_09) made two submissions; the leaderboard shows the team's best entry,
+Denisha's (score −50.6033, rank 34). This model's file scores (FID + MiFID) / 2 = 59.06. Both are recorded in
+`kaggle_leaderboard.json`.
 
 ## 9. Comparison with teammates (team)
 
 | Member | Generator | Discriminator | Losses (λ_cyc / λ_id) | Training | FID (avg) | KID B2A | Human audit |
 |---|---|---|---|---|---|---|---|
 | Shibin Thomas | ResNet-9, resize-conv upsampling | 70×70 PatchGAN | LSGAN + cycle 10 + identity 5 | 40 epochs × 2,000 pairs, batch 4 | 117.71 | 0.0197 | pending |
-| _teammate_ | | | | | | | |
+| Denisha Ketan Tank (branch `denisha-lab1`) | ResNet-9, transposed-conv upsampling | PatchGAN, four stride-2 layers | LSGAN + cycle 10 + identity 2.5 | 60 epochs × 2,000 pairs, batch 4, fp16 | 100.79 | 0.0057 | pending |
 
 ## References
 * Zhu, Park, Isola & Efros, *Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks*, ICCV 2017.
