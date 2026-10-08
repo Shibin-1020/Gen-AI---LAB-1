@@ -48,3 +48,6 @@ task3_gan/data/*.zip
 
 # Local rating panels for the Task 3 human audit of Denisha's images
 denisha_audit_panels/
+
+# Live-demo outputs
+demo/outputs/

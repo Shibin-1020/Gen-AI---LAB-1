@@ -60,6 +60,18 @@ Unit tests (no data needed): `python task1_llm/shibin_thomas/tests/test_model.py
 Detailed GPU Lab instructions (including resume after a session ends):
 [`task1_llm/shibin_thomas/README.md`](task1_llm/shibin_thomas/README.md).
 
+## Live demo (load checkpoints and generate in seconds, CPU only)
+See [`demo/README.md`](demo/README.md):
+* `demo/demo_task1_generate.py`: text generation from the Task 1 GPT;
+* `demo/demo_task2_classify.py`: sentiment from all three Task 2 models;
+* `demo/demo_task3_translate.py`: CycleGAN translations.
+
+## Datasets
+The datasets are not committed, because the repository is public. Zipped copies are on Google Drive (read access):
+* TinyStories (Task 1), Yelp Polarity (Task 2), Monet/photo (Task 3): **DRIVE_LINK_TO_BE_ADDED**
+
+The download scripts in `task1_llm/data/` and `task2_sentiment/data/` can also fetch Tasks 1 and 2 directly.
+
 ## Where results live
 | What | Where |
 |---|---|
